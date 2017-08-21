@@ -48,9 +48,6 @@ public class ContactListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_contacts, container,
                 false);
 
-//        ShimmerRecyclerView shimmerRecycler = rootView.findViewById(R.id.recycler_view_contacts);
-//        shimmerRecycler.showShimmerAdapter();
-
         listView = rootView.findViewById(R.id.listview);
 
         StoreContacts = new ArrayList<>();
@@ -80,6 +77,7 @@ public class ContactListFragment extends Fragment {
 
         String lastphonenumber = "";
 
+        assert cursor != null;
         while (cursor.moveToNext()) {
 
             name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
