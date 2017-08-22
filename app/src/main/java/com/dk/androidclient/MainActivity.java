@@ -19,13 +19,13 @@ import layout.ResponseListFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    SpaceTabLayout tabLayout;
     public static final int RequestPermissionCode = 1;
+    SpaceTabLayout tabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         EnableRuntimePermission();
@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
     public void EnableRuntimePermission() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(
-               this,
+                this,
                 Manifest.permission.READ_CONTACTS)) {
 
             Toast.makeText(this, "CONTACTS permission allows us to Access CONTACTS app", Toast.LENGTH_LONG).show();
