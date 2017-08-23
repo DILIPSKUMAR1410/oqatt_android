@@ -35,7 +35,7 @@ public class UsersAdapter extends ArrayAdapter<User> {
         TextView tvName = convertView.findViewById(R.id.name);
         // Populate the data into the template view using the data object
         tvName.setText(user.name);
-        if (user.claimed) {
+        if (!user.claimed) {
             Button btButton = convertView.findViewById(R.id.claimed);
             btButton.setTag(position);
             btButton.setText("Invite");

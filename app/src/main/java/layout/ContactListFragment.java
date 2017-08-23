@@ -17,8 +17,8 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.dk.androidclient.ChooseContactActivity;
 import com.dk.androidclient.R;
+import com.dk.androidclient.TagActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +69,7 @@ public class ContactListFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getActivity(), ChooseContactActivity.class);
+                Intent intent = new Intent(getActivity(), TagActivity.class);
                 startActivity(intent);
             }
         });
@@ -115,7 +115,7 @@ public class ContactListFragment extends Fragment {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("uid", "8cf19d917d0d4c9f9d273314fe37794e");
+            jsonObject.put("uid", "617fecec654642a58758a04f42504f07");
             jsonObject.put("contact_list", new JSONArray(contact_list));
         } catch (JSONException e) {
             e.printStackTrace();
