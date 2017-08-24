@@ -121,7 +121,7 @@ public class ContactListFragment extends Fragment {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post("http://192.168.0.103:8000/api/user/sync_contacts")
+        AndroidNetworking.post("http://192.168.0.102:8000/api/user/sync_contacts")
                 .addJSONObjectBody(jsonObject) // posting json
                 .setPriority(Priority.IMMEDIATE)
                 .build()

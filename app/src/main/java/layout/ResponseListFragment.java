@@ -13,7 +13,7 @@ import com.dk.androidclient.ChooseContactActivity;
 import com.dk.androidclient.R;
 import com.github.fabtransitionactivity.SheetLayout;
 
-import butterknife.Bind;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -23,9 +23,9 @@ import butterknife.OnClick;
 public class ResponseListFragment extends Fragment implements SheetLayout.OnFabAnimationEndListener {
 
     private static final int REQUEST_CODE = 1;
-    @Bind(R.id.bottom_sheet)
+    @BindView(R.id.bottom_sheet)
     SheetLayout mSheetLayout;
-    @Bind(R.id.fab)
+    @BindView(R.id.fab)
     FloatingActionButton mFab;
 
     public ResponseListFragment() {
