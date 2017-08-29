@@ -1,13 +1,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="layout.PersonalTagFragment">
+    tools:context="com.dk.tagging.PersonalTagFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <com.hootsuite.nachos.NachoTextView
         android:id="@+id/nacho_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:chipBackground="@color/chip_material_background"
+        app:chipHeight="30dp"
+        app:chipSpacing="2dp"
+        app:chipTextColor="@color/chip_default_text_color"
+        app:chipTextSize="16dp"
+        app:chipVerticalSpacing="3dp" />
 
 </LinearLayout>

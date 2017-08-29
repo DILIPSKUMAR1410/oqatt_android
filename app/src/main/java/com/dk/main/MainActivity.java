@@ -1,4 +1,4 @@
-package com.dk.androidclient;
+package com.dk.main;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -9,13 +9,14 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.dk.request.RequestListFragment;
+import com.dk.response.ResponseListFragment;
+import com.dk.tagging.ContactListFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import eu.long1.spacetablayout.SpaceTabLayout;
-import layout.ContactListFragment;
-import layout.RequestListFragment;
-import layout.ResponseListFragment;
 
 public class MainActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.dk.androidclient;
+package com.dk.tagging;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -8,10 +8,10 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
+import com.dk.main.R;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import layout.PersonalTagFragment;
 
 public class TagActivity extends AppCompatActivity {
 

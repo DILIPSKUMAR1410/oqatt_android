@@ -1,4 +1,4 @@
-package models;
+package com.dk.models;
 
 /**
  * Created by dk on 21/08/17.

@@ -1,4 +1,4 @@
-package layout;
+package com.dk.tagging;
 
 
 import android.content.Intent;
@@ -17,17 +17,14 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.dk.androidclient.R;
-import com.dk.androidclient.TagActivity;
+import com.dk.main.R;
+import com.dk.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import adapter.UsersAdapter;
-import models.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -121,7 +118,7 @@ public class ContactListFragment extends Fragment {
             e.printStackTrace();
         }
 
-        AndroidNetworking.post("http://192.168.0.102:8000/api/user/sync_contacts")
+        AndroidNetworking.post("http://192.168.1.4:8000/api/user/sync_contacts")
                 .addJSONObjectBody(jsonObject) // posting json
                 .setPriority(Priority.IMMEDIATE)
                 .build()

@@ -1,4 +1,4 @@
-package layout;
+package com.dk.response;
 
 
 import android.content.Intent;
@@ -9,8 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dk.androidclient.ChooseContactActivity;
-import com.dk.androidclient.R;
+import com.dk.main.R;
 import com.github.fabtransitionactivity.SheetLayout;
 
 import butterknife.BindView;

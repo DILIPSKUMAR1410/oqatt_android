@@ -1,7 +1,9 @@
-package com.dk.androidclient;
+package com.dk.response;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.dk.main.R;
 
 public class ChooseContactActivity extends AppCompatActivity {
 

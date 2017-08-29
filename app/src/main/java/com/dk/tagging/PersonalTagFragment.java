@@ -1,4 +1,4 @@
-package layout;
+package com.dk.tagging;
 
 
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dk.androidclient.R;
+import com.dk.main.R;
 import com.hootsuite.nachos.NachoTextView;
 import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
 
@@ -17,6 +17,7 @@ import com.hootsuite.nachos.terminator.ChipTerminatorHandler;
 public class PersonalTagFragment extends Fragment {
     NachoTextView nachoTextView;
     View rootView;
+
     public PersonalTagFragment() {
         // Required empty public constructor
     }
@@ -29,6 +30,9 @@ public class PersonalTagFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_personal_tag, container, false);
         nachoTextView = rootView.findViewById(R.id.nacho_text_view);
         nachoTextView.addChipTerminator(' ', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
+        nachoTextView.setIllegalCharacters(',', '~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',
+                '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '<', '>', '?', '/', '.', '-', '_', '+', '=',
+                '[', '{', '}', ']', '|');
         return rootView;
     }
 

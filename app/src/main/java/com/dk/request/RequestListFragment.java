@@ -1,4 +1,4 @@
-package layout;
+package com.dk.request;
 
 
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.dk.androidclient.R;
+import com.dk.main.R;
 
 /**
  * A simple {@link Fragment} subclass.

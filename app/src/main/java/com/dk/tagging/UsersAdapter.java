@@ -1,4 +1,4 @@
-package adapter;
+package com.dk.tagging;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,11 +8,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.dk.androidclient.R;
+import com.dk.main.R;
+import com.dk.models.User;
 
 import java.util.ArrayList;
-
-import models.User;
 
 /**
  * Created by dk on 21/08/17.
