@@ -34,12 +34,11 @@ public class UsersAdapter extends ArrayAdapter<User> {
         TextView tvName = convertView.findViewById(R.id.name);
         // Populate the data into the template view using the data object
         tvName.setText(user.name);
-        if (!user.claimed) {
+        if (!user.getKnows_me()) {
             Button btButton = convertView.findViewById(R.id.claimed);
             btButton.setTag(position);
-            btButton.setText("Invite");
+            btButton.setText("Share you contact");
             btButton.setVisibility(View.VISIBLE);
-
             btButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

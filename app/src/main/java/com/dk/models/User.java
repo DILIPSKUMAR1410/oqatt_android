@@ -1,38 +1,49 @@
 package com.dk.models;
 
+import io.objectbox.annotation.Backlink;
+import io.objectbox.annotation.Entity;
+import io.objectbox.annotation.Id;
+import io.objectbox.relation.ToMany;
+
 /**
  * Created by dk on 21/08/17.
  */
-
+@Entity
 public class User {
-    public String uid;
     public String name;
-    public Boolean claimed;
-    public Boolean bidirectional;
-    public String contact;
-    public String contact_list[];
+    @Backlink
+    public ToMany<Bucket> buckets;
+    @Id
+    private long id;
+    private String contact;
+    private Boolean knows_me;
 
-    public User(String name, boolean claimed, boolean bidirectional) {
+    public void setKnows_me(Boolean knows_me) {
+        this.knows_me = knows_me;
+    }
+
+    public void setBuckets(ToMany<Bucket> buckets) {
+        this.buckets = buckets;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
         this.name = name;
-        this.claimed = claimed;
-        this.bidirectional = bidirectional;
     }
 
-    public String getUid() {
-        return uid;
+    public Boolean getKnows_me() {
+        return knows_me;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public Boolean getClaimed() {
-        return claimed;
-    }
-
-    public void setClaimed(Boolean claimed) {
-        this.claimed = claimed;
-
+    public void setKnows_me(boolean knows_me) {
+        this.knows_me = knows_me;
     }
 
     public String getContact() {
@@ -43,27 +54,4 @@ public class User {
         this.contact = contact;
     }
 
-    public String[] getContact_list() {
-        return contact_list;
-    }
-
-    public void setContact_list(String[] contact_list) {
-        this.contact_list = contact_list;
-    }
-
-    public Boolean getBidirectional() {
-        return bidirectional;
-    }
-
-    public void setBidirectional(Boolean bidirectional) {
-        this.bidirectional = bidirectional;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 }

@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.dk.models.Me;
 import com.dk.request.RequestListFragment;
 import com.dk.response.ResponseListFragment;
 import com.dk.tagging.ContactListFragment;
@@ -30,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         EnableRuntimePermission();
+
+        Me.getOurInstance().setContact("8147140836");
+        Me.getOurInstance().setUid("e47de153ed0e42c4b6b43090c4eda8c0");
+
 
         //add the fragments you want to display in a List
         List<Fragment> fragmentList = new ArrayList<>();
@@ -92,5 +97,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
 
 }
