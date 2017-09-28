@@ -33,7 +33,7 @@ public class BucketFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        rootView = inflater.inflate(R.layout.fragment_personal_tag, container, false);
+        rootView = inflater.inflate(R.layout.fragment_bucket, container, false);
         nachoTextView = rootView.findViewById(R.id.nacho_text_view);
         nachoTextView.addChipTerminator(' ', ChipTerminatorHandler.BEHAVIOR_CHIPIFY_TO_TERMINATOR);
         nachoTextView.setIllegalCharacters(',', '~', '`', '!', '@', '#', '$', '%', '^', '&', '*', '(', ')',

@@ -1,24 +1,18 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFF"
+    android:padding="4dp"
+    tools:context="com.dk.main.MainActivity">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp" />
 
-    <eu.long1.spacetablayout.SpaceTabLayout
-        android:id="@+id/spaceTabLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_behavior="eu.long1.spacetablayout.SpaceTabLayoutBehavior"
-        app:number_of_tabs="three"
-        app:starting_position="two"
-        app:text_one="Response"
-        app:text_three="Request"
-        app:text_two="Tag" />
+    <ListView
+        android:id="@+id/listview"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_centerHorizontal="true" />
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>
