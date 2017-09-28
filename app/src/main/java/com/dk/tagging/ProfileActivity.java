@@ -106,6 +106,7 @@ public class ProfileActivity extends AppCompatActivity implements SheetLayout.On
     @Override
     public void onFabAnimationEnd() {
         Intent intent = new Intent(this, TagActivity.class);
+        intent.putExtra("UserId", user.getId());
         startActivityForResult(intent, REQUEST_CODE);
     }
 
