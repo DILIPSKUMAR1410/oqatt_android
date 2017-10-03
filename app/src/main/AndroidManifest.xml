@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity" />
-        <activity android:name="com.dk.tagging.TagActivity" />
+        <activity
+            android:name="com.dk.tagging.TagActivity"
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.dk.auth.PhoneAuthActivity"
             android:noHistory="true"

@@ -1,120 +1,82 @@
 package com.dk.tagging;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.dk.App;
 import com.dk.main.R;
 import com.dk.models.Bucket;
-import com.dk.models.Tag;
 import com.dk.models.User;
-import com.github.fabtransitionactivity.SheetLayout;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import io.objectbox.Box;
 
-public class ProfileActivity extends AppCompatActivity implements SheetLayout.OnFabAnimationEndListener {
-
-    private static final int REQUEST_CODE = 1;
+public class ProfileActivity extends AppCompatActivity {
     User user;
-    JSONObject jsonObject = new JSONObject();
-    JSONObject tags = new JSONObject();
-    ArrayList<ProfileFragment> bucketFragments = new ArrayList<>();
-    @BindView(R.id.bottom_sheet)
-    SheetLayout mSheetLayout;
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
+    ArrayList<ProfileFragment> profileFragments = new ArrayList<>();
+    CustomViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        ButterKnife.bind(this);
-
-        mSheetLayout.setFab(mFab);
-        mSheetLayout.setFabAnimationEndListener(this);
-
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-
-        long b = (long) getIntent().getExtras().get("UserId");
-
+        final long b = (long) getIntent().getExtras().get("UserId");
         Box<User> userBox = ((App) getApplication()).getBoxStore().boxFor(User.class);
 
         user = userBox.get(b);
+//        viewPager = (CustomViewPager) findViewById(R.id.profile_viewpager);
+//        viewPager.setPagingEnabled(false);
+//        setupViewPager(viewPager);
 
-        setupViewPager(viewPager);
+        ImageView imageView = (ImageView) findViewById(R.id.tag);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), TagActivity.class);
+                intent.putExtra("UserId", b);
+                startActivity(intent);
 
+            }
+        });
 
-        try {
-            SharedPreferences prefs = getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
-            String uid = prefs.getString("uid", null);
-            jsonObject.put("uid", uid);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+//        LinearLayout app_layer = (LinearLayout) findViewById (R.id.profile_buck1);
+//        app_layer.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                viewPager.setCurrentItem(0);
+//            }
+//        });
+//        LinearLayout app_layer1 = (LinearLayout) findViewById (R.id.profile_buck2);
+//        app_layer1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                viewPager.setCurrentItem(1);
+//            }
+//        });
+//        LinearLayout app_layer2 = (LinearLayout) findViewById (R.id.profile_buck3);
+//        app_layer2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                viewPager.setCurrentItem(2);
+//            }
+//        });
     }
 
-
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(CustomViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         for (Bucket bucket : user.buckets) {
-            ProfileFragment bucket_frag = new ProfileFragment();
+            ProfileFragment prof_frag = new ProfileFragment();
             Bundle bdl = new Bundle();
             bdl.putLong("bucketId", bucket.getId());
-            bucket_frag.setArguments(bdl);
-            bucketFragments.add(bucket_frag);
-            adapter.addFrag(bucket_frag, bucket.getName());
+            prof_frag.setArguments(bdl);
+            profileFragments.add(prof_frag);
+            adapter.addFrag(prof_frag, bucket.getName());
         }
         viewPager.setAdapter(adapter);
-    }
-
-    List<Tag> getTagList(List<String> chipValues) {
-        ArrayList<Tag> tags_objects = new ArrayList<>();
-        for (String chip : chipValues) {
-            Tag tag = new Tag();
-            tag.setName(chip);
-            tags_objects.add(tag);
-        }
-        return tags_objects;
-    }
-
-
-    @OnClick(R.id.fab)
-    void onFabClick() {
-        mSheetLayout.expandFab();
-    }
-
-
-    @Override
-    public void onFabAnimationEnd() {
-        Intent intent = new Intent(this, TagActivity.class);
-        intent.putExtra("UserId", user.getId());
-        startActivityForResult(intent, REQUEST_CODE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
-            mSheetLayout.contractFab();
-        }
     }
 }

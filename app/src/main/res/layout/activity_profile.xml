@@ -1,47 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.design.widget.AppBarLayout
+    <RelativeLayout
+        android:id="@+id/rl_user_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="200dp"
+        android:background="#fc8068">
 
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabs"
+
+        <ImageView
+            android:id="@+id/userImage"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:src="@android:drawable/ic_delete" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:tabGravity="fill"
-            app:tabMode="scrollable" />
-    </android.support.design.widget.AppBarLayout>
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:text="Vasu"
+            android:textColor="@android:color/white"
+            android:textSize="30sp" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+        <ImageView
+            android:id="@+id/tag"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/userImage"
+            android:src="@android:drawable/ic_delete" />
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@+id/userImage"
+            android:src="@android:drawable/ic_delete" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="30dp"
+            android:layout_toLeftOf="@+id/userImage"
+            android:src="@android:drawable/ic_delete" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userImage"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="30dp"
+            android:text="NEWYORK, USA"
+            android:textColor="@android:color/white"
+            android:textSize="8sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:layout_height="60dp"
+        android:layout_below="@+id/rl_user_image"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal"
+        android:weightSum="3">
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/profile_buck1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#f7ac8f"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="24841"
+                android:textColor="@android:color/white"
+                android:textSize="19sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FOLLOWING"
+                android:textSize="8sp" />
+
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:id="@+id/profile_buck2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:background="#FF7F66"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6162"
+                android:textColor="@android:color/white"
+                android:textSize="19sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PHOTO N AUDIO"
+                android:textColor="@android:color/white"
+                android:textSize="8sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profile_buck3"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:background="#f7ac8f"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="761972"
+                android:textColor="@android:color/white"
+                android:textSize="19sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FOLLOWERS"
+                android:textSize="8sp" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
-        android:src="@drawable/ic_add_white_24dp"
-        app:borderWidth="0dp"
-        app:fabSize="normal"
-        app:rippleColor="@color/colorPrimary" />
+        android:layout_below="@+id/linearLayout"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="70dp" />
 
-    <com.github.fabtransitionactivity.SheetLayout
-        android:id="@+id/bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="bottom"
-        android:elevation="2dp"
-        app:ft_color="@color/colorPrimary"
-        app:ft_container_gravity="center" />
 
 </RelativeLayout>

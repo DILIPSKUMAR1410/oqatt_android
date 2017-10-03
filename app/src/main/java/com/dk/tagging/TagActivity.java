@@ -3,7 +3,6 @@ package com.dk.tagging;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +40,7 @@ public class TagActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        CustomViewPager viewPager = (CustomViewPager) findViewById(R.id.viewpager);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
@@ -51,7 +50,7 @@ public class TagActivity extends AppCompatActivity {
         Box<User> userBox = ((App) getApplication()).getBoxStore().boxFor(User.class);
 
         user = userBox.get(b);
-
+        viewPager.setPagingEnabled(false);
         setupViewPager(viewPager);
 
 
@@ -118,7 +117,7 @@ public class TagActivity extends AppCompatActivity {
     }
 
 
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager(CustomViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         for (Bucket bucket : user.buckets) {

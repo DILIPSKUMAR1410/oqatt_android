@@ -49,6 +49,7 @@ dependencies {
     compile 'com.google.firebase:firebase-auth:11.2.2'
     compile 'com.amitshekhar.android:rx2-android-networking:1.0.0'
     testCompile 'junit:junit:4.12'
+    compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.8'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     annotationProcessor 'io.objectbox:objectbox-processor:1.0.0'
 }
