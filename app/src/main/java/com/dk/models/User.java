@@ -17,6 +17,8 @@ public class User {
     private long id;
     private String contact;
     private Boolean knows_me;
+    private String avatar;
+
 
     public void setKnows_me(Boolean knows_me) {
         this.knows_me = knows_me;
@@ -54,4 +56,11 @@ public class User {
         this.contact = contact;
     }
 
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
+    }
 }

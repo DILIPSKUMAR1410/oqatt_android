@@ -3,6 +3,7 @@ package com.dk.tagging;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -32,7 +33,7 @@ public class ProfileActivity extends AppCompatActivity {
 //        viewPager = (CustomViewPager) findViewById(R.id.profile_viewpager);
 //        viewPager.setPagingEnabled(false);
 //        setupViewPager(viewPager);
-
+        Log.d(">>>>>>>>>>", user.getContact());
         ImageView imageView = (ImageView) findViewById(R.id.tag);
         imageView.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {

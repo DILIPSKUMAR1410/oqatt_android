@@ -1,24 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list_item"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:weightSum="1">
+    android:layout_height="56dp"
+    android:focusableInTouchMode="false"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="10.5dp" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="9dp"
-        android:textColor="#404040"
-        android:textSize="20sp" />
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_toEndOf="@id/imageView"
+        android:layout_toRightOf="@id/imageView"
+        android:text="Medium Text"
+        android:textColor="#212121"
+        android:textSize="16sp" />
 
-    <Button
-        android:id="@+id/claimed"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/add"
+        android:layout_width="60dp"
         android:layout_height="45dp"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:visibility="invisible" />
+
 </RelativeLayout>
