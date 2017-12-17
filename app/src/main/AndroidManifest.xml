@@ -13,17 +13,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" />
         <activity
-            android:name="com.dk.tagging.TagActivity"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <!--<activity-->
+        <!--android:name="com.dk.tagging.TagActivity"-->
+        <!--android:theme="@style/ThemeOverlay.MyNoTitleActivity"-->
+        <!--android:windowSoftInputMode="adjustResize" />-->
         <activity
             android:name="com.dk.auth.PhoneAuthActivity"
-            android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
         <activity
             android:name="com.dk.SplashActivity"
+            android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,9 +37,27 @@
             android:name="com.dk.auth.IntiActivity"
             android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
-        <activity
-            android:name="com.dk.tagging.ProfileActivity"
-            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+        <!--<activity-->
+        <!--android:name="com.dk.tagging.ProfileActivity"-->
+        <!--android:theme="@style/ThemeOverlay.MyNoTitleActivity" />-->
+        <service android:name="com.dk.notification.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <service android:name="com.dk.notification.MyFirebaseInstanceIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.dk.notification.MyJobService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
+            </intent-filter>
+        </service>
     </application>
+
 
 </manifest>

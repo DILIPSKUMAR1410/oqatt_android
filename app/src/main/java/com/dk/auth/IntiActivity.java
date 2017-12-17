@@ -51,7 +51,7 @@ public class IntiActivity extends AppCompatActivity {
             protected void onPostExecute(Context context) {
 
                 //Use result for something
-                Log.d(">>>>>>>>>>", "Background completed");
+                Log.d(TAG, "Background completed");
                 new Utils().redirectToMain((Activity) context);
 
 

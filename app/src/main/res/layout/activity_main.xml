@@ -1,23 +1,21 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="56dp" />
 
-    <com.turingtechnologies.materialscrollbar.DragScrollBar
-        android:id="@+id/dragScrollBar"
+    <eu.long1.spacetablayout.SpaceTabLayout
+        android:id="@+id/spaceTabLayout"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
-        app:msb_lightOnTouch="false"
-        app:msb_recyclerView="@id/recyclerView" />
+        android:layout_height="wrap_content"
+        app:layout_behavior="eu.long1.spacetablayout.SpaceTabLayoutBehavior"
+        app:number_of_tabs="three"
+        app:starting_position="two" />
 
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

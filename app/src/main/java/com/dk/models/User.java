@@ -1,9 +1,7 @@
 package com.dk.models;
 
-import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
-import io.objectbox.relation.ToMany;
 
 /**
  * Created by dk on 21/08/17.
@@ -11,8 +9,8 @@ import io.objectbox.relation.ToMany;
 @Entity
 public class User {
     public String name;
-    @Backlink
-    public ToMany<Bucket> buckets;
+    //    @Backlink
+//    public ToMany<Bucket> buckets;
     @Id
     private long id;
     private String contact;
@@ -24,9 +22,9 @@ public class User {
         this.knows_me = knows_me;
     }
 
-    public void setBuckets(ToMany<Bucket> buckets) {
-        this.buckets = buckets;
-    }
+//    public void setBuckets(ToMany<Bucket> buckets) {
+//        this.buckets = buckets;
+//    }
 
     public long getId() {
         return id;
@@ -63,4 +61,6 @@ public class User {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+
 }

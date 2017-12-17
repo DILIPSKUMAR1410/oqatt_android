@@ -1,81 +1,102 @@
 package com.dk.main;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 import com.dk.App;
 import com.dk.graph.ApiCalls;
-import com.dk.models.User;
-import com.dk.models.User_;
-import com.dk.tagging.UsersAdapter;
-import com.turingtechnologies.materialscrollbar.AlphabetIndicator;
-import com.turingtechnologies.materialscrollbar.DragScrollBar;
+import com.dk.models.Mention;
+import com.dk.models.Poll;
+import com.dk.queue.RefreshEvent;
+import com.dk.tagging.CreatePollFragment;
+import com.dk.tagging.IncomingPollFragment;
+import com.dk.tagging.OutgoingPollFragment;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import eu.long1.spacetablayout.SpaceTabLayout;
 import io.objectbox.Box;
-import io.objectbox.query.QueryFilter;
+
+//import com.dk.tagging.UsersAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    UsersAdapter adapter;
-    ArrayList<User> users_bi = new ArrayList<>();
-    ArrayList<User> users_uni = new ArrayList<>();
-
+    //    UsersAdapter adapter;
+//    ArrayList<User> users_bi = new ArrayList<>();
+//    ArrayList<User> users_uni = new ArrayList<>();
+//    RecyclerView recyclerView;
+    SpaceTabLayout tabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+//        updateUI();
+        //add the fragments you want to display in a List
+        List<Fragment> fragmentList = new ArrayList<>();
+        final CreatePollFragment Cfragment = new CreatePollFragment();
+        IncomingPollFragment Ifragment = new IncomingPollFragment();
+        OutgoingPollFragment Ofragment = new OutgoingPollFragment();
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-        Log.d(">>>>>>>>.", String.valueOf(userBox.count()));
-        userBox.query().order(User_.name).filter(new QueryFilter<User>() {
+        fragmentList.add(Ifragment);
+        fragmentList.add(Cfragment);
+        fragmentList.add(Ofragment);
+
+        ViewPager viewPager = findViewById(R.id.viewPager);
+        tabLayout = findViewById(R.id.spaceTabLayout);
+
+        //we need the savedInstanceState to get the position
+        tabLayout.initialize(viewPager, getSupportFragmentManager(),
+                fragmentList, savedInstanceState);
+
+        tabLayout.setTabTwoOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean keep(User user) {
-                if (user.getKnows_me()) {
-                    users_bi.add(user);
-                } else {
-                    users_uni.add(user);
+            public void onClick(View v) {
+                // do something
+                Log.d(">>>>>>>>.", String.valueOf("inside click"));
+                Poll poll = new Poll();
+                poll.setQuestion(String.valueOf(Cfragment.commentField.getText()));
+                int count = Cfragment.parent_linear_layout.getChildCount();
+                EditText x = null;
+                for (int i = 0; i < count; i++) {
+                    x = (EditText) Cfragment.parent_linear_layout.getChildAt(i);
+                    poll.insertOption(String.valueOf(x.getText()));
                 }
-                return true;
+                Mention mention = (Mention) Cfragment.mentions.getInsertedMentions().get(0);
+                poll.subject.setTarget(mention.getMentionUser());
+                Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                long poll_id = pollBoxBox.put(poll);
+                try {
+                    ApiCalls.publishPoll(getApplicationContext(), poll_id);
+                } catch (JSONException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-        }).build().find();
-
-        users_bi.addAll(users_uni);
-        adapter = new UsersAdapter(this);
-        adapter.setUserList(users_bi);
-
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.addItemDecoration(new DividerItemDecoration(this,
-                DividerItemDecoration.VERTICAL));
-        ((DragScrollBar) findViewById(R.id.dragScrollBar))
-                .setIndicator(new AlphabetIndicator(this), true);
+        });
 
 
-//        recyclerView.addOnItemTouchListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-//                User user_item = (User) listView.getItemAtPosition(position);
-//                intent.putExtra("UserId", user_item.getId());
-//
-//                startActivity(intent);
-//            }
-//        });
+    }
 
-
+    //we need the outState to save the position
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        tabLayout.saveState(outState);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -85,13 +106,19 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // This method will be called when a RefreshEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshEvent(RefreshEvent event) {
+        Log.d(">>>>>>>>.", event.message);
+//        updateUI();
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.refresh:
                 try {
-                    ApiCalls.syncObjectBox(this);
+                    ApiCalls.syncContacts(this);
                 } catch (InterruptedException | JSONException e) {
                     e.printStackTrace();
                 }
@@ -106,6 +133,56 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Override
+    public void onBackPressed() {
+        // code here to show dialog
+        this.finishAffinity();
+        System.exit(0);
+        super.onBackPressed();  // optional depending on your needs
+    }
+
+//    public void updateUI(){
+//
+//        Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
+//        Log.d(">>>>>>>>.", String.valueOf(userBox.count()));
+//        users_bi.clear();
+//        users_uni.clear();
+//        userBox.query().order(User_.name).filter(new QueryFilter<User>() {
+//            @Override
+//            public boolean keep(User user) {
+//                if (user.getKnows_me()) {
+//                    users_bi.add(user);
+//                } else {
+//                    users_uni.add(user);
+//                }
+//                return true;
+//            }
+//        }).build().find();
+//
+//        users_bi.addAll(users_uni);
+//        adapter = new UsersAdapter(this);
+//        adapter.setUserList(users_bi);
+//
+//        recyclerView.setAdapter(adapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.addItemDecoration(new DividerItemDecoration(this,
+//                DividerItemDecoration.VERTICAL));
+//        ((DragScrollBar) findViewById(R.id.dragScrollBar))
+//                .setIndicator(new AlphabetIndicator(this), true);
+//    }
 
 
 }

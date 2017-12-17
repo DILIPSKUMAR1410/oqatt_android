@@ -1,0 +1,104 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent_linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#d1f3fa"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/comment_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_weight="1.0"
+        android:background="@android:color/transparent"
+        android:hint="Remember to be nice while asking question!"
+        android:lineSpacingMultiplier="1.2"
+        android:maxLines="4"
+        android:textSize="20sp"
+        tools:ignore="RtlHardcoded" />
+
+    <include layout="@layout/users_list" />
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        card_view:cardCornerRadius="4dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="5"
+            android:background="@android:color/transparent"
+            android:hint="Add an option (Mandatory)"
+            android:inputType="text" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        card_view:cardCornerRadius="4dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="5"
+            android:background="@android:color/transparent"
+            android:hint="Add an option (Mandatory)"
+            android:inputType="text" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        card_view:cardCornerRadius="4dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="5"
+            android:background="@android:color/transparent"
+            android:hint="(Optional)"
+            android:inputType="text" />
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        card_view:cardCornerRadius="4dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_weight="5"
+            android:background="@android:color/transparent"
+            android:hint="(Optional)"
+            android:inputType="text" />
+    </android.support.v7.widget.CardView>
+</LinearLayout>
