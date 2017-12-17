@@ -17,8 +17,6 @@ import com.dk.models.Mention;
 import com.dk.models.Poll;
 import com.dk.queue.RefreshEvent;
 import com.dk.tagging.CreatePollFragment;
-import com.dk.tagging.IncomingPollFragment;
-import com.dk.tagging.OutgoingPollFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -50,12 +48,12 @@ public class MainActivity extends AppCompatActivity {
         //add the fragments you want to display in a List
         List<Fragment> fragmentList = new ArrayList<>();
         final CreatePollFragment Cfragment = new CreatePollFragment();
-        IncomingPollFragment Ifragment = new IncomingPollFragment();
-        OutgoingPollFragment Ofragment = new OutgoingPollFragment();
+//        IncomingPollFragment Ifragment = new IncomingPollFragment();
+//        OutgoingPollFragment Ofragment = new OutgoingPollFragment();
 
-        fragmentList.add(Ifragment);
         fragmentList.add(Cfragment);
-        fragmentList.add(Ofragment);
+        fragmentList.add(Cfragment);
+        fragmentList.add(Cfragment);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.spaceTabLayout);

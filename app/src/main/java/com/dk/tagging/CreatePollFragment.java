@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -39,8 +38,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
     public UsersMentionAdapter usersMentionAdapter;
     public LinearLayout parent_linear_layout;
     public LinearLayout sub_parent_linear_layout;
-    public Button addButton;
-    public Button publishButton;
+
     View rootView;
     Context context;
     Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
@@ -56,19 +54,8 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         setupMentionsList();
         EditText edittTxt = new EditText(getContext());
         parent_linear_layout = rootView.findViewById(R.id.parent_linear_layout);
-//        sub_parent_linear_layout = rootView.findViewById(R.id.sub_parent_linear_layout);
-//        addButton = rootView.findViewById(R.id.add_field_button);
-//        addButton.setOnClickListener(new View.OnClickListener()
-//        {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                // do something
-//                onAddField();
-//            }
-//        });
 
-////        publishButton = rootView.findViewById(R.id.publish_button);
+//        publishButton = rootView.findViewById(R.id.publish_button);
 //        publishButton.setOnClickListener(new View.OnClickListener()
 //        {
 //            @Override

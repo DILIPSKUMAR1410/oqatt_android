@@ -33,7 +33,7 @@ public class IntiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inti);
         Log.d(">>>>>>>>>>", "In init login");
         try {
-            GifDrawable gifFromResource = new GifDrawable(getResources(), R.drawable.dribbble);
+            GifDrawable gifFromResource = new GifDrawable(getResources(), R.drawable.background);
             gifFromResource.start();
         } catch (IOException e) {
             e.printStackTrace();

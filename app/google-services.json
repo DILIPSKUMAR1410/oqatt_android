@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "40478504487",
+    "firebase_url": "https://oqatt-diva.firebaseio.com",
+    "project_id": "oqatt-diva",
+    "storage_bucket": "oqatt-diva.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40478504487:android:a7aab79914ffd1f8",
+        "android_client_info": {
+          "package_name": "com.dk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40478504487-oinc9s0qr0qpud88d5gmph4nqb7pngd6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dk",
+            "certificate_hash": "270644255b392e880940acff1d7a551767854ea8"
+          }
+        },
+        {
+          "client_id": "40478504487-91a5ess7a8jpgahmdcphicajeqhosl76.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZ0_xsk6pdjqpbQDe5wFGb13X1uLyJkyo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40478504487-91a5ess7a8jpgahmdcphicajeqhosl76.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

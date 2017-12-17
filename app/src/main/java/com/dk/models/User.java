@@ -9,8 +9,7 @@ import io.objectbox.annotation.Id;
 @Entity
 public class User {
     public String name;
-    //    @Backlink
-//    public ToMany<Bucket> buckets;
+
     @Id
     private long id;
     private String contact;
@@ -22,9 +21,6 @@ public class User {
         this.knows_me = knows_me;
     }
 
-//    public void setBuckets(ToMany<Bucket> buckets) {
-//        this.buckets = buckets;
-//    }
 
     public long getId() {
         return id;
