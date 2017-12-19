@@ -12,6 +12,7 @@ import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.queue.RefreshEvent;
+import com.dk.queue.RemovePoll;
 import com.dk.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,7 +44,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = ">>>>>>>>>>>>.";
-    private static String url = "http://192.168.1.100:8000/api/";
+    private static String url = "http://192.168.0.106:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -212,7 +213,7 @@ public class ApiCalls {
     }
 
 
-    public static void publishPoll(Context context, long poll_id) throws JSONException, InterruptedException {
+    public static void publishPoll(Context context, long poll_id,String hex) throws JSONException, InterruptedException {
 
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         Poll poll = pollBoxBox.get(poll_id);
@@ -220,6 +221,7 @@ public class ApiCalls {
         String uid = prefs.getString("uid", null);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("question", poll.getQuestion());
+        jsonObject.put("poll_hash", hex);
         jsonObject.put("sub_contact", poll.subject.getTarget().getContact());
         jsonObject.put("options", new JSONArray(poll.getOptionsList()));
 
@@ -235,8 +237,6 @@ public class ApiCalls {
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete Detail : Question published");
-
-                        EventBus.getDefault().post(new RefreshEvent("Refreashed!"));
                     }
 
                     @Override
@@ -275,146 +275,66 @@ public class ApiCalls {
 
     }
 
+    public static void votePoll(Context context, long poll_id,int option) throws JSONException, InterruptedException {
 
-//    public static void getUserBuckets(final Context context, final User user){
-//        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
-//        String uid = prefs.getString("uid", null);
-//        Rx2AndroidNetworking.get(url + "user/{uid}/buckets")
-//                .addPathParameter("uid",uid)
-//                .addQueryParameter("user_contact",user.getContact())
-//                .setPriority(Priority.IMMEDIATE)
-//                .build()
-//                .getJSONObjectObservable()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<JSONObject>() {
-//                    @Override
-//                    public void onComplete() {
-//                        EventBus.getDefault().post(new GetBucketEvent("Buckets fetched now in Tag act!"));
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        if (e instanceof ANError) {
-//                            ANError anError = (ANError) e;
-//                            if (anError.getErrorCode() != 0) {
-//                                // received ANError from server
-//                                // error.getErrorCode() - the ANError code from server
-//                                // error.getErrorBody() - the ANError body from server
-//                                // error.getErrorDetail() - just a ANError detail
-//                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
-//                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
-//                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
-//                            } else {
-//                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
-//                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
-//                            }
-//                        } else {
-//                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(JSONObject response) {
-////                         do anything with response
-//                        Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-//                        Box<Tag> tagBox = App.getInstance().getBoxStore().boxFor(Tag.class);
-//                        user.buckets.clear();
-//                        Iterator<String> keys = response.keys();
-//                        while (keys.hasNext()){
-//                            String bucket_name = keys.next();
-//                            Bucket bucket = new Bucket();
-//                            bucket.setName(bucket_name);
-//                            Log.d(TAG, bucket_name);
-//                            try {
-//                                JSONArray tag_name_list = response.getJSONArray(bucket_name);
-//                                for (int i = 0; i < tag_name_list.length(); i++) {
-//                                    String tag_name = (String) tag_name_list.get(i);
-//                                    if (tagBox.find(Tag_.name,tag_name).isEmpty())
-//                                    {
-//                                        Tag tag_obj = new Tag();
-//                                        tag_obj.setName(tag_name);
-//                                        bucket.tags.add(tag_obj);
-//                                    }
-//                                    else {
-//                                        bucket.tags.add(tagBox.find(Tag_.name,tag_name).get(0));
-//
-//                                    }
-//                                }
-//                            } catch (JSONException e) {
-//                                e.printStackTrace();
-//                            }
-//                            user.buckets.add(bucket);
-//                        }
-//                        userBox.put(user);
-//                    }
-//                });
-//
-//
-//    }
+        final Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+        final Poll poll = pollBoxBox.get(poll_id);
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("poll_hash", poll.getPollHash());
+        jsonObject.put("chosen_option",option);
+        Log.d(TAG, String.valueOf(jsonObject));
+        Rx2AndroidNetworking.post(url + "user/{uid}/poll/vote")
+                .addPathParameter("uid", uid)
+                .addJSONObjectBody(jsonObject) // posting json
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+                        Log.d(TAG, "onComplete Detail : Voted ");
+                        pollBoxBox.remove(poll);
+                        EventBus.getDefault().post(new RemovePoll("Clear current Poll!"));
+                    }
 
-//    public static void sendBuckets(final Context context, final User user,JSONObject jsonObject){
-//        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
-//        String uid = prefs.getString("uid", null);
-//        Rx2AndroidNetworking.post(url + "user/{uid}/buckets")
-//                .addPathParameter("uid",uid)
-//                .addQueryParameter("frnd_contact",user.getContact())
-//                .addJSONObjectBody(jsonObject) // posting json
-//                .setPriority(Priority.IMMEDIATE)
-//                .build()
-//                .getJSONObjectObservable()
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Observer<JSONObject>() {
-//                    @Override
-//                    public void onComplete() {
-//                        EventBus.getDefault().post(new SendBucketEvent("Buckets synced"));
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        if (e instanceof ANError) {
-//                            ANError anError = (ANError) e;
-//                            if (anError.getErrorCode() != 0) {
-//                                // received ANError from server
-//                                // error.getErrorCode() - the ANError code from server
-//                                // error.getErrorBody() - the ANError body from server
-//                                // error.getErrorDetail() - just a ANError detail
-//                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
-//                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
-//                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
-//                            } else {
-//                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
-//                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
-//                            }
-//                        } else {
-//                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onSubscribe(Disposable d) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(JSONObject response) {
-////                         do anything with response
-//                        try {
-//                            Log.d(TAG, response.getString("msg"));
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//                });
-//
-//
-//    }
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+
+
+                    }
+                });
+
+    }
+
 }

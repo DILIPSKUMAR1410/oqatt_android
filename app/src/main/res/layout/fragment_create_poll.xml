@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent_linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -17,6 +18,7 @@
         android:hint="Remember to be nice while asking question!"
         android:lineSpacingMultiplier="1.2"
         android:maxLines="4"
+        android:maxLength="153"
         android:textSize="20sp"
         tools:ignore="RtlHardcoded" />
 
@@ -32,11 +34,13 @@
         card_view:cardCornerRadius="4dp">
 
         <EditText
+            android:id="@+id/op0"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="5"
+            android:maxLength="53"
             android:background="@android:color/transparent"
             android:hint="Add an option (Mandatory)"
             android:inputType="text" />
@@ -52,13 +56,15 @@
         card_view:cardCornerRadius="4dp">
 
         <EditText
+            android:id="@+id/op1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="5"
+            android:maxLength="53"
             android:background="@android:color/transparent"
-            android:hint="Add an option (Mandatory)"
+            android:hint="Mandatory"
             android:inputType="text" />
     </android.support.v7.widget.CardView>
 
@@ -72,13 +78,15 @@
         card_view:cardCornerRadius="4dp">
 
         <EditText
+            android:id="@+id/op2"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="5"
+            android:maxLength="53"
             android:background="@android:color/transparent"
-            android:hint="(Optional)"
+            android:hint="Optional"
             android:inputType="text" />
     </android.support.v7.widget.CardView>
 
@@ -92,13 +100,23 @@
         card_view:cardCornerRadius="4dp">
 
         <EditText
+            android:id="@+id/op3"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_weight="5"
+            android:maxLength="53"
             android:background="@android:color/transparent"
-            android:hint="(Optional)"
+            android:hint="Optional"
             android:inputType="text" />
     </android.support.v7.widget.CardView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/publish_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/send"
+        android:layout_gravity="bottom|end"/>
 </LinearLayout>

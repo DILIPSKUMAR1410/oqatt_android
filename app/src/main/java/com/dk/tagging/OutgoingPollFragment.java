@@ -39,7 +39,10 @@ public class OutgoingPollFragment extends Fragment {
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
 
         final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).build().find();
-        Log.d(">>>>>>>>.", String.valueOf(outgoingPolls.size()));
+        for(Poll poll : pollBoxBox.getAll()){
+            Log.d(poll.getPollHash()+">>>>", String.valueOf(poll.getResultString()));
+
+        }
 
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
 

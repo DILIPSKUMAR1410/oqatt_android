@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorAccent">#FFA000</color>
+    <color name="colorAccent">#E3467E</color>
 
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
-    <color name="fab_ripple">#7891ff</color>
-    <color name="colorPrimary">#594691</color>
+    <color name="fab_ripple">#B800AC</color>
+    <color name="colorPrimary">#3F53A9</color>
     <color name="colorPrimaryDark">#3e2d70</color>
-    <color name="bgBackSideColor">#f4f0ff</color>
+    <color name="bgBackSideColor">#CED0D6</color>
     <color name="bgTitleLeft">#594691</color>
     <color name="bgTitleRight">#ffffff</color>
     <color name="bgContentTop">#594691</color>
-    <color name="bgContent">#ffffff</color>
+    <color name="bgContent">#F0DBE2</color>
     <color name="contentDividerLine">#e0e0e0</color>
     <color name="contentBadgeTitle">#a9a9a9</color>
     <color name="titleBadgeTitle">#adafb1</color>

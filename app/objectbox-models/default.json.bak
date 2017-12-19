@@ -30,10 +30,43 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "2:8589291975191196395",
+      "lastPropertyId": "6:2432070471789872919",
+      "name": "Poll",
+      "properties": [
+        {
+          "id": "1:2318344591911966373",
+          "name": "id"
+        },
+        {
+          "id": "2:8031399937295592806",
+          "name": "question"
+        },
+        {
+          "id": "3:4296206983219938938",
+          "name": "optionString"
+        },
+        {
+          "id": "4:3228901469909629190",
+          "name": "pollHash"
+        },
+        {
+          "id": "5:4367154854830291372",
+          "name": "type"
+        },
+        {
+          "id": "6:2432070471789872919",
+          "indexId": "1:5977132660451689625",
+          "name": "subjectId"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "1:7620453142097491956",
-  "lastIndexId": "0:0",
+  "lastEntityId": "2:8589291975191196395",
+  "lastIndexId": "1:5977132660451689625",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 4,

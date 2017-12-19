@@ -1,7 +1,7 @@
 package com.dk.auth;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +9,9 @@ import android.util.Log;
 
 import com.dk.App;
 import com.dk.graph.ApiCalls;
+import com.dk.main.MainActivity;
 import com.dk.main.R;
 import com.dk.models.User;
-import com.dk.utils.Utils;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
@@ -33,7 +33,7 @@ public class IntiActivity extends AppCompatActivity {
         setContentView(R.layout.activity_inti);
         Log.d(">>>>>>>>>>", "In init login");
         try {
-            GifDrawable gifFromResource = new GifDrawable(getResources(), R.drawable.background);
+            GifDrawable gifFromResource = new GifDrawable(getResources(), R.drawable.source);
             gifFromResource.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -52,7 +52,8 @@ public class IntiActivity extends AppCompatActivity {
 
                 //Use result for something
                 Log.d(TAG, "Background completed");
-                new Utils().redirectToMain((Activity) context);
+                Intent intent = new Intent(context, MainActivity.class);
+                context.startActivity(intent);
 
 
             }

@@ -18,8 +18,10 @@ public class Poll {
     private long id;
     private String question;
     private String optionString;
+    private String resultString;
     private String pollHash;
-    private int type;
+    private long type;
+
 
     public String getQuestion() {
         return question;
@@ -42,7 +44,7 @@ public class Poll {
         return this.optionString;
     }
 
-    public int getType() {
+    public long getType() {
         return type;
     }
 
@@ -64,5 +66,13 @@ public class Poll {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getResultString() {
+        return resultString;
+    }
+
+    public void setResultString(String resultString) {
+        this.resultString = resultString;
     }
 }

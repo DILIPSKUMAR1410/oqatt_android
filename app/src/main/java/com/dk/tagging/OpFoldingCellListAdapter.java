@@ -57,12 +57,18 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             for (int i = 0; i < options.size(); i++) {
                 String TextID = "op" + i;
                 String CardID = "cop" + i;
+                String RTextID = "countop" + i;
                 int textresID = getContext().getResources().getIdentifier(TextID, "id", getContext().getPackageName());
+                int RtextresID = getContext().getResources().getIdentifier(RTextID, "id", getContext().getPackageName());
                 int cardresID = getContext().getResources().getIdentifier(CardID, "id", getContext().getPackageName());
+                TextView rtext = cell.findViewById(RtextresID);
                 TextView text = cell.findViewById(textresID);
                 CardView card = cell.findViewById(cardresID);
                 card.setVisibility(View.VISIBLE);
                 text.setText(options.get(i));
+                rtext.setText(poll.getResultString().split(",")[i]);
+                Log.d(">>>>>>>>results.",poll.getId()+">>"+poll.getResultString().split(",")[i]);
+
             }
 
         } else {

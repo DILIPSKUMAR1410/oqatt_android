@@ -16,11 +16,14 @@ import android.util.Log;
 import com.dk.App;
 import com.dk.main.MainActivity;
 import com.dk.models.Poll;
+import com.dk.models.Poll_;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import java.util.List;
 
 import io.objectbox.Box;
 
@@ -52,19 +55,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
-            Log.d(TAG, remoteMessage.getData().get("question"));
-            Log.d(TAG, remoteMessage.getData().get("poll_hash"));
-            Log.d(TAG, remoteMessage.getData().get("options"));
-            Poll incomingPoll = new Poll();
-            incomingPoll.setQuestion(remoteMessage.getData().get("question"));
-            incomingPoll.setType(1);
-            incomingPoll.setPollHash(remoteMessage.getData().get("poll_hash"));
-            String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split(",");
-            for (String option : options) {
-                incomingPoll.insertOption(option);
+            int type = Integer.parseInt(remoteMessage.getData().get("type"));
+            if (type == 0) {
+                Log.d(TAG, remoteMessage.getData().get("question"));
+                Log.d(TAG, remoteMessage.getData().get("poll_hash"));
+                Log.d(TAG, remoteMessage.getData().get("options"));
+                Poll incomingPoll = new Poll();
+                incomingPoll.setQuestion(remoteMessage.getData().get("question"));
+                incomingPoll.setType(1);
+                incomingPoll.setPollHash(remoteMessage.getData().get("poll_hash"));
+                String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split(",");
+                for (String option : options) {
+                    incomingPoll.insertOption(option);
+                }
+                Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                pollBoxBox.put(incomingPoll);
+
             }
-            Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-            pollBoxBox.put(incomingPoll);
+            if (type == 1) {
+                Log.d(TAG, remoteMessage.getData().get("poll_hash"));
+                Log.d(TAG, remoteMessage.getData().get("option_count"));
+                Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+
+                final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.pollHash, remoteMessage.getData().get("poll_hash")).build().find();
+                Poll outgoingPoll = outgoingPolls.get(0);
+                outgoingPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
+                pollBoxBox.put(outgoingPoll);
+
+            }
+
+
 //            if (/* Check if data needs to be processed by long running job */ false) {
 //                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
 //                scheduleJob();

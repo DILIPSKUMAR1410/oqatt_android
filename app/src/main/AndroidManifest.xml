@@ -16,10 +16,6 @@
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan" />
-        <!--<activity-->
-        <!--android:name="com.dk.tagging.TagActivity"-->
-        <!--android:theme="@style/ThemeOverlay.MyNoTitleActivity"-->
-        <!--android:windowSoftInputMode="adjustResize" />-->
         <activity
             android:name="com.dk.auth.PhoneAuthActivity"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
