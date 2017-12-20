@@ -88,11 +88,11 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     EditText option = parent_linear_layout.findViewById(EdittextresID);
                     String option_string = option.getText().toString();
                     option.setText("");
-                    if (option_string.matches("") && i < 2) {
-                        Toast.makeText(getActivity(), "Add Option!",Toast.LENGTH_LONG).show();
-                        return;
-                    }
                     poll.insertOption(option_string);
+                }
+                if (poll.getOptionsList().size() < 2) {
+                    Toast.makeText(getActivity(), "Add Option!",Toast.LENGTH_LONG).show();
+                    return;
                 }
                 poll.setType(0);
                 Mention mention = (Mention) mentions.getInsertedMentions().get(0);
@@ -195,6 +195,12 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
 
     @Override
     public void onQueryReceived(final String query) {
+        if (mentions.getInsertedMentions().size() > 1)
+        {
+            Toast.makeText(getActivity(), "Cant mention more than one right now!",Toast.LENGTH_LONG).show();
+            return;
+
+        }
         final List<User> users = searchUsers(query);
         if (users != null && !users.isEmpty()) {
             usersMentionAdapter.clear();

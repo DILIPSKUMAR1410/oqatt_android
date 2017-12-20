@@ -14,12 +14,14 @@ import com.dk.main.R;
 import com.dk.models.Poll;
 import com.dk.models.Poll_;
 import com.dk.queue.RemovePoll;
+import com.dk.queue.UpdatePoll;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Collections;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -45,6 +47,7 @@ public class IncomingPollFragment extends Fragment {
 
         final List<Poll> incomingPolls = pollBoxBox.query().equal(Poll_.type, 1).build().find();
         Log.d(">>>>>>>>.", String.valueOf(incomingPolls.size()));
+        Collections.reverse(incomingPolls);
 
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
 
@@ -83,8 +86,14 @@ public class IncomingPollFragment extends Fragment {
 
     // This method will be called when a RefreshEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshEvent(RemovePoll event) {
-        Log.d(">>>>>>>>.", event.message);
+    public void OnRemovePoll(RemovePoll event) {
+        Log.d(">>>>>>>>remove.", event.message);
+        adapter.notifyDataSetChanged();
+//        updateUI();
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdatePoll(UpdatePoll event) {
+        Log.d(">>>>>>>>new poll.", event.message);
         adapter.notifyDataSetChanged();
 //        updateUI();
     }

@@ -13,8 +13,14 @@ import com.dk.App;
 import com.dk.main.R;
 import com.dk.models.Poll;
 import com.dk.models.Poll_;
+import com.dk.queue.UpdatePoll;
 import com.ramotion.foldingcell.FoldingCell;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Collections;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -39,6 +45,7 @@ public class OutgoingPollFragment extends Fragment {
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
 
         final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).build().find();
+        Collections.reverse(outgoingPolls);
         for(Poll poll : pollBoxBox.getAll()){
             Log.d(poll.getPollHash()+">>>>", String.valueOf(poll.getResultString()));
 
@@ -65,5 +72,24 @@ public class OutgoingPollFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return rootView;
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    // This method will be called when a RefreshEvent is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdatePoll(UpdatePoll event) {
+        Log.d(">>>>>>>>upvote.", event.message);
+        adapter.notifyDataSetChanged();
+//        updateUI();
     }
 }

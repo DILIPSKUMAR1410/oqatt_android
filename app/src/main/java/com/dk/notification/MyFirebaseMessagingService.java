@@ -6,8 +6,10 @@ package com.dk.notification;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -17,11 +19,14 @@ import com.dk.App;
 import com.dk.main.MainActivity;
 import com.dk.models.Poll;
 import com.dk.models.Poll_;
+import com.dk.queue.UpdatePoll;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -56,6 +61,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             int type = Integer.parseInt(remoteMessage.getData().get("type"));
+            try
+            {
+                Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + App.getInstance().getApplicationContext().getPackageName() + "/raw/notification");
+                Ringtone r = RingtoneManager.getRingtone(App.getInstance().getApplicationContext(), alarmSound);
+                r.play();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
             if (type == 0) {
                 Log.d(TAG, remoteMessage.getData().get("question"));
                 Log.d(TAG, remoteMessage.getData().get("poll_hash"));
@@ -70,6 +85,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
                 Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
                 pollBoxBox.put(incomingPoll);
+                EventBus.getDefault().post(new UpdatePoll("You got new poll "));
 
             }
             if (type == 1) {
@@ -81,6 +97,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Poll outgoingPoll = outgoingPolls.get(0);
                 outgoingPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
                 pollBoxBox.put(outgoingPoll);
+                EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
 
             }
 

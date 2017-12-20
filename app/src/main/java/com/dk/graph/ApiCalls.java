@@ -13,6 +13,7 @@ import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.queue.RefreshEvent;
 import com.dk.queue.RemovePoll;
+import com.dk.queue.UpdatePoll;
 import com.dk.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,7 +45,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = ">>>>>>>>>>>>.";
-    private static String url = "http://192.168.0.106:8000/api/";
+    private static String url = "http://192.168.0.105:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -152,7 +153,6 @@ public class ApiCalls {
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete Detail : Sync completed");
-
                         EventBus.getDefault().post(new RefreshEvent("Refreashed!"));
                     }
 
@@ -237,6 +237,8 @@ public class ApiCalls {
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete Detail : Question published");
+                        EventBus.getDefault().post(new UpdatePoll("Poll moved to result tab!"));
+
                     }
 
                     @Override
