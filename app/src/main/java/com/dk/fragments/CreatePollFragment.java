@@ -1,4 +1,4 @@
-package com.dk.tagging;
+package com.dk.fragments;
 
 import android.content.Context;
 import android.content.SharedPreferences;

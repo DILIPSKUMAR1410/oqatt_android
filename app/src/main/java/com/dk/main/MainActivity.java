@@ -11,9 +11,9 @@ import android.view.MenuItem;
 
 import com.dk.graph.ApiCalls;
 import com.dk.queue.RefreshEvent;
-import com.dk.tagging.CreatePollFragment;
-import com.dk.tagging.IncomingPollFragment;
-import com.dk.tagging.OutgoingPollFragment;
+import com.dk.fragments.CreatePollFragment;
+import com.dk.fragments.IncomingPollFragment;
+import com.dk.fragments.OutgoingPollFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
