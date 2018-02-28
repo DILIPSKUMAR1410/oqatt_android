@@ -16,9 +16,12 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.dk.App;
+import com.dk.graph.ApiCalls;
 import com.dk.main.MainActivity;
 import com.dk.models.Poll;
 import com.dk.models.Poll_;
+import com.dk.models.User;
+import com.dk.models.User_;
 import com.dk.queue.UpdatePoll;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -27,7 +30,9 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.objectbox.Box;
@@ -61,20 +66,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             int type = Integer.parseInt(remoteMessage.getData().get("type"));
-            try
-            {
+            try {
                 Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + App.getInstance().getApplicationContext().getPackageName() + "/raw/notification");
                 Ringtone r = RingtoneManager.getRingtone(App.getInstance().getApplicationContext(), alarmSound);
                 r.play();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             if (type == 0) {
-                Log.d(TAG, remoteMessage.getData().get("question"));
-                Log.d(TAG, remoteMessage.getData().get("poll_hash"));
-                Log.d(TAG, remoteMessage.getData().get("options"));
                 Poll incomingPoll = new Poll();
                 incomingPoll.setQuestion(remoteMessage.getData().get("question"));
                 incomingPoll.setType(1);
@@ -89,8 +88,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             }
             if (type == 1) {
-                Log.d(TAG, remoteMessage.getData().get("poll_hash"));
-                Log.d(TAG, remoteMessage.getData().get("option_count"));
                 Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
 
                 final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.pollHash, remoteMessage.getData().get("poll_hash")).build().find();
@@ -100,7 +97,35 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
 
             }
+            if (type == 2) {
+                String contact = remoteMessage.getData().get("user_contact");
+                Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
+                if (!userBox.find(User_.contact,contact).isEmpty())
+                {
+                    User user = userBox.find(User_.contact, contact).get(0);
+                    if (!user.getKnows_me()){
+                        ArrayList<String> contacts = new ArrayList<String>();
+                        contacts.add(contact);
+                        try {
+                            ApiCalls.syncContacts(this,1,contacts);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
 
+            }
+            if (type == 3) {
+                String contact = remoteMessage.getData().get("user_contact");
+                Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
+                if (!userBox.find(User_.contact,contact).isEmpty()) {
+                    User user = userBox.find(User_.contact, contact).get(0);
+                    user.setKnows_me(true);
+                    userBox.put(user);
+                }
+            }
 
 //            if (/* Check if data needs to be processed by long running job */ false) {
 //                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.

@@ -74,12 +74,12 @@ public class PhoneAuthActivity extends AppCompatActivity implements
         }
 
 
-        mPhoneNumberField = (EditText) findViewById(R.id.field_phone_number);
-        mVerificationField = (EditText) findViewById(R.id.field_verification_code);
+        mPhoneNumberField = findViewById(R.id.field_phone_number);
+        mVerificationField = findViewById(R.id.field_verification_code);
 
-        mStartButton = (Button) findViewById(R.id.button_start_verification);
-        mVerifyButton = (Button) findViewById(R.id.button_verify_phone);
-        mResendButton = (Button) findViewById(R.id.button_resend);
+        mStartButton = findViewById(R.id.button_start_verification);
+        mVerifyButton = findViewById(R.id.button_verify_phone);
+        mResendButton = findViewById(R.id.button_resend);
 
 
         // Assign click listeners

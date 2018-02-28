@@ -9,11 +9,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.dk.graph.ApiCalls;
-import com.dk.queue.RefreshEvent;
+import com.dk.App;
 import com.dk.fragments.CreatePollFragment;
 import com.dk.fragments.IncomingPollFragment;
 import com.dk.fragments.OutgoingPollFragment;
+import com.dk.graph.ApiCalls;
+import com.dk.models.User;
+import com.dk.queue.RefreshEvent;
+import com.github.tamir7.contacts.Contact;
+import com.github.tamir7.contacts.Contacts;
+import com.github.tamir7.contacts.Query;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -21,15 +26,18 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import eu.long1.spacetablayout.SpaceTabLayout;
+import io.objectbox.Box;
 
 
 public class MainActivity extends AppCompatActivity {
 
 
     SpaceTabLayout tabLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -103,13 +111,38 @@ public class MainActivity extends AppCompatActivity {
         Log.d(">>>>>>>>.", event.message);
 //        updateUI();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.refresh:
                 try {
-                    ApiCalls.syncContacts(this);
+                    Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
+                    List<User> objbox_user_list = userBox.getAll();
+
+                    Contacts.initialize(this);
+                    Query q = Contacts.getQuery();
+                    q.hasPhoneNumber();
+                    q.whereStartsWith(Contact.Field.PhoneNormalizedNumber, "+91");
+                    List<Contact> contacts = q.find();
+                    Iterator<Contact> itr = contacts.iterator();
+                    Contact next;
+                    ArrayList<User> fresh_contacts_list = new ArrayList<>();
+                    while (itr.hasNext()) {
+                        User user = new User();
+                        next = itr.next();
+                        user.setContact(String.valueOf(next.getPhoneNumbers().get(0).getNormalizedNumber()));
+                        user.setName(next.getDisplayName());
+                        user.setKnows_me(false);
+                        fresh_contacts_list.add(user);
+                    }
+                    fresh_contacts_list.removeAll(objbox_user_list);
+                    ArrayList<String> new_contacts = new ArrayList<>();
+                    for (User u:fresh_contacts_list) {
+                        new_contacts.add(u.getContact());
+                    }
+                    ApiCalls.syncContacts(this,0,new_contacts);
                 } catch (InterruptedException | JSONException e) {
                     e.printStackTrace();
                 }

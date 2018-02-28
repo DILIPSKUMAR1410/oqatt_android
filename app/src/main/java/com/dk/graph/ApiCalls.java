@@ -45,7 +45,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = ">>>>>>>>>>>>.";
-    private static String url = "http://192.168.0.105:8000/api/";
+    private static String url = "http://192.168.0.103:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -70,11 +70,7 @@ public class ApiCalls {
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete Detail : createAnUser completed");
-                        try {
-                            ApiCalls.syncContacts(context);
-                        } catch (JSONException | InterruptedException e) {
-                            e.printStackTrace();
-                        }
+
                     }
 
                     @Override
@@ -111,23 +107,27 @@ public class ApiCalls {
                             Log.d(TAG, "uid is here : " + response.getString("User"));
                             editor.putString("uid", response.getString("User"));
                             editor.apply();
+                            ArrayList<String> contacts = new ArrayList<String>();
+                            ApiCalls.syncContacts(context,0,contacts);
                         } catch (JSONException e) {
                             e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
+
                     }
                 });
     }
 
 
-    public static void syncContacts(final Context context) throws JSONException, InterruptedException {
+    public static void syncContacts(final Context context,int trigger,ArrayList<String> contacts) throws JSONException, InterruptedException {
 
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-        ArrayList<String> contacts = new ArrayList<>();
-
-        for (User user : userBox.getAll()) {
-            contacts.add(user.getContact());
+        if (contacts.isEmpty() && trigger == 0) {
+            for (User user : userBox.getAll()) {
+                contacts.add(user.getContact());
+            }
         }
-
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
 
@@ -138,6 +138,7 @@ public class ApiCalls {
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("uid", uid);
+        jsonObject.put("trigger", trigger);
         jsonObject.put("contact_list", new JSONArray(contacts));
 
         Log.d(TAG, String.valueOf(jsonObject));
@@ -212,8 +213,7 @@ public class ApiCalls {
 
     }
 
-
-    public static void publishPoll(Context context, long poll_id,String hex) throws JSONException, InterruptedException {
+    public static void publishPoll(Context context, long poll_id, String hex) throws JSONException, InterruptedException {
 
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         Poll poll = pollBoxBox.get(poll_id);
@@ -277,7 +277,7 @@ public class ApiCalls {
 
     }
 
-    public static void votePoll(Context context, long poll_id,int option) throws JSONException, InterruptedException {
+    public static void votePoll(Context context, long poll_id, int option) throws JSONException, InterruptedException {
 
         final Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         final Poll poll = pollBoxBox.get(poll_id);
@@ -285,7 +285,7 @@ public class ApiCalls {
         String uid = prefs.getString("uid", null);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("poll_hash", poll.getPollHash());
-        jsonObject.put("chosen_option",option);
+        jsonObject.put("chosen_option", option);
         Log.d(TAG, String.valueOf(jsonObject));
         Rx2AndroidNetworking.post(url + "user/{uid}/poll/vote")
                 .addPathParameter("uid", uid)

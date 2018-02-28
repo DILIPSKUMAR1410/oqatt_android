@@ -27,6 +27,7 @@ import pl.droidsonroids.gif.GifDrawable;
 public class IntiActivity extends AppCompatActivity {
     private static final String TAG = ">>>>>>>>>>>>.";
     Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

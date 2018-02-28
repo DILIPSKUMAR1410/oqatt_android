@@ -67,15 +67,12 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         parent_linear_layout = rootView.findViewById(R.id.parent_linear_layout);
 
         FloatingActionButton publishButton = rootView.findViewById(R.id.publish_button);
-        publishButton.setOnClickListener(new View.OnClickListener()
-        {
+        publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 // do something
-                if (mentions.getInsertedMentions().size() > 1)
-                {
-                    Toast.makeText(getActivity(), "Cant mention more than one right now!",Toast.LENGTH_LONG).show();
+                if (mentions.getInsertedMentions().size() > 1) {
+                    Toast.makeText(getActivity(), "Cant mention more than one right now!", Toast.LENGTH_LONG).show();
                     return;
 
                 }
@@ -91,7 +88,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     poll.insertOption(option_string);
                 }
                 if (poll.getOptionsList().size() < 2) {
-                    Toast.makeText(getActivity(), "Add Option!",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
                     return;
                 }
                 poll.setType(0);
@@ -102,12 +99,12 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 MessageDigest digest = null;
                 SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
                 String uid = prefs.getString("uid", null);
-                String poll_pkg = poll.getQuestion()+poll.subject.getTarget().getContact()+poll.getOptionString()+uid;
+                String poll_pkg = poll.getQuestion() + poll.subject.getTarget().getContact() + poll.getOptionString() + uid;
                 String hex = "";
                 try {
                     digest = MessageDigest.getInstance("SHA-256");
                     byte[] hash = digest.digest(poll_pkg.getBytes(Charset.forName("UTF-8")));
-                    hex = String.format( "%064x", new BigInteger( 1, hash ) );
+                    hex = String.format("%064x", new BigInteger(1, hash));
                     poll.setPollHash(hex);
                     Log.d(">>>>>>Pollhash", hex);
 
@@ -116,17 +113,17 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 }
                 long poll_id = pollBoxBox.put(poll);
                 try {
-                    ApiCalls.publishPoll(context,poll_id,hex);
+                    ApiCalls.publishPoll(context, poll_id, hex);
                 } catch (JSONException | InterruptedException e) {
                     e.printStackTrace();
                 }
 
                 View view = parent_linear_layout.getChildAt(0);
                 if (view instanceof EditText) {
-                    ((EditText)view).setText("");
+                    ((EditText) view).setText("");
                 }
 
-                Toast.makeText(getActivity(), "Add question published!",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), "Add question published!", Toast.LENGTH_LONG).show();
 
 
             }
@@ -195,9 +192,8 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
 
     @Override
     public void onQueryReceived(final String query) {
-        if (mentions.getInsertedMentions().size() > 1)
-        {
-            Toast.makeText(getActivity(), "Cant mention more than one right now!",Toast.LENGTH_LONG).show();
+        if (mentions.getInsertedMentions().size() > 1) {
+            Toast.makeText(getActivity(), "Cant mention more than one right now!", Toast.LENGTH_LONG).show();
             return;
 
         }
@@ -231,7 +227,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         if (StringUtils.isNotBlank(query)) {
             query = query.toLowerCase();
             List<User> userList = userBox.query().equal(User_.knows_me, true).build().find();
-            if (userList != null && !userList.isEmpty()) {
+            if (!userList.isEmpty()) {
                 for (User user : userList) {
                     final String firstName = user.name.toLowerCase();
                     if (firstName.startsWith(query)) {

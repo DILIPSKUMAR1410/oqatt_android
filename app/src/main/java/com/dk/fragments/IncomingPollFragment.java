@@ -91,6 +91,7 @@ public class IncomingPollFragment extends Fragment {
         adapter.notifyDataSetChanged();
 //        updateUI();
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatePoll(UpdatePoll event) {
         Log.d(">>>>>>>>new poll.", event.message);

@@ -67,7 +67,7 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 card.setVisibility(View.VISIBLE);
                 text.setText(options.get(i));
                 rtext.setText(poll.getResultString().split(",")[i]);
-                Log.d(">>>>>>>>results.",poll.getId()+">>"+poll.getResultString().split(",")[i]);
+                Log.d(">>>>>>>>results.", poll.getId() + ">>" + poll.getResultString().split(",")[i]);
 
             }
 

@@ -46,8 +46,8 @@ public class OutgoingPollFragment extends Fragment {
 
         final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).build().find();
         Collections.reverse(outgoingPolls);
-        for(Poll poll : pollBoxBox.getAll()){
-            Log.d(poll.getPollHash()+">>>>", String.valueOf(poll.getResultString()));
+        for (Poll poll : pollBoxBox.getAll()) {
+            Log.d(poll.getPollHash() + ">>>>", String.valueOf(poll.getResultString()));
 
         }
 
@@ -73,6 +73,7 @@ public class OutgoingPollFragment extends Fragment {
         // Inflate the layout for this fragment
         return rootView;
     }
+
     @Override
     public void onStart() {
         super.onStart();

@@ -33,7 +33,7 @@ public class Poll {
 
     public void insertOption(String s) {
         if (this.optionString == null)
-            this.optionString = s+",";
+            this.optionString = s + ",";
         else
             this.optionString += s + ",";
     }

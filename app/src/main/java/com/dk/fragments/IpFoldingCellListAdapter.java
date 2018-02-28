@@ -70,7 +70,6 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             }
 
 
-
             cell.setTag(viewHolder);
         } else {
             // for existing op_cell set valid valid state(without animation)
@@ -106,7 +105,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 String s = getContext().getResources().getResourceEntryName(viewHolder.radioGroup.getCheckedRadioButtonId());
                 int result = Integer.parseInt(s.substring(2));
                 try {
-                    ApiCalls.votePoll(getContext(),poll.getId(),result);
+                    ApiCalls.votePoll(getContext(), poll.getId(), result);
                 } catch (JSONException | InterruptedException e) {
                     e.printStackTrace();
                 }
