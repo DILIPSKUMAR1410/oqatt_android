@@ -63,6 +63,7 @@ public class PhoneAuthActivity extends AppCompatActivity implements
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
         super.onCreate(savedInstanceState);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         setContentView(R.layout.activity_phone_auth);
 
         Log.d(">>>>>>>>>>", "In fb login");
@@ -318,10 +319,10 @@ public class PhoneAuthActivity extends AppCompatActivity implements
 
                 break;
             case STATE_SIGNIN_SUCCESS:
-                new Utils().redirectToInit(this);
+                Utils.redirectToInit(this);
                 break;
         }
-//
+        //
 //        if (user == null) {
 //            // Signed out
 //            mPhoneNumberViews.setVisibility(View.VISIBLE);

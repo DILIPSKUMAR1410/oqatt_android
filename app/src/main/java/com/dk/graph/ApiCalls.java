@@ -11,7 +11,6 @@ import com.dk.App;
 import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
-import com.dk.queue.RefreshEvent;
 import com.dk.queue.RemovePoll;
 import com.dk.queue.UpdatePoll;
 import com.dk.utils.Utils;
@@ -45,7 +44,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = ">>>>>>>>>>>>.";
-    private static String url = "http://192.168.0.103:8000/api/";
+    private static String url = "http://192.168.0.102:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -104,11 +103,10 @@ public class ApiCalls {
 //                         do anything with response
                         SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
                         try {
-                            Log.d(TAG, "uid is here : " + response.getString("User"));
                             editor.putString("uid", response.getString("User"));
                             editor.apply();
                             ArrayList<String> contacts = new ArrayList<String>();
-                            ApiCalls.syncContacts(context,0,contacts);
+                            ApiCalls.syncContacts(context, 0, contacts);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {
@@ -119,8 +117,8 @@ public class ApiCalls {
                 });
     }
 
-
-    public static void syncContacts(final Context context,int trigger,ArrayList<String> contacts) throws JSONException, InterruptedException {
+    public static void syncContacts(final Context context, int trigger, ArrayList<String> contacts) throws JSONException, InterruptedException {
+        Log.d(TAG, "Sync API call");
 
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
         if (contacts.isEmpty() && trigger == 0) {
@@ -132,9 +130,9 @@ public class ApiCalls {
         String uid = prefs.getString("uid", null);
 
         if (uid == null) {
-            new Utils().redirectToLogin((Activity) context);
+            Utils.redirectToLogin((Activity) context);
+            return;
         }
-        Log.d(TAG, "uid sync is here : " + uid);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("uid", uid);
@@ -154,7 +152,7 @@ public class ApiCalls {
                     @Override
                     public void onComplete() {
                         Log.d(TAG, "onComplete Detail : Sync completed");
-                        EventBus.getDefault().post(new RefreshEvent("Refreashed!"));
+//                        EventBus.getDefault().post(new RefreshEvent("Refreashed!"));
                     }
 
                     @Override

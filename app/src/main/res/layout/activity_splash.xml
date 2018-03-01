@@ -3,19 +3,4 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="This is Splash screen ......."
-            android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    </LinearLayout>
 </LinearLayout>

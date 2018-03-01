@@ -21,6 +21,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         setContentView(R.layout.activity_splash);
         Log.d(">>>>>>>>>>", "In splash");
         ActivityCompat.requestPermissions(this, new String[]{

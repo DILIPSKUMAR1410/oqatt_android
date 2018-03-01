@@ -14,17 +14,16 @@
         android:id="@+id/spaceTabLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:button_color="@color/colorAccent"
+        app:icon_one="@drawable/elections"
+        app:icon_three="@drawable/piechart"
+        app:icon_two="@drawable/icons7"
         app:layout_behavior="eu.long1.spacetablayout.SpaceTabLayoutBehavior"
         app:number_of_tabs="three"
         app:starting_position="two"
-        app:text_one="Vote"
-        app:text_two="Ask"
-        app:text_three="Results"
-        app:icon_two="@drawable/icons7"
-        app:icon_three="@drawable/piechart"
-        app:icon_one="@drawable/elections"
         app:tab_color="@color/colorPrimary"
-        app:button_color="@color/colorAccent"
-        />
+        app:text_one="Vote"
+        app:text_three="Results"
+        app:text_two="Ask" />
 
 </android.support.design.widget.CoordinatorLayout>

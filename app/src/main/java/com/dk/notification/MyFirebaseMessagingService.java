@@ -100,14 +100,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if (type == 2) {
                 String contact = remoteMessage.getData().get("user_contact");
                 Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-                if (!userBox.find(User_.contact,contact).isEmpty())
-                {
+                if (!userBox.find(User_.contact, contact).isEmpty()) {
                     User user = userBox.find(User_.contact, contact).get(0);
-                    if (!user.getKnows_me()){
+                    if (!user.getKnows_me()) {
                         ArrayList<String> contacts = new ArrayList<String>();
                         contacts.add(contact);
                         try {
-                            ApiCalls.syncContacts(this,1,contacts);
+                            ApiCalls.syncContacts(this, 1, contacts);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {
@@ -120,7 +119,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             if (type == 3) {
                 String contact = remoteMessage.getData().get("user_contact");
                 Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-                if (!userBox.find(User_.contact,contact).isEmpty()) {
+                if (!userBox.find(User_.contact, contact).isEmpty()) {
                     User user = userBox.find(User_.contact, contact).get(0);
                     user.setKnows_me(true);
                     userBox.put(user);

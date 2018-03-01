@@ -15,17 +15,15 @@ import com.dk.fragments.IncomingPollFragment;
 import com.dk.fragments.OutgoingPollFragment;
 import com.dk.graph.ApiCalls;
 import com.dk.models.User;
-import com.dk.queue.RefreshEvent;
+import com.dk.models.User_;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -42,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        Log.d(">>>>>>>>>>", "In Main");
+
         setContentView(R.layout.activity_main);
-//        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-//        updateUI();
         //add the fragments you want to display in a List
         List<Fragment> fragmentList = new ArrayList<>();
         final CreatePollFragment Cfragment = new CreatePollFragment();
@@ -106,11 +105,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // This method will be called when a RefreshEvent is posted (in the UI thread for Toast)
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRefreshEvent(RefreshEvent event) {
-        Log.d(">>>>>>>>.", event.message);
-//        updateUI();
-    }
+//    @Subscribe(threadMode = ThreadMode.MAIN)
+//    public void onRefreshEvent(RefreshEvent event) {
+//        Log.d(">>>>>>>>.", event.message);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -119,8 +117,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.refresh:
                 try {
                     Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-                    List<User> objbox_user_list = userBox.getAll();
-
+                    String[] objbox_user_list = userBox.query().build().property(User_.contact).distinct().findStrings();
+                    List<String> objbox_user_contact_list = Arrays.asList(objbox_user_list);
                     Contacts.initialize(this);
                     Query q = Contacts.getQuery();
                     q.hasPhoneNumber();
@@ -128,21 +126,20 @@ public class MainActivity extends AppCompatActivity {
                     List<Contact> contacts = q.find();
                     Iterator<Contact> itr = contacts.iterator();
                     Contact next;
-                    ArrayList<User> fresh_contacts_list = new ArrayList<>();
+                    ArrayList<String> fresh_contacts_list = new ArrayList<>();
                     while (itr.hasNext()) {
-                        User user = new User();
                         next = itr.next();
-                        user.setContact(String.valueOf(next.getPhoneNumbers().get(0).getNormalizedNumber()));
-                        user.setName(next.getDisplayName());
-                        user.setKnows_me(false);
-                        fresh_contacts_list.add(user);
+                        fresh_contacts_list.add(String.valueOf(next.getPhoneNumbers().get(0).getNormalizedNumber()));
                     }
-                    fresh_contacts_list.removeAll(objbox_user_list);
-                    ArrayList<String> new_contacts = new ArrayList<>();
-                    for (User u:fresh_contacts_list) {
-                        new_contacts.add(u.getContact());
+                    fresh_contacts_list.removeAll(objbox_user_contact_list);
+                    if (fresh_contacts_list.isEmpty()) {
+                        String[] x = userBox.query().equal(User_.knows_me, false).build().property(User_.contact).distinct().findStrings();
+                        ArrayList<String> objbox_user_unidi_contact_list = (ArrayList<String>) Arrays.asList(x);
+                        ApiCalls.syncContacts(this, 2, objbox_user_unidi_contact_list);
+                    } else {
+                        ApiCalls.syncContacts(this, 0, fresh_contacts_list);
                     }
-                    ApiCalls.syncContacts(this,0,new_contacts);
+
                 } catch (InterruptedException | JSONException e) {
                     e.printStackTrace();
                 }
@@ -158,17 +155,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        EventBus.getDefault().unregister(this);
-        super.onStop();
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        EventBus.getDefault().register(this);
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        EventBus.getDefault().unregister(this);
+//        super.onStop();
+//    }
 
     @Override
     public void onBackPressed() {
@@ -177,36 +174,5 @@ public class MainActivity extends AppCompatActivity {
         System.exit(0);
         super.onBackPressed();  // optional depending on your needs
     }
-
-//    public void updateUI(){
-//
-//        Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-//        Log.d(">>>>>>>>.", String.valueOf(userBox.count()));
-//        users_bi.clear();
-//        users_uni.clear();
-//        userBox.query().order(User_.name).filter(new QueryFilter<User>() {
-//            @Override
-//            public boolean keep(User user) {
-//                if (user.getKnows_me()) {
-//                    users_bi.add(user);
-//                } else {
-//                    users_uni.add(user);
-//                }
-//                return true;
-//            }
-//        }).build().find();
-//
-//        users_bi.addAll(users_uni);
-//        adapter = new UsersAdapter(this);
-//        adapter.setUserList(users_bi);
-//
-//        recyclerView.setAdapter(adapter);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.addItemDecoration(new DividerItemDecoration(this,
-//                DividerItemDecoration.VERTICAL));
-//        ((DragScrollBar) findViewById(R.id.dragScrollBar))
-//                .setIndicator(new AlphabetIndicator(this), true);
-//    }
-
 
 }

@@ -1,7 +1,8 @@
 package com.dk.auth;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -9,9 +10,9 @@ import android.util.Log;
 
 import com.dk.App;
 import com.dk.graph.ApiCalls;
-import com.dk.main.MainActivity;
 import com.dk.main.R;
 import com.dk.models.User;
+import com.dk.utils.Utils;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.Query;
@@ -28,9 +29,11 @@ public class IntiActivity extends AppCompatActivity {
     private static final String TAG = ">>>>>>>>>>>>.";
     Context context = this;
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         setContentView(R.layout.activity_inti);
         Log.d(">>>>>>>>>>", "In init login");
         try {
@@ -39,7 +42,6 @@ public class IntiActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         new AsyncTask<String, Void, Context>() {
             @Override
             protected Context doInBackground(String... urls) {
@@ -52,17 +54,13 @@ public class IntiActivity extends AppCompatActivity {
             protected void onPostExecute(Context context) {
 
                 //Use result for something
-                Log.d(TAG, "Background completed");
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
-
-
+                Log.d(TAG, "Initialization completed");
+                Utils.redirectToMain((Activity) context);
             }
         }.execute();
-
     }
 
-    private String sync() {
+    private void sync() {
         Contacts.initialize(this);
         Query q = Contacts.getQuery();
         q.hasPhoneNumber();
@@ -82,7 +80,6 @@ public class IntiActivity extends AppCompatActivity {
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
         userBox.put(users);
 
-        return "Sync completed";
     }
 
 

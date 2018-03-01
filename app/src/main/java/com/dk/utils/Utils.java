@@ -13,19 +13,19 @@ import com.dk.main.MainActivity;
 
 public class Utils {
 
-    public void redirectToLogin(Activity activity) {
+    public static void redirectToLogin(Activity activity) {
 
         Intent intent = new Intent(activity, PhoneAuthActivity.class);
         activity.startActivity(intent);
     }
 
-    public void redirectToMain(Activity activity) {
+    public static void redirectToMain(Activity activity) {
 
         Intent intent = new Intent(activity, MainActivity.class);
         activity.startActivity(intent);
     }
 
-    public void redirectToInit(Activity activity) {
+    public static void redirectToInit(Activity activity) {
         Intent intent = new Intent(activity, IntiActivity.class);
         activity.startActivity(intent);
     }

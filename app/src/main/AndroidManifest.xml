@@ -8,9 +8,9 @@
     <application
         android:name="com.dk.App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/oqatt_logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/oqatt_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -18,10 +18,10 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.dk.auth.PhoneAuthActivity"
+            android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
         <activity
             android:name="com.dk.SplashActivity"
-            android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
