@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.dk.App;
 import com.dk.fragments.CreatePollFragment;
@@ -39,8 +40,8 @@ import jp.wasabeef.blurry.Blurry;
 
 public class MainActivity extends AppCompatActivity {
 
-    SpaceTabLayout tabLayout;
     private static final String TAG = ">>>>>>Main";
+    SpaceTabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,22 +110,20 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    // This method will be called when a RefreshEvent is posted (in the UI thread for Toast)
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onRefreshEvent(RefreshEvent event) {
-//        Log.d(">>>>>>>>.", event.message);
-//    }
 
     @SuppressLint("StaticFieldLeak")
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(final MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.refresh:
+                findViewById(R.id.Blurred).setEnabled(false);
+                Blurry.with(MainActivity.this).radius(25).sampling(2).async().onto((ViewGroup) findViewById(R.id.activity_main));
+                findViewById(R.id.LoadingInBlurred).setVisibility(RelativeLayout.VISIBLE);
+
                 new AsyncTask<String, Void, Context>() {
                     @Override
                     protected Context doInBackground(String... urls) {
-                        Blurry.with(MainActivity.this).radius(25).sampling(2).async().onto((ViewGroup) findViewById(R.id.activity_main));
                         refresh();
                         return MainActivity.this;
                     }
@@ -133,7 +132,9 @@ public class MainActivity extends AppCompatActivity {
                     protected void onPostExecute(Context context) {
                         Log.d(TAG, "Refresh is completed");
                         //Use result for something
+                        findViewById(R.id.LoadingInBlurred).setVisibility(RelativeLayout.GONE);
                         Blurry.delete((ViewGroup) findViewById(R.id.activity_main));
+                        findViewById(R.id.Blurred).setEnabled(true);
                     }
                 }.execute();
 
@@ -148,17 +149,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        EventBus.getDefault().register(this);
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        EventBus.getDefault().unregister(this);
-//        super.onStop();
-//    }
 
     @Override
     public void onBackPressed() {
@@ -168,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();  // optional depending on your needs
     }
 
-    private void refresh(){
+    private void refresh() {
         try {
             Log.d(TAG, "Refresh is started");
             Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
@@ -187,10 +177,10 @@ public class MainActivity extends AppCompatActivity {
 
             while (itr.hasNext()) {
                 next = itr.next();
-                for (PhoneNumber p:next.getPhoneNumbers()) {
+                for (PhoneNumber p : next.getPhoneNumbers()) {
                     String phone = String.valueOf(p.getNormalizedNumber());
-                    if (phone.startsWith("+91") && !objbox_user_contact_list.contains(phone))
-                    {   Log.d(">>>>>>>>.new", String.valueOf(phone));
+                    if (phone.startsWith("+91") && !objbox_user_contact_list.contains(phone)) {
+                        Log.d(">>>>>>>>.new", String.valueOf(phone));
                         fresh_contacts_list.add(phone);
                         User user = new User();
                         user.setContact(phone);
@@ -206,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d(">>>>>>>>.oul", String.valueOf(objbox_user_contact_list));
             if (fresh_contacts_list.isEmpty()) {
                 String[] x = userBox.query().equal(User_.knows_me, false).build().property(User_.contact).distinct().findStrings();
-                List<String> objbox_user_unidi_contact_list =  Arrays.asList(x);
+                List<String> objbox_user_unidi_contact_list = Arrays.asList(x);
                 Log.d(">>>>>>>>.total_false", String.valueOf(objbox_user_unidi_contact_list.size()));
                 ApiCalls.syncContacts(this, 2, (objbox_user_unidi_contact_list));
             } else {

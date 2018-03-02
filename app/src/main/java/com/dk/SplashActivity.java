@@ -45,9 +45,9 @@ public class SplashActivity extends AppCompatActivity {
                     if (mAuth.getCurrentUser() == null) {
                         Utils.redirectToLogin(this);
                     } else {
-                            Log.d(">>>>>>>>>>", "In splash uid  present");
-                            Utils.redirectToMain(this);
-                        }
+                        Log.d(">>>>>>>>>>", "In splash uid  present");
+                        Utils.redirectToMain(this);
+                    }
                 } else {
 
                     Toast.makeText(this, "Permission Canceled, Now your application cannot access CONTACTS.", Toast.LENGTH_LONG).show();

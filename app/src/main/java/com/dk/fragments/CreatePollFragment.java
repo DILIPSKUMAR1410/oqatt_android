@@ -3,6 +3,7 @@ package com.dk.fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.dk.App;
 import com.dk.graph.ApiCalls;
 import com.dk.main.R;
@@ -60,21 +62,21 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
 
         rootView = inflater.inflate(R.layout.fragment_create_poll, container, false);
         context = getActivity();
+        final View main_activity_view = getActivity().findViewById(R.id.activity_main);
+        final LottieAnimationView animationView = (LottieAnimationView) main_activity_view.findViewById(R.id.send_animation);
         // Get a reference to your EditText
         init();
         setupMentionsList();
         EditText edittTxt = new EditText(getContext());
         parent_linear_layout = rootView.findViewById(R.id.parent_linear_layout);
-
-        FloatingActionButton publishButton = rootView.findViewById(R.id.publish_button);
+        final FloatingActionButton publishButton = rootView.findViewById(R.id.publish_button);
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // do something
-                if (mentions.getInsertedMentions().size() > 1) {
-                    Toast.makeText(getActivity(), "Cant mention more than one right now!", Toast.LENGTH_LONG).show();
-                    return;
 
+                if (mentions.getInsertedMentions().size() > 1 || mentions.getInsertedMentions().size() < 1) {
+                    Toast.makeText(getActivity(), "Mention one and only one ! No more no less", Toast.LENGTH_LONG).show();
+                    return;
                 }
                 Poll poll = new Poll();
 
@@ -91,6 +93,14 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
                     return;
                 }
+
+                main_activity_view.findViewById(R.id.Blurred).setVisibility(View.GONE);
+                main_activity_view.findViewById(R.id.spaceTabLayout).setVisibility(View.GONE);
+                animationView.setVisibility(View.VISIBLE);
+                animationView.setAnimation("send.json");
+                animationView.playAnimation();
+
+
                 poll.setType(0);
                 Mention mention = (Mention) mentions.getInsertedMentions().get(0);
                 poll.subject.setTarget(mention.getMentionUser());
@@ -123,8 +133,18 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     ((EditText) view).setText("");
                 }
 
-                Toast.makeText(getActivity(), "Add question published!", Toast.LENGTH_LONG).show();
-
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Do something after 3000ms
+                        animationView.cancelAnimation();
+                        main_activity_view.findViewById(R.id.Blurred).setVisibility(View.VISIBLE);
+                        main_activity_view.findViewById(R.id.spaceTabLayout).setVisibility(View.VISIBLE);
+                        animationView.setVisibility(View.GONE);
+                        Toast.makeText(getActivity(), "Add question published!", Toast.LENGTH_LONG).show();
+                    }
+                }, 2000);
 
             }
         });

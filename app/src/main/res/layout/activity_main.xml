@@ -1,14 +1,34 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewPager"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/send_animation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="56dp" />
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        app:lottie_autoPlay="true" />
+
+    <RelativeLayout
+        android:id="@+id/Blurred"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="56dp" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/LoadingInBlurred"
+        android:layout_width="@dimen/fab_size_mini"
+        android:layout_height="@dimen/fab_size_mini"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
 
     <eu.long1.spacetablayout.SpaceTabLayout
         android:id="@+id/spaceTabLayout"
@@ -26,4 +46,4 @@
         app:text_three="Results"
         app:text_two="Ask" />
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

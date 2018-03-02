@@ -65,10 +65,10 @@ public class IntiActivity extends AppCompatActivity {
         ArrayList<User> users = new ArrayList<>();
         while (itr.hasNext()) {
             next = itr.next();
-            for (PhoneNumber p:next.getPhoneNumbers()) {
+            for (PhoneNumber p : next.getPhoneNumbers()) {
                 String phone = String.valueOf(p.getNormalizedNumber());
-                if (phone.startsWith("+91"))
-                {   Log.d(">>>>>>>>.new", String.valueOf(phone));
+                if (phone.startsWith("+91")) {
+                    Log.d(">>>>>>>>.new", String.valueOf(phone));
                     User user = new User();
                     user.setContact(phone);
                     user.setName(next.getDisplayName());
