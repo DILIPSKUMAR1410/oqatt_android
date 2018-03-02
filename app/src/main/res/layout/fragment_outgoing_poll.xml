@@ -4,6 +4,6 @@
     android:id="@+id/mainListView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#d1f3fa"
+    android:background="@color/bgBackSideColor"
     android:clipChildren="false"
     android:clipToPadding="false" />

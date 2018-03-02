@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="colorAccent">#E3467E</color>
+    <color name="colorAccent">#F5C227</color>
 
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
-    <color name="fab_ripple">#B800AC</color>
-    <color name="colorPrimary">#3F53A9</color>
+    <color name="fab_ripple">#000000</color>
+    <color name="colorPrimary">#7e31f6</color>
     <color name="colorPrimaryDark">#3e2d70</color>
-    <color name="bgBackSideColor">#CED0D6</color>
+    <color name="bgBackSideColor">#e8edee</color>
     <color name="bgTitleLeft">#594691</color>
     <color name="bgTitleRight">#ffffff</color>
     <color name="bgContentTop">#594691</color>

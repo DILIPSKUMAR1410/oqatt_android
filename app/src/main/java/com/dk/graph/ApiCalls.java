@@ -25,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.objectbox.Box;
 import io.reactivex.Observer;
@@ -117,7 +118,7 @@ public class ApiCalls {
                 });
     }
 
-    public static void syncContacts(final Context context, int trigger, ArrayList<String> contacts) throws JSONException, InterruptedException {
+    public static void syncContacts(final Context context, int trigger, List<String> contacts) throws JSONException, InterruptedException {
         Log.d(TAG, "Sync API call");
 
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);

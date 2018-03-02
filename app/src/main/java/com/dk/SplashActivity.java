@@ -1,7 +1,6 @@
 package com.dk;
 
 import android.Manifest;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -43,20 +42,12 @@ public class SplashActivity extends AppCompatActivity {
                     // [START initialize_auth]
                     FirebaseAuth mAuth = FirebaseAuth.getInstance();
                     // [END initialize_auth]
-                    Utils utils = new Utils();
                     if (mAuth.getCurrentUser() == null) {
-                        utils.redirectToLogin(this);
+                        Utils.redirectToLogin(this);
                     } else {
-                        SharedPreferences prefs = getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
-                        String uid = prefs.getString("uid", null);
-                        if (uid == null) {
-
-                            utils.redirectToLogin(this);
-                        } else {
-                            utils.redirectToMain(this);
-
+                            Log.d(">>>>>>>>>>", "In splash uid  present");
+                            Utils.redirectToMain(this);
                         }
-                    }
                 } else {
 
                     Toast.makeText(this, "Permission Canceled, Now your application cannot access CONTACTS.", Toast.LENGTH_LONG).show();

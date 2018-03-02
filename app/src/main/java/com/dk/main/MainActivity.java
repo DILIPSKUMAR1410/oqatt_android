@@ -1,5 +1,8 @@
 package com.dk.main;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -8,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 
 import com.dk.App;
 import com.dk.fragments.CreatePollFragment;
@@ -18,6 +22,7 @@ import com.dk.models.User;
 import com.dk.models.User_;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
+import com.github.tamir7.contacts.PhoneNumber;
 import com.github.tamir7.contacts.Query;
 
 import org.json.JSONException;
@@ -29,20 +34,20 @@ import java.util.List;
 
 import eu.long1.spacetablayout.SpaceTabLayout;
 import io.objectbox.Box;
+import jp.wasabeef.blurry.Blurry;
 
 
 public class MainActivity extends AppCompatActivity {
 
-
     SpaceTabLayout tabLayout;
+    private static final String TAG = ">>>>>>Main";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        Log.d(">>>>>>>>>>", "In Main");
-
+        Log.d(TAG, "In Main");
         setContentView(R.layout.activity_main);
         //add the fragments you want to display in a List
         List<Fragment> fragmentList = new ArrayList<>();
@@ -110,40 +115,28 @@ public class MainActivity extends AppCompatActivity {
 //        Log.d(">>>>>>>>.", event.message);
 //    }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.refresh:
-                try {
-                    Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-                    String[] objbox_user_list = userBox.query().build().property(User_.contact).distinct().findStrings();
-                    List<String> objbox_user_contact_list = Arrays.asList(objbox_user_list);
-                    Contacts.initialize(this);
-                    Query q = Contacts.getQuery();
-                    q.hasPhoneNumber();
-                    q.whereStartsWith(Contact.Field.PhoneNormalizedNumber, "+91");
-                    List<Contact> contacts = q.find();
-                    Iterator<Contact> itr = contacts.iterator();
-                    Contact next;
-                    ArrayList<String> fresh_contacts_list = new ArrayList<>();
-                    while (itr.hasNext()) {
-                        next = itr.next();
-                        fresh_contacts_list.add(String.valueOf(next.getPhoneNumbers().get(0).getNormalizedNumber()));
-                    }
-                    fresh_contacts_list.removeAll(objbox_user_contact_list);
-                    if (fresh_contacts_list.isEmpty()) {
-                        String[] x = userBox.query().equal(User_.knows_me, false).build().property(User_.contact).distinct().findStrings();
-                        ArrayList<String> objbox_user_unidi_contact_list = (ArrayList<String>) Arrays.asList(x);
-                        ApiCalls.syncContacts(this, 2, objbox_user_unidi_contact_list);
-                    } else {
-                        ApiCalls.syncContacts(this, 0, fresh_contacts_list);
+                new AsyncTask<String, Void, Context>() {
+                    @Override
+                    protected Context doInBackground(String... urls) {
+                        Blurry.with(MainActivity.this).radius(25).sampling(2).async().onto((ViewGroup) findViewById(R.id.activity_main));
+                        refresh();
+                        return MainActivity.this;
                     }
 
-                } catch (InterruptedException | JSONException e) {
-                    e.printStackTrace();
-                }
-                return true;
+                    @Override
+                    protected void onPostExecute(Context context) {
+                        Log.d(TAG, "Refresh is completed");
+                        //Use result for something
+                        Blurry.delete((ViewGroup) findViewById(R.id.activity_main));
+                    }
+                }.execute();
+
             case R.id.profile:
 //                showHelp();
                 return true;
@@ -173,6 +166,56 @@ public class MainActivity extends AppCompatActivity {
         this.finishAffinity();
         System.exit(0);
         super.onBackPressed();  // optional depending on your needs
+    }
+
+    private void refresh(){
+        try {
+            Log.d(TAG, "Refresh is started");
+            Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
+            String[] objbox_user_list = userBox.query().build().property(User_.contact).distinct().findStrings();
+            List<String> objbox_user_contact_list = Arrays.asList(objbox_user_list);
+            Contacts.initialize(this);
+            Query q = Contacts.getQuery();
+            q.hasPhoneNumber();
+            q.whereStartsWith(Contact.Field.PhoneNormalizedNumber, "+91");
+            List<Contact> contacts = q.find();
+            Iterator<Contact> itr = contacts.iterator();
+            Contact next;
+            ArrayList<String> fresh_contacts_list = new ArrayList<>();
+            ArrayList<User> users = new ArrayList<>();
+
+
+            while (itr.hasNext()) {
+                next = itr.next();
+                for (PhoneNumber p:next.getPhoneNumbers()) {
+                    String phone = String.valueOf(p.getNormalizedNumber());
+                    if (phone.startsWith("+91") && !objbox_user_contact_list.contains(phone))
+                    {   Log.d(">>>>>>>>.new", String.valueOf(phone));
+                        fresh_contacts_list.add(phone);
+                        User user = new User();
+                        user.setContact(phone);
+                        user.setName(next.getDisplayName());
+                        user.setKnows_me(false);
+                        users.add(user);
+                    }
+                }
+
+            }
+            userBox.put(users);
+            Log.d(">>>>>>>>.fcl", String.valueOf(fresh_contacts_list));
+            Log.d(">>>>>>>>.oul", String.valueOf(objbox_user_contact_list));
+            if (fresh_contacts_list.isEmpty()) {
+                String[] x = userBox.query().equal(User_.knows_me, false).build().property(User_.contact).distinct().findStrings();
+                List<String> objbox_user_unidi_contact_list =  Arrays.asList(x);
+                Log.d(">>>>>>>>.total_false", String.valueOf(objbox_user_unidi_contact_list.size()));
+                ApiCalls.syncContacts(this, 2, (objbox_user_unidi_contact_list));
+            } else {
+                ApiCalls.syncContacts(this, 0, fresh_contacts_list);
+            }
+
+        } catch (InterruptedException | JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }

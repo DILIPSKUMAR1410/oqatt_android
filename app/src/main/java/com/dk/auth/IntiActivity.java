@@ -15,15 +15,14 @@ import com.dk.models.User;
 import com.dk.utils.Utils;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
+import com.github.tamir7.contacts.PhoneNumber;
 import com.github.tamir7.contacts.Query;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
 import io.objectbox.Box;
-import pl.droidsonroids.gif.GifDrawable;
 
 public class IntiActivity extends AppCompatActivity {
     private static final String TAG = ">>>>>>>>>>>>.";
@@ -36,12 +35,7 @@ public class IntiActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         setContentView(R.layout.activity_inti);
         Log.d(">>>>>>>>>>", "In init login");
-        try {
-            GifDrawable gifFromResource = new GifDrawable(getResources(), R.drawable.source);
-            gifFromResource.start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
         new AsyncTask<String, Void, Context>() {
             @Override
             protected Context doInBackground(String... urls) {
@@ -70,12 +64,18 @@ public class IntiActivity extends AppCompatActivity {
         Contact next;
         ArrayList<User> users = new ArrayList<>();
         while (itr.hasNext()) {
-            User user = new User();
             next = itr.next();
-            user.setContact(String.valueOf(next.getPhoneNumbers().get(0).getNormalizedNumber()));
-            user.setName(next.getDisplayName());
-            user.setKnows_me(false);
-            users.add(user);
+            for (PhoneNumber p:next.getPhoneNumbers()) {
+                String phone = String.valueOf(p.getNormalizedNumber());
+                if (phone.startsWith("+91"))
+                {   Log.d(">>>>>>>>.new", String.valueOf(phone));
+                    User user = new User();
+                    user.setContact(phone);
+                    user.setName(next.getDisplayName());
+                    user.setKnows_me(false);
+                    users.add(user);
+                }
+            }
         }
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
         userBox.put(users);
