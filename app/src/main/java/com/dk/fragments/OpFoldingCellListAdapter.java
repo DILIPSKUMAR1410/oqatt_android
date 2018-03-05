@@ -6,7 +6,6 @@ package com.dk.fragments;
 
 import android.content.Context;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,7 +66,6 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 card.setVisibility(View.VISIBLE);
                 text.setText(options.get(i));
                 rtext.setText(poll.getResultString().split(",")[i]);
-                Log.d(">>>>>>>>results.", poll.getId() + ">>" + poll.getResultString().split(",")[i]);
 
             }
 
@@ -89,7 +87,6 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 // toggle clicked op_cell state
                 finalCell.toggle(false);
 
-                Log.d(">>>>>>>>CELLNO.", String.valueOf(position));
                 // register in adapter that state for selected op_cell is toggled
                 registerToggle(position);
             }

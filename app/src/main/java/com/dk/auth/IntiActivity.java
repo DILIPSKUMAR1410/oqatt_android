@@ -66,7 +66,6 @@ public class IntiActivity extends AppCompatActivity {
             next = itr.next();
             for (PhoneNumber p : next.getPhoneNumbers()) {
                 String phone = String.valueOf(p.getNormalizedNumber());
-                Log.d(">>>>>>>>.new", String.valueOf(phone));
                 User user = new User();
                 user.setContact(phone);
                 user.setName(next.getDisplayName());
