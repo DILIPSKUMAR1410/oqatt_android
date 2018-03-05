@@ -58,7 +58,6 @@ public class IntiActivity extends AppCompatActivity {
         Contacts.initialize(this);
         Query q = Contacts.getQuery();
         q.hasPhoneNumber();
-        q.whereStartsWith(Contact.Field.PhoneNormalizedNumber, "+91");
         List<Contact> contacts = q.find();
         Iterator<Contact> itr = contacts.iterator();
         Contact next;
@@ -67,14 +66,12 @@ public class IntiActivity extends AppCompatActivity {
             next = itr.next();
             for (PhoneNumber p : next.getPhoneNumbers()) {
                 String phone = String.valueOf(p.getNormalizedNumber());
-                if (phone.startsWith("+91")) {
-                    Log.d(">>>>>>>>.new", String.valueOf(phone));
-                    User user = new User();
-                    user.setContact(phone);
-                    user.setName(next.getDisplayName());
-                    user.setKnows_me(false);
-                    users.add(user);
-                }
+                Log.d(">>>>>>>>.new", String.valueOf(phone));
+                User user = new User();
+                user.setContact(phone);
+                user.setName(next.getDisplayName());
+                user.setKnows_me(false);
+                users.add(user);
             }
         }
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);

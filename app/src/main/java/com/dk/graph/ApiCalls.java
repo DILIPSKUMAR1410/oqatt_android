@@ -45,7 +45,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = ">>>>>>>>>>>>.";
-    private static String url = "http://192.168.0.102:8000/api/";
+    private static String url = "http://192.168.0.104:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

@@ -46,7 +46,6 @@ public class IncomingPollFragment extends Fragment {
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
 
         final List<Poll> incomingPolls = pollBoxBox.query().equal(Poll_.type, 1).build().find();
-        Log.d(">>>>>>>>.", String.valueOf(incomingPolls.size()));
         Collections.reverse(incomingPolls);
 
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
@@ -62,7 +61,6 @@ public class IncomingPollFragment extends Fragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
                 // toggle clicked op_cell state
                 ((FoldingCell) view).toggle(false);
-                Log.d(">>>>>>>>CELLNO.", String.valueOf(pos));
                 // register in adapter that state for selected op_cell is toggled
                 adapter.registerToggle(pos);
             }

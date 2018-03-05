@@ -6,7 +6,6 @@
     android:orientation="horizontal">
 
     <RelativeLayout
-        android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_weight="3"
         android:gravity="center_horizontal"
@@ -14,13 +13,14 @@
         android:paddingBottom="20dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="20dp">
+        android:paddingTop="20dp"
+        android:layout_width="0dp">
 
         <TextView
             android:id="@+id/question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp" />
+            android:textSize="15sp" />
 
     </RelativeLayout>
 </LinearLayout>

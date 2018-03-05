@@ -5,7 +5,6 @@ package com.dk.fragments;
  */
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +54,6 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             viewHolder.fold = cell.findViewById(R.id.button2);
             viewHolder.radioGroup = cell.findViewById(R.id.rg);
             viewHolder.vote = cell.findViewById(R.id.vote_button);
-
             ArrayList<String> options = poll.getOptionsList();
             for (int i = 0; i < options.size(); i++) {
                 String RadioButtonID = "op" + i;
@@ -88,8 +86,6 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             public void onClick(View v) {
                 // toggle clicked op_cell state
                 finalCell.toggle(false);
-
-                Log.d(">>>>>>>>CELLNO.", String.valueOf(position));
                 // register in adapter that state for selected op_cell is toggled
                 registerToggle(position);
             }
@@ -99,9 +95,12 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             @Override
             public void onClick(View v) {
                 // toggle clicked op_cell state
-
+                if (viewHolder.radioGroup.getCheckedRadioButtonId() == -1)
+                {
+                    // no radio buttons are checked
+                    return;
+                }
                 finalCell.toggle(false);
-                Log.d(">>>>>>>>CELLNO.", String.valueOf(position));
                 String s = getContext().getResources().getResourceEntryName(viewHolder.radioGroup.getCheckedRadioButtonId());
                 int result = Integer.parseInt(s.substring(2));
                 try {

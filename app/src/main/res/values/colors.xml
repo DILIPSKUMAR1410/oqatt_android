@@ -12,7 +12,7 @@
     <color name="bgTitleLeft">#594691</color>
     <color name="bgTitleRight">#ffffff</color>
     <color name="bgContentTop">#594691</color>
-    <color name="bgContent">#F0DBE2</color>
+    <color name="bgContent">#ffffff</color>
     <color name="contentDividerLine">#e0e0e0</color>
     <color name="contentBadgeTitle">#a9a9a9</color>
     <color name="titleBadgeTitle">#adafb1</color>

@@ -75,7 +75,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
             if (type == 0) {
                 Poll incomingPoll = new Poll();
-                incomingPoll.setQuestion(remoteMessage.getData().get("question"));
+                String sub_contact = remoteMessage.getData().get("sub_contact");
+                Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
+                incomingPoll.subject.setTarget(userBox.query().equal(User_.contact, sub_contact).build().findFirst());
+                String question = remoteMessage.getData().get("question").replaceAll("<.*>", incomingPoll.subject.getTarget().name);
+                incomingPoll.setQuestion(question);
                 incomingPoll.setType(1);
                 incomingPoll.setPollHash(remoteMessage.getData().get("poll_hash"));
                 String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split(",");

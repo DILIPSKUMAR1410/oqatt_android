@@ -167,7 +167,6 @@ public class MainActivity extends AppCompatActivity {
             Contacts.initialize(this);
             Query q = Contacts.getQuery();
             q.hasPhoneNumber();
-            q.whereStartsWith(Contact.Field.PhoneNormalizedNumber, "+91");
             List<Contact> contacts = q.find();
             Iterator<Contact> itr = contacts.iterator();
             Contact next;
@@ -179,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 next = itr.next();
                 for (PhoneNumber p : next.getPhoneNumbers()) {
                     String phone = String.valueOf(p.getNormalizedNumber());
-                    if (phone.startsWith("+91") && !objbox_user_contact_list.contains(phone)) {
+                    if (!objbox_user_contact_list.contains(phone)) {
                         Log.d(">>>>>>>>.new", String.valueOf(phone));
                         fresh_contacts_list.add(phone);
                         User user = new User();
@@ -192,12 +191,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
             userBox.put(users);
-            Log.d(">>>>>>>>.fcl", String.valueOf(fresh_contacts_list));
-            Log.d(">>>>>>>>.oul", String.valueOf(objbox_user_contact_list));
             if (fresh_contacts_list.isEmpty()) {
                 String[] x = userBox.query().equal(User_.knows_me, false).build().property(User_.contact).distinct().findStrings();
                 List<String> objbox_user_unidi_contact_list = Arrays.asList(x);
-                Log.d(">>>>>>>>.total_false", String.valueOf(objbox_user_unidi_contact_list.size()));
                 ApiCalls.syncContacts(this, 2, (objbox_user_unidi_contact_list));
             } else {
                 ApiCalls.syncContacts(this, 0, fresh_contacts_list);

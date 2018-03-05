@@ -8,7 +8,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +115,6 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     byte[] hash = digest.digest(poll_pkg.getBytes(Charset.forName("UTF-8")));
                     hex = String.format("%064x", new BigInteger(1, hash));
                     poll.setPollHash(hex);
-                    Log.d(">>>>>>Pollhash", hex);
 
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -137,7 +135,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //Do something after 3000ms
+                        //Do something after 2000ms
                         animationView.cancelAnimation();
                         main_activity_view.findViewById(R.id.Blurred).setVisibility(View.VISIBLE);
                         main_activity_view.findViewById(R.id.spaceTabLayout).setVisibility(View.VISIBLE);
@@ -200,7 +198,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                  */
                 if (user != null) {
                     final Mention mention = new Mention();
-                    mention.setMentionName(user.name);
+                    mention.setMentionName("<"+user.name+">");
                     mention.setMentionUser(user);
                     mentions.insertMention(mention);
                 }
