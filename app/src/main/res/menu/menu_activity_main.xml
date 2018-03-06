@@ -2,19 +2,20 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".MainActivity"
     android:layout_width="2dp"
     android:layout_height="2dp">
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
-        android:id="@+id/gem_icon"
-        android:icon="@drawable/ic_done"
-        android:title="@string/gems"
-        app:showAsAction="always" />
-    <item
-        android:id="@+id/gem_value"
+        android:id="@+id/star_icon"
+        android:icon="@drawable/star"
         android:checkable="false"
-        android:textSize="100sp"
-        android:title="@string/gem_count"
+        android:title="@string/star_count"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/star_value"
+        android:checkable="false"
+        android:title="@string/star_count"
         app:showAsAction="always" />
     <item
         android:id="@+id/refresh"

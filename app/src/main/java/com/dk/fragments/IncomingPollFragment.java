@@ -2,7 +2,6 @@ package com.dk.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,13 +84,21 @@ public class IncomingPollFragment extends Fragment {
     // This method will be called when a RefreshEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnRemovePoll(RemovePoll event) {
-        Log.d(">>>>>>>>remove.", event.message);
-        adapter.notifyDataSetChanged();
+        adapterDataSetChange();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatePoll(UpdatePoll event) {
-        Log.d(">>>>>>>>new poll.", event.message);
+        adapterDataSetChange();
+    }
+
+    public void adapterDataSetChange(){
+        adapter.clear();
+        Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+        List<Poll> incomingPolls = pollBoxBox.query().equal(Poll_.type, 1).build().find();
+        Collections.reverse(incomingPolls);
+        adapter.addAll(incomingPolls);
         adapter.notifyDataSetChanged();
+
     }
 }

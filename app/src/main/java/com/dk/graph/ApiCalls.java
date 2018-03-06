@@ -318,7 +318,7 @@ public class ApiCalls {
                     public void onComplete() {
                         Log.d(TAG, "onComplete Detail : Voted ");
                         pollBoxBox.remove(poll);
-                        EventBus.getDefault().post(new RemovePoll("Clear current Poll!"));
+                        EventBus.getDefault().post(new RemovePoll(poll));
                     }
 
                     @Override

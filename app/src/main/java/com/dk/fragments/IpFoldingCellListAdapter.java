@@ -113,6 +113,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
 
                 // register in adapter that state for selected op_cell is toggled
                 registerToggle(position);
+
                 Utils.redirectToAnim((Activity) getContext());
             }
         });

@@ -81,8 +81,8 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="gem_count">0</string>
-    <string name="gems">Gems</string>
+    <string name="star_count">0</string>
+    <string name="star">Star</string>
     <string name="refresh">Refresh</string>
     <string name="profile">Profile</string>
     <string name="help">Help</string>
