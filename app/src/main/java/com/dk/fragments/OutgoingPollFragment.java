@@ -85,7 +85,11 @@ public class OutgoingPollFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatePoll(UpdatePoll event) {
         Log.d(">>>>>>>>upvote.", event.message);
+        Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+        final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).build().find();
+        Collections.reverse(outgoingPolls);
+        adapter.clear();
+        adapter.addAll(outgoingPolls);
         adapter.notifyDataSetChanged();
-//        updateUI();
     }
 }
