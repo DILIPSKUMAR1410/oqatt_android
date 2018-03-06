@@ -11,8 +11,9 @@ import com.dk.App;
 import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
+import com.dk.queue.Intialization;
 import com.dk.queue.RemovePoll;
-import com.dk.queue.UpdatePoll;
+import com.dk.queue.TokenBalance;
 import com.dk.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -69,8 +70,6 @@ public class ApiCalls {
                 .subscribe(new Observer<JSONObject>() {
                     @Override
                     public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : createAnUser completed");
-
                     }
 
                     @Override
@@ -106,6 +105,15 @@ public class ApiCalls {
                         try {
                             editor.putString("uid", response.getString("User"));
                             editor.apply();
+                            if (response.has("token_bal")){
+                                editor.putString("token_bal", response.getString("token_bal"));
+                                EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
+                            }
+                            else {
+                                editor.putString("token_bal", null);
+                                EventBus.getDefault().post(new TokenBalance("0"));
+                            }
+                            editor.apply();
                             ArrayList<String> contacts = new ArrayList<String>();
                             ApiCalls.syncContacts(context, 0, contacts);
                         } catch (JSONException e) {
@@ -118,8 +126,7 @@ public class ApiCalls {
                 });
     }
 
-    public static void syncContacts(final Context context, int trigger, List<String> contacts) throws JSONException, InterruptedException {
-        Log.d(TAG, "Sync API call");
+    public static void syncContacts(final Context context, final int trigger, List<String> contacts) throws JSONException, InterruptedException {
 
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
         if (contacts.isEmpty() && trigger == 0) {
@@ -152,8 +159,9 @@ public class ApiCalls {
                 .subscribe(new Observer<JSONObject>() {
                     @Override
                     public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : Sync completed");
-//                        EventBus.getDefault().post(new RefreshEvent("Refreashed!"));
+                        if (trigger == 0){
+                            EventBus.getDefault().post(new Intialization("Intialization Completed!"));
+                        }
                     }
 
                     @Override
@@ -212,7 +220,7 @@ public class ApiCalls {
 
     }
 
-    public static void publishPoll(Context context, long poll_id, String hex) throws JSONException, InterruptedException {
+    public static void publishPoll(final Context context, long poll_id, String hex) throws JSONException, InterruptedException {
 
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         Poll poll = pollBoxBox.get(poll_id);
@@ -235,8 +243,6 @@ public class ApiCalls {
                 .subscribe(new Observer<JSONObject>() {
                     @Override
                     public void onComplete() {
-                        Log.d(TAG, "onComplete Detail : Question published");
-                        EventBus.getDefault().post(new UpdatePoll("Poll moved to result tab!"));
 
                     }
 
@@ -269,6 +275,20 @@ public class ApiCalls {
                     @Override
                     public void onNext(JSONObject response) {
                         // do anything with response
+                        try {
+                            SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
+                            if (response.has("token_bal")){
+                                editor.putString("token_bal", response.getString("token_bal"));
+                                EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
+                            }
+                            else {
+                                editor.putString("token_bal", null);
+                                EventBus.getDefault().post(new TokenBalance("0"));
+                            }
+                            editor.apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
 
                     }
@@ -276,7 +296,7 @@ public class ApiCalls {
 
     }
 
-    public static void votePoll(Context context, long poll_id, int option) throws JSONException, InterruptedException {
+    public static void votePoll(final Context context, long poll_id, int option) throws JSONException, InterruptedException {
 
         final Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         final Poll poll = pollBoxBox.get(poll_id);
@@ -285,7 +305,6 @@ public class ApiCalls {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("poll_hash", poll.getPollHash());
         jsonObject.put("chosen_option", option);
-        Log.d(TAG, String.valueOf(jsonObject));
         Rx2AndroidNetworking.post(url + "user/{uid}/poll/vote")
                 .addPathParameter("uid", uid)
                 .addJSONObjectBody(jsonObject) // posting json
@@ -331,6 +350,23 @@ public class ApiCalls {
                     @Override
                     public void onNext(JSONObject response) {
                         // do anything with response
+                        try {
+                            SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
+                            if (response.has("token_bal")){
+                                editor.putString("token_bal", response.getString("token_bal"));
+                                EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
+                            }
+                            else {
+                                editor.putString("token_bal", null);
+                                EventBus.getDefault().post(new TokenBalance("0"));
+                            }
+                            editor.apply();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
 
 
                     }
@@ -338,4 +374,73 @@ public class ApiCalls {
 
     }
 
+
+    public static void getTokenBalance(final Context context) throws JSONException, InterruptedException {
+
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+
+        Rx2AndroidNetworking.get(url + "user/{uid}/token/balance")
+                .addPathParameter("uid", uid)
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+                        try {
+                            SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
+                            if (response.has("token_bal")){
+                                editor.putString("token_bal", response.getString("token_bal"));
+                                EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
+                            }
+                            else {
+                                editor.putString("token_bal", null);
+                                EventBus.getDefault().post(new TokenBalance("0"));
+                            }
+                            editor.apply();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+
+    }
 }

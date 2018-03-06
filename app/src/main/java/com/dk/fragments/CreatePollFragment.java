@@ -72,9 +72,17 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                publishButton.setEnabled(false);
+                SharedPreferences prefs = getActivity().getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+                String token_bal = prefs.getString("token_bal", null);
+                if (token_bal == null || Integer.parseInt(token_bal) < 3) {
+                    Toast.makeText(getActivity(), "Not enough gems!", Toast.LENGTH_LONG).show();
+                    publishButton.setEnabled(true);
+                    return;
+                }
                 if (mentions.getInsertedMentions().size() > 1 || mentions.getInsertedMentions().size() < 1) {
                     Toast.makeText(getActivity(), "Mention one and only one ! No more no less", Toast.LENGTH_LONG).show();
+                    publishButton.setEnabled(true);
                     return;
                 }
                 Poll poll = new Poll();
@@ -90,6 +98,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 }
                 if (poll.getOptionsList().size() < 2) {
                     Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
+                    publishButton.setEnabled(true);
                     return;
                 }
 
@@ -106,7 +115,6 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 poll.setResultString("0,0,0,0");
                 Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
                 MessageDigest digest = null;
-                SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
                 String uid = prefs.getString("uid", null);
                 String poll_pkg = poll.getQuestion() + poll.subject.getTarget().getContact() + poll.getOptionString() + uid;
                 String hex = "";
@@ -140,6 +148,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                         main_activity_view.findViewById(R.id.Blurred).setVisibility(View.VISIBLE);
                         main_activity_view.findViewById(R.id.spaceTabLayout).setVisibility(View.VISIBLE);
                         animationView.setVisibility(View.GONE);
+                        publishButton.setEnabled(true);
                         Toast.makeText(getActivity(), "Add question published!", Toast.LENGTH_LONG).show();
                     }
                 }, 2000);

@@ -1,14 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="2dp"
     android:layout_height="2dp">
+    <!-- "Mark Favorite", should appear as action button if possible -->
+    <item
+        android:id="@+id/gem_icon"
+        android:icon="@drawable/ic_done"
+        android:title="@string/gems"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/gem_value"
+        android:checkable="false"
+        android:textSize="100sp"
+        android:title="@string/gem_count"
+        app:showAsAction="always" />
     <item
         android:id="@+id/refresh"
-        android:title="Refresh" />
+        android:title="@string/refresh" />
     <item
         android:id="@+id/profile"
-        android:title="Profile" />
+        android:title="@string/profile" />
     <item
         android:id="@+id/help"
-        android:title="Help" />
+        android:title="@string/help" />
 </menu>

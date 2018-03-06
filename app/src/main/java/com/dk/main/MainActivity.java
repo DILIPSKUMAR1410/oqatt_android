@@ -21,11 +21,15 @@ import com.dk.fragments.OutgoingPollFragment;
 import com.dk.graph.ApiCalls;
 import com.dk.models.User;
 import com.dk.models.User_;
+import com.dk.queue.TokenBalance;
 import com.github.tamir7.contacts.Contact;
 import com.github.tamir7.contacts.Contacts;
 import com.github.tamir7.contacts.PhoneNumber;
 import com.github.tamir7.contacts.Query;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 
 import java.util.ArrayList;
@@ -42,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = ">>>>>>Main";
     SpaceTabLayout tabLayout;
-
+    public Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -105,8 +109,16 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_activity_main, menu);
+        try {
+            ApiCalls.getTokenBalance(this);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         return true;
     }
 
@@ -196,12 +208,30 @@ public class MainActivity extends AppCompatActivity {
                 List<String> objbox_user_unidi_contact_list = Arrays.asList(x);
                 ApiCalls.syncContacts(this, 2, (objbox_user_unidi_contact_list));
             } else {
-                ApiCalls.syncContacts(this, 0, fresh_contacts_list);
+                ApiCalls.syncContacts(this, 3, fresh_contacts_list);
             }
 
         } catch (InterruptedException | JSONException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    // This method will be called when a OnTokenBalance is posted (in the UI thread for Toast)
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnTokenBalance(TokenBalance event) {
+        Log.d(">>>>>", event.message);
+        menu.getItem(1).setTitle(event.message);
     }
 
 }
