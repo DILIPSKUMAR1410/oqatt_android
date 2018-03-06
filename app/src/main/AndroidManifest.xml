@@ -32,6 +32,10 @@
             android:name="com.dk.auth.IntiActivity"
             android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
+        <activity
+            android:name="com.dk.main.AnimationActivity"
+            android:noHistory="true"
+            android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
         <!--<activity-->
         <!--android:name="com.dk.tagging.ProfileActivity"-->
         <!--android:theme="@style/ThemeOverlay.MyNoTitleActivity" />-->

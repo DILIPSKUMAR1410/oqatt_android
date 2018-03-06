@@ -81,7 +81,7 @@
     <string name="title_activity_splash">SplashActivity</string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="gem_count"><![CDATA[<Gem_count>]]></string>
+    <string name="gem_count">0</string>
     <string name="gems">Gems</string>
     <string name="refresh">Refresh</string>
     <string name="profile">Profile</string>

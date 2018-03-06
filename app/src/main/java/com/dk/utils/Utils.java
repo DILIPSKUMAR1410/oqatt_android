@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.dk.auth.IntiActivity;
 import com.dk.auth.PhoneAuthActivity;
+import com.dk.main.AnimationActivity;
 import com.dk.main.MainActivity;
 
 /**
@@ -27,6 +28,11 @@ public class Utils {
 
     public static void redirectToInit(Activity activity) {
         Intent intent = new Intent(activity, IntiActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public static void redirectToAnim(Activity activity) {
+        Intent intent = new Intent(activity, AnimationActivity.class);
         activity.startActivity(intent);
     }
 }

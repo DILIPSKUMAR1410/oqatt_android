@@ -4,6 +4,7 @@ package com.dk.fragments;
  * Created by dk on 09/12/17.
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.dk.graph.ApiCalls;
 import com.dk.main.R;
 import com.dk.models.Poll;
+import com.dk.utils.Utils;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.json.JSONException;
@@ -111,6 +113,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
 
                 // register in adapter that state for selected op_cell is toggled
                 registerToggle(position);
+                Utils.redirectToAnim((Activity) getContext());
             }
         });
         return cell;

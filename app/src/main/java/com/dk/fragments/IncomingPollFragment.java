@@ -87,13 +87,11 @@ public class IncomingPollFragment extends Fragment {
     public void OnRemovePoll(RemovePoll event) {
         Log.d(">>>>>>>>remove.", event.message);
         adapter.notifyDataSetChanged();
-//        updateUI();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatePoll(UpdatePoll event) {
         Log.d(">>>>>>>>new poll.", event.message);
         adapter.notifyDataSetChanged();
-//        updateUI();
     }
 }
