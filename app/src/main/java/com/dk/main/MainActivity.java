@@ -150,12 +150,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }.execute();
 
-            case R.id.profile:
-//                showHelp();
-                return true;
-            case R.id.help:
-//                showHelp();
-                return true;
+//            case R.id.profile:
+////                showHelp();
+//                return true;
+//            case R.id.help:
+////                showHelp();
+//                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -190,6 +190,11 @@ public class MainActivity extends AppCompatActivity {
                 next = itr.next();
                 for (PhoneNumber p : next.getPhoneNumbers()) {
                     String phone = String.valueOf(p.getNormalizedNumber());
+                    if (phone.length()<10)
+                        continue;
+                    if (!phone.startsWith("+91"))
+                        phone = "+91" + phone.substring(phone.length() - 10);
+
                     if (!objbox_user_contact_list.contains(phone)) {
                         Log.d(">>>>>>>>.new", String.valueOf(phone));
                         fresh_contacts_list.add(phone);

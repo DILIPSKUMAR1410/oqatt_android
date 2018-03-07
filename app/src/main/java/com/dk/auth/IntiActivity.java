@@ -56,11 +56,17 @@ public class IntiActivity extends AppCompatActivity {
             next = itr.next();
             for (PhoneNumber p : next.getPhoneNumbers()) {
                 String phone = String.valueOf(p.getNormalizedNumber());
+                if (phone.length()<10)
+                    continue;
                 User user = new User();
-                user.setContact(phone);
+                if (phone.startsWith("+91"))
+                    user.setContact(phone);
+                else
+                    user.setContact("+91"+phone.substring(phone.length() - 10));
                 user.setName(next.getDisplayName());
                 user.setKnows_me(false);
                 users.add(user);
+
             }
         }
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);

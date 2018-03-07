@@ -19,11 +19,16 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/refresh"
-        android:title="@string/refresh" />
-    <item
-        android:id="@+id/profile"
-        android:title="@string/profile" />
-    <item
-        android:id="@+id/help"
-        android:title="@string/help" />
+        android:icon="@drawable/refresh"
+        android:title="@string/refresh"
+        app:showAsAction="always"/>
+    <!--<item-->
+        <!--android:id="@+id/refresh"-->
+        <!--android:title="@string/refresh" />-->
+    <!--<item-->
+        <!--android:id="@+id/profile"-->
+        <!--android:title="@string/profile" />-->
+    <!--<item-->
+        <!--android:id="@+id/help"-->
+        <!--android:title="@string/help" />-->
 </menu>
