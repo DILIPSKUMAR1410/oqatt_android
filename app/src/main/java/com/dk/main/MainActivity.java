@@ -45,7 +45,7 @@ import jp.wasabeef.blurry.Blurry;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = ">>>>>>Main";
-    SpaceTabLayout tabLayout;
+    public SpaceTabLayout tabLayout;
     public Menu menu;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

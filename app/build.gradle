@@ -71,6 +71,8 @@ dependencies {
         transitive = true
     }
     compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.flipboard:bottomsheet-core:1.5.3'
+    compile 'com.flipboard:bottomsheet-commons:1.5.3'
 }
 
 

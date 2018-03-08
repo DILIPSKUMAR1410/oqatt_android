@@ -45,5 +45,4 @@
         app:text_one="Vote"
         app:text_three="Results"
         app:text_two="Ask" />
-
 </RelativeLayout>

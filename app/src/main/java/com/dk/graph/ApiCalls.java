@@ -229,10 +229,84 @@ public class ApiCalls {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("question", poll.getQuestion());
         jsonObject.put("poll_hash", hex);
-        jsonObject.put("sub_contact", poll.subject.getTarget().getContact());
         jsonObject.put("options", new JSONArray(poll.getOptionsList()));
+        jsonObject.put("sub_contact", poll.subject.getTarget().getContact());
 
         Rx2AndroidNetworking.post(url + "user/{uid}/poll/publish")
+                .addPathParameter("uid", uid)
+                .addJSONObjectBody(jsonObject) // posting json
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+                        try {
+                            SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
+                            if (response.has("token_bal")){
+                                editor.putString("token_bal", response.getString("token_bal"));
+                                EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
+                            }
+                            else {
+                                editor.putString("token_bal", null);
+                                EventBus.getDefault().post(new TokenBalance("0"));
+                            }
+                            editor.apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                });
+
+    }
+
+    public static void publishOpenPoll(final Context context, long poll_id, String hex,List<String> selected_friends) throws JSONException, InterruptedException {
+        Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+        Poll poll = pollBoxBox.get(poll_id);
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("question", poll.getQuestion());
+        jsonObject.put("poll_hash", hex);
+        jsonObject.put("options", new JSONArray(poll.getOptionsList()));
+        jsonObject.put("selected_friends", new JSONArray(selected_friends));
+        Rx2AndroidNetworking.post(url + "user/{uid}/poll/publish/open")
                 .addPathParameter("uid", uid)
                 .addJSONObjectBody(jsonObject) // posting json
                 .setPriority(Priority.IMMEDIATE)

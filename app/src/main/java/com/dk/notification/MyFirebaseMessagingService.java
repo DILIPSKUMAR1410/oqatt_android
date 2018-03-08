@@ -130,6 +130,22 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             }
 
+            if (type == 4) {
+                Poll incomingOpenPoll = new Poll();
+                String question = remoteMessage.getData().get("question");
+                incomingOpenPoll.setQuestion(question);
+                incomingOpenPoll.setType(1);
+                incomingOpenPoll.setPollHash(remoteMessage.getData().get("poll_hash"));
+                String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split(",");
+                for (String option : options) {
+                    incomingOpenPoll.insertOption(option);
+                }
+                Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                pollBoxBox.put(incomingOpenPoll);
+                EventBus.getDefault().post(new UpdatePoll("You got new open poll "));
+
+            }
+
 //            if (/* Check if data needs to be processed by long running job */ false) {
 //                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
 //                scheduleJob();

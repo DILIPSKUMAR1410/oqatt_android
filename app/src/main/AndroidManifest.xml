@@ -25,6 +25,7 @@
             android:theme="@style/ThemeOverlay.MyNoTitleActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -33,12 +34,12 @@
             android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
         <activity
-            android:name="com.dk.main.AnimationActivity"
+            android:name=".AnimationActivity"
             android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
-        <!--<activity-->
-        <!--android:name="com.dk.tagging.ProfileActivity"-->
-        <!--android:theme="@style/ThemeOverlay.MyNoTitleActivity" />-->
+        <!-- <activity -->
+        <!-- android:name="com.dk.tagging.ProfileActivity" -->
+        <!-- android:theme="@style/ThemeOverlay.MyNoTitleActivity" /> -->
         <service android:name="com.dk.notification.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -56,7 +57,8 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-    </application>
 
+        <activity android:name="com.dk.SelectFriendsActivity"></activity>
+    </application>
 
 </manifest>
