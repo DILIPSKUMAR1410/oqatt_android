@@ -6,8 +6,11 @@ package com.dk.notification;
 
 import android.util.Log;
 
+import com.dk.graph.ApiCalls;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+
+import org.json.JSONException;
 
 
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
@@ -43,5 +46,12 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
      */
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
+        try {
+            ApiCalls.updateFCMID(getApplicationContext(),token);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

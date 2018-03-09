@@ -6,10 +6,8 @@ package com.dk.notification;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
@@ -66,13 +64,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             int type = Integer.parseInt(remoteMessage.getData().get("type"));
-            try {
-                Uri alarmSound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + App.getInstance().getApplicationContext().getPackageName() + "/raw/notification");
-                Ringtone r = RingtoneManager.getRingtone(App.getInstance().getApplicationContext(), alarmSound);
-                r.play();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
             if (type == 0) {
                 Poll incomingPoll = new Poll();
                 String sub_contact = remoteMessage.getData().get("sub_contact");

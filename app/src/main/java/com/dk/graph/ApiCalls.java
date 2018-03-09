@@ -523,4 +523,63 @@ public class ApiCalls {
                 });
 
     }
+
+
+    public static void updateFCMID(final Context context,String fcm_id) throws JSONException, InterruptedException {
+
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("fcm_id", fcm_id);
+        Rx2AndroidNetworking.put(url + "user/{uid}/update/profile/fcm_id")
+                .addPathParameter("uid", uid)
+                .addJSONObjectBody(jsonObject) // posting json
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+                        try {
+                            Log.d(TAG, response.getString("msg"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
 }
