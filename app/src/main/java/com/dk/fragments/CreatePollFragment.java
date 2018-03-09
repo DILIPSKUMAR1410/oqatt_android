@@ -34,6 +34,7 @@ import com.percolate.mentions.SuggestionsListener;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -53,7 +54,6 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
     public LinearLayout parent_linear_layout;
     View rootView;
     Context context;
-    long poll_id;
     FloatingActionButton publishButton;
     Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
 
@@ -106,7 +106,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
 
                 poll.setType(0);
                 poll.setResultString("0,0,0,0");
-                Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
                 MessageDigest digest = null;
                 String uid = prefs.getString("uid", null);
                 String poll_pkg;
@@ -132,17 +132,17 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 }
 
 
-                poll_id = pollBoxBox.put(poll);
+
 
                 if (mentions.getInsertedMentions().size() < 1){
                     Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
                     intent.putExtra("hex",hex);
-                    intent.putExtra("poll_id",poll_id);
+                    intent.putExtra("poll", (Serializable) poll);
                     startActivity(intent);
                 }
                     else {
                     try {
-                        ApiCalls.publishPoll(context, poll_id, hex);
+                        ApiCalls.publishPoll(context, pollBox.put(poll), hex);
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }

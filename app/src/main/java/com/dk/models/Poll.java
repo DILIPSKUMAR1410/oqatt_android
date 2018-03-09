@@ -1,5 +1,6 @@
 package com.dk.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -12,7 +13,7 @@ import io.objectbox.relation.ToOne;
  */
 @Entity
 
-public class Poll {
+public class Poll implements Serializable {
     public ToOne<User> subject;
     @Id
     private long id;

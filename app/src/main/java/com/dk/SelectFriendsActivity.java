@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.dk.graph.ApiCalls;
 import com.dk.main.R;
+import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.utils.Utils;
@@ -29,9 +30,11 @@ public class SelectFriendsActivity extends AppCompatActivity {
     Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
     SparseBooleanArray sparseBooleanArray ;
     ArrayList<String> selected_friends = new ArrayList<>();
-    long poll_id;
+    Poll poll;
     String hex;
     public Menu menu;
+    Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +49,8 @@ public class SelectFriendsActivity extends AppCompatActivity {
                         android.R.id.text1, friends_list_name );
 
         listview.setAdapter(adapter);
-        poll_id = getIntent().getLongExtra("poll_id",0);
+        poll = (Poll) getIntent().getSerializableExtra("poll");
+
         hex = getIntent().getStringExtra("hex");
     }
 
@@ -83,7 +87,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
                 }
                 else {
                     try {
-                        ApiCalls.publishOpenPoll(SelectFriendsActivity.this, poll_id, hex,selected_friends);
+                        ApiCalls.publishOpenPoll(SelectFriendsActivity.this, pollBox.put(poll), hex,selected_friends);
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }
