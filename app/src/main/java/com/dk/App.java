@@ -15,7 +15,6 @@ import io.objectbox.BoxStore;
 public class App extends Application {
 
     public static final String TAG = "ObjectBoxExample";
-    public static final boolean EXTERNAL_DIR = false;
     private static App sInstance = null;
     private BoxStore boxStore;
 

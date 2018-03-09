@@ -115,7 +115,13 @@ public class ApiCalls {
                             }
                             editor.apply();
                             ArrayList<String> contacts = new ArrayList<String>();
-                            ApiCalls.syncContacts(context, 0, contacts);
+                            if (response.getBoolean("is_new_user")){
+                                ApiCalls.syncContacts(context, 0, contacts);
+                            }
+                            else {
+                                ApiCalls.syncContacts(context, 1, contacts);
+                            }
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {
