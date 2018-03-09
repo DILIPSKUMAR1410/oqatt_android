@@ -4,6 +4,7 @@ package com.dk.main;
  * Created by dk on 18/11/17.
  */
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -69,12 +70,13 @@ public class UsersMentionAdapter extends RecyclerArrayAdapter<User, UsersMention
     /**
      * Display user name and picture.
      */
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(UserViewHolder holder, int position) {
         final User mentionsUser = getItem(position);
 
         if (mentionsUser != null && StringUtils.isNotBlank(mentionsUser.name)) {
-            holder.name.setText(mentionsUser.name, TextView.BufferType.SPANNABLE);
+            holder.name.setText(mentionsUser.name+" "+mentionsUser.getContact(),TextView.BufferType.SPANNABLE);
             highlightSearchQueryInUserName(holder.name.getText());
             if (StringUtils.isNotBlank(mentionsUser.getAvatar())) {
                 holder.imageView.setVisibility(View.VISIBLE);

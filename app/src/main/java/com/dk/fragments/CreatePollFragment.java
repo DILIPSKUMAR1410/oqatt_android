@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +15,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.dk.App;
 import com.dk.SelectFriendsActivity;
 import com.dk.graph.ApiCalls;
@@ -27,6 +25,7 @@ import com.dk.models.Mention;
 import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
+import com.dk.utils.Utils;
 import com.percolate.caffeine.ViewUtils;
 import com.percolate.mentions.Mentions;
 import com.percolate.mentions.QueryListener;
@@ -55,8 +54,6 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
     View rootView;
     Context context;
     long poll_id;
-    View main_activity_view;
-    LottieAnimationView animationView;
     FloatingActionButton publishButton;
     Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
 
@@ -67,9 +64,6 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         rootView = inflater.inflate(R.layout.fragment_create_poll, container, false);
         context = getActivity();
 
-
-        main_activity_view = getActivity().findViewById(R.id.activity_main);
-        animationView = (LottieAnimationView) main_activity_view.findViewById(R.id.send_animation);
         // Get a reference to your EditText
         init();
         setupMentionsList();
@@ -79,12 +73,14 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                publishButton.setEnabled(false);
+                if (String.valueOf(commentField.getText()).trim().length() < 1){
+                    Toast.makeText(getActivity(), "Please ask question!", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 SharedPreferences prefs = getActivity().getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
                 String token_bal = prefs.getString("token_bal", null);
                 if (token_bal == null || Integer.parseInt(token_bal) < 3) {
                     Toast.makeText(getActivity(), "Not enough gems!", Toast.LENGTH_LONG).show();
-                    publishButton.setEnabled(true);
                     return;
                 }
 
@@ -96,18 +92,15 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     int EdittextresID = getResources().getIdentifier(EdittextID, "id", getContext().getPackageName());
                     EditText option = parent_linear_layout.findViewById(EdittextresID);
                     String option_string = option.getText().toString();
-                    option.setText("");
                     poll.insertOption(option_string);
                 }
                 if (poll.getOptionsList().size() < 2) {
                     Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
-                    publishButton.setEnabled(true);
                     return;
                 }
 
                 if (mentions.getInsertedMentions().size() > 1) {
                     Toast.makeText(getActivity(), "Mention only one !", Toast.LENGTH_LONG).show();
-                    publishButton.setEnabled(true);
                     return;
                 }
 
@@ -153,34 +146,9 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     } catch (JSONException | InterruptedException e) {
                         e.printStackTrace();
                     }
-
-
-
-                    View view = parent_linear_layout.getChildAt(0);
-                    if (view instanceof EditText) {
-                        ((EditText) view).setText("");
-                    }
-
-                    main_activity_view.findViewById(R.id.Blurred).setVisibility(View.GONE);
-                    main_activity_view.findViewById(R.id.spaceTabLayout).setVisibility(View.GONE);
-                    animationView.setVisibility(View.VISIBLE);
-                    animationView.setAnimation("send.json");
-                    animationView.playAnimation();
-
-                    final Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            //Do something after 2000ms
-                            animationView.cancelAnimation();
-                            main_activity_view.findViewById(R.id.Blurred).setVisibility(View.VISIBLE);
-                            main_activity_view.findViewById(R.id.spaceTabLayout).setVisibility(View.VISIBLE);
-                            animationView.setVisibility(View.GONE);
-                            publishButton.setEnabled(true);
-                            Toast.makeText(getActivity(), "Add question published!", Toast.LENGTH_LONG).show();
-                        }
-                    }, 2000);
+                    Utils.redirectToAnim(getActivity(),0);
                 }
+
             }
         });
 

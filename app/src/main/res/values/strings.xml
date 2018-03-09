@@ -88,4 +88,6 @@
     <string name="help">Help</string>
 
     <string name="title_activity_animation">AnimationActivity</string>
+    <string name="friends_count">0</string>
+    <string name="done">done</string>
 </resources>

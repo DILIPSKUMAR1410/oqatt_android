@@ -2,7 +2,7 @@
 <resources>
 
     <color name="colorAccent">#F5C227</color>
-
+    <color name="app_background">#8432F8</color>
     <color name="grey_100">#F5F5F5</color>
     <color name="grey_300">#E0E0E0</color>
     <color name="fab_ripple">#000000</color>

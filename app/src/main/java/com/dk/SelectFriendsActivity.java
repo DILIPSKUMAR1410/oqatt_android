@@ -3,10 +3,12 @@ package com.dk;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseBooleanArray;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.dk.graph.ApiCalls;
 import com.dk.main.R;
@@ -29,6 +31,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
     ArrayList<String> selected_friends = new ArrayList<>();
     long poll_id;
     String hex;
+    public Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,11 +48,23 @@ public class SelectFriendsActivity extends AppCompatActivity {
         listview.setAdapter(adapter);
         poll_id = getIntent().getLongExtra("poll_id",0);
         hex = getIntent().getStringExtra("hex");
-        Button done = findViewById(R.id.done);
-        done.setOnClickListener(new View.OnClickListener() {
+    }
 
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        this.menu = menu;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_activity_select_friends, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.done_icon:
+                selected_friends.clear();
                 sparseBooleanArray = listview.getCheckedItemPositions();
                 int i = 0 ;
 
@@ -63,19 +78,23 @@ public class SelectFriendsActivity extends AppCompatActivity {
                     i++ ;
                 }
 
-                try {
-                    ApiCalls.publishOpenPoll(SelectFriendsActivity.this, poll_id, hex,selected_friends);
-                } catch (JSONException | InterruptedException e) {
-                    e.printStackTrace();
+                if (selected_friends.size() < 5){
+                    Toast.makeText(SelectFriendsActivity.this, "Select atleast 5 friends !", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    try {
+                        ApiCalls.publishOpenPoll(SelectFriendsActivity.this, poll_id, hex,selected_friends);
+                    } catch (JSONException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    Utils.redirectToAnim(SelectFriendsActivity.this,0);
+
                 }
 
-                Utils.redirectToAnim(SelectFriendsActivity.this);
-
-            }
-        });
-
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
-
-
 
 }

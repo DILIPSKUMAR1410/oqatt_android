@@ -32,8 +32,9 @@ public class Utils {
         activity.startActivity(intent);
     }
 
-    public static void redirectToAnim(Activity activity) {
+    public static void redirectToAnim(Activity activity,int type) {
         Intent intent = new Intent(activity, AnimationActivity.class);
+        intent.putExtra("type",type);
         activity.startActivity(intent);
     }
 

@@ -19,7 +19,16 @@ public class AnimationActivity extends AppCompatActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         setContentView(R.layout.activity_anim);
         final LottieAnimationView animationView = (LottieAnimationView)findViewById(R.id.anwser_animation);
-        animationView.setAnimation("star.json");
+        int type = getIntent().getIntExtra("type", 0);
+        if (type == 1)
+        {        animationView.setAnimation("star.json");
+        }
+        else {
+            {
+                animationView.setAnimation("send.json");
+            }
+
+            }
         animationView.playAnimation();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

@@ -17,9 +17,9 @@
             android:id="@+id/icon"
             style="@style/ThemeOverlay.FirebaseIcon"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="146dp"
             android:contentDescription="@string/desc_firebase_lockup"
-            android:src="@drawable/firebase_lockup_400" />
+            android:src="@drawable/oqatt_logo" />
 
         <EditText
             android:id="@+id/field_phone_number"
