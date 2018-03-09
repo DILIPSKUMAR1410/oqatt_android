@@ -119,7 +119,7 @@ public class ApiCalls {
                                 ApiCalls.syncContacts(context, 0, contacts);
                             }
                             else {
-                                ApiCalls.syncContacts(context, 1, contacts);
+                                ApiCalls.syncContacts(context, 4, contacts);
                             }
 
                         } catch (JSONException e) {
@@ -165,7 +165,7 @@ public class ApiCalls {
                 .subscribe(new Observer<JSONObject>() {
                     @Override
                     public void onComplete() {
-                        if (trigger == 0){
+                        if (trigger == 0 || trigger == 4){
                             EventBus.getDefault().post(new Intialization("Intialization Completed!"));
                         }
                     }
