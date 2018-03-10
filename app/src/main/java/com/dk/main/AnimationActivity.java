@@ -21,7 +21,7 @@ public class AnimationActivity extends AppCompatActivity {
         final LottieAnimationView animationView = (LottieAnimationView)findViewById(R.id.anwser_animation);
         int type = getIntent().getIntExtra("type", 0);
         if (type == 1)
-        {        animationView.setAnimation("star.json");
+        {        animationView.setAnimation("bolt.json");
         }
         else {
             {

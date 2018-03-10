@@ -634,7 +634,7 @@ public class ApiCalls {
                     public void onNext(JSONObject response) {
                         // do anything with response
                         try {
-                            EventBus.getDefault().post(new AddParticipants(response.getJSONArray("mutual"),response.getString("unknown")));
+                            EventBus.getDefault().post(new AddParticipants(response.getJSONArray("mutual"),response.getInt("unknown")));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

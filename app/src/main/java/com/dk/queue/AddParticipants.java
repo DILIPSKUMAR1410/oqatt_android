@@ -9,8 +9,8 @@ import org.json.JSONArray;
 public class AddParticipants {
 
     public final JSONArray mutual;
-    public final String unknown;
-    public AddParticipants(JSONArray mutual, String unknown) {
+    public final int unknown;
+    public AddParticipants(JSONArray mutual, int unknown) {
 
         this.mutual = mutual;
         this.unknown = unknown;

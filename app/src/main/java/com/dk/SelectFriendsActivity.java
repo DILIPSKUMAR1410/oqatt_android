@@ -1,15 +1,18 @@
 package com.dk;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.dk.graph.ApiCalls;
 import com.dk.main.R;
 import com.dk.models.Poll;
@@ -40,8 +43,9 @@ public class SelectFriendsActivity extends AppCompatActivity {
     String hex;
     public Menu menu;
     Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-    Boolean isMentioned;
+    Boolean isNotMentioned;
     int total_other;
+    LottieAnimationView animationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +54,12 @@ public class SelectFriendsActivity extends AppCompatActivity {
         listview = findViewById(R.id.listView);
         poll = (Poll) getIntent().getSerializableExtra("poll");
         hex = getIntent().getStringExtra("hex");
-        isMentioned = poll.subject.isNull();
-        if (isMentioned){
+        isNotMentioned = poll.subject.isNull();
+        animationView = (LottieAnimationView)findViewById(R.id.populate_wait_animation);
+        animationView.setAnimation("populate_wait.json");
+
+        if (isNotMentioned){
+            getSupportActionBar().setTitle("Select friends");
             Query<User> query = userBox.query().order(User_.name).equal(User_.knows_me, true).build();
             friends_list_name= query.property(User_.name).findStrings();
             friends_list_contact= query.property(User_.contact).findStrings();
@@ -63,7 +71,9 @@ public class SelectFriendsActivity extends AppCompatActivity {
 
         }
         else {
-
+            getSupportActionBar().setTitle("Select mutual friends");
+            animationView.setVisibility(View.VISIBLE);
+            animationView.playAnimation();
             try {
                 ApiCalls.getFriendsConnections(SelectFriendsActivity.this, poll.subject.getTarget().getContact());
             } catch (JSONException e) {
@@ -106,7 +116,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
 
 
 
-                if (!isMentioned){
+                if (!isNotMentioned){
                     int ticked = 0;
                     if (selected_friends.contains("others")){
                         ticked += total_other;
@@ -163,6 +173,15 @@ public class SelectFriendsActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnAddParticipants(AddParticipants event) {
         ArrayList<String> participants = new ArrayList<String>();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 2000ms
+                animationView.cancelAnimation();
+                animationView.setVisibility(View.GONE);
+            }
+        }, 3000);
         if (event.mutual != null) {
             for (int i=0;i<event.mutual.length();i++){
                 try {
@@ -187,8 +206,8 @@ public class SelectFriendsActivity extends AppCompatActivity {
                 (this,
                         android.R.layout.simple_list_item_multiple_choice,
                         android.R.id.text1,mutual_friends_name);
-        if (!event.unknown.isEmpty())
-        {   total_other = Integer.parseInt(event.unknown);
+        if (event.unknown > 0 )
+        {   total_other = event.unknown;
             adapter.add("Want to send this poll to "+total_other+" other friends of "+ poll.subject.getTarget().name +" ?");
             mutual_friends_contact.add("others");
         }

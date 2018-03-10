@@ -3,14 +3,6 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/send_animation"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:lottie_autoPlay="true" />
-
     <RelativeLayout
         android:id="@+id/Blurred"
         android:layout_width="match_parent"
@@ -35,9 +27,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:button_color="@color/colorAccent"
-        app:icon_one="@drawable/elections"
-        app:icon_three="@drawable/piechart"
-        app:icon_two="@drawable/icons7"
+        app:icon_one="@drawable/anwser"
+        app:icon_three="@drawable/response"
+        app:icon_two="@drawable/ask"
         app:layout_behavior="eu.long1.spacetablayout.SpaceTabLayoutBehavior"
         app:number_of_tabs="three"
         app:starting_position="two"
