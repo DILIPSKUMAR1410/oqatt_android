@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "40478504487-46t5p1ot74bmeq096pouh4rcbq4uhin9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dk",
+            "certificate_hash": "c3d481f29761b18ecbcf8205fd33c9622a97c8ad"
+          }
+        },
+        {
           "client_id": "40478504487-oinc9s0qr0qpud88d5gmph4nqb7pngd6.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
