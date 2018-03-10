@@ -1,5 +1,7 @@
 package com.dk.models;
 
+import java.io.Serializable;
+
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 
@@ -7,7 +9,7 @@ import io.objectbox.annotation.Id;
  * Created by dk on 21/08/17.
  */
 @Entity
-public class User {
+public class User implements Serializable {
     public String name;
 
     @Id

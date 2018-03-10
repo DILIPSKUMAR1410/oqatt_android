@@ -11,6 +11,7 @@ import com.dk.App;
 import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
+import com.dk.queue.AddParticipants;
 import com.dk.queue.Intialization;
 import com.dk.queue.RemovePoll;
 import com.dk.queue.TokenBalance;
@@ -226,7 +227,7 @@ public class ApiCalls {
 
     }
 
-    public static void publishPoll(final Context context, long poll_id, String hex) throws JSONException, InterruptedException {
+    public static void publishMentionedPoll(final Context context, long poll_id, String hex,List<String> selected_friends) throws JSONException, InterruptedException {
 
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         Poll poll = pollBoxBox.get(poll_id);
@@ -237,7 +238,7 @@ public class ApiCalls {
         jsonObject.put("poll_hash", hex);
         jsonObject.put("options", new JSONArray(poll.getOptionsList()));
         jsonObject.put("sub_contact", poll.subject.getTarget().getContact());
-
+        jsonObject.put("selected_friends", new JSONArray(selected_friends));
         Rx2AndroidNetworking.post(url + "user/{uid}/poll/publish")
                 .addPathParameter("uid", uid)
                 .addJSONObjectBody(jsonObject) // posting json
@@ -575,6 +576,65 @@ public class ApiCalls {
                         // do anything with response
                         try {
                             Log.d(TAG, response.getString("msg"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+    }
+
+
+    public static void getFriendsConnections(final Context context,String sub_contact) throws JSONException, InterruptedException {
+
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("sub_contact", sub_contact);
+        Rx2AndroidNetworking.post(url + "user/{uid}/friend/connections")
+                .addPathParameter("uid", uid)
+                .addJSONObjectBody(jsonObject) // posting json
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+                        try {
+                            EventBus.getDefault().post(new AddParticipants(response.getJSONArray("mutual"),response.getString("unknown")));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

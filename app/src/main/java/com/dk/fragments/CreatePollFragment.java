@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.dk.App;
 import com.dk.SelectFriendsActivity;
-import com.dk.graph.ApiCalls;
 import com.dk.main.R;
 import com.dk.main.RecyclerItemClickListener;
 import com.dk.main.UsersMentionAdapter;
@@ -25,16 +24,13 @@ import com.dk.models.Mention;
 import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
-import com.dk.utils.Utils;
 import com.percolate.caffeine.ViewUtils;
 import com.percolate.mentions.Mentions;
 import com.percolate.mentions.QueryListener;
 import com.percolate.mentions.SuggestionsListener;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
 
-import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -132,22 +128,20 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 }
 
 
+                Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
+                intent.putExtra("hex",hex);
+                intent.putExtra("poll",poll);
 
-
+//
                 if (mentions.getInsertedMentions().size() < 1){
-                    Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
-                    intent.putExtra("hex",hex);
-                    intent.putExtra("poll", (Serializable) poll);
+
                     startActivity(intent);
+
                 }
                     else {
-                    try {
-                        ApiCalls.publishPoll(context, pollBox.put(poll), hex);
-                    } catch (JSONException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Utils.redirectToAnim(getActivity(),0);
+                    startActivity(intent);
                 }
+
 
             }
         });
