@@ -162,14 +162,6 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
 
     }
 
-//    public void onAddField() {
-//        LayoutInflater inflater = getActivity().getLayoutInflater();
-//        final View rowView = inflater.inflate(R.layout.field, null);
-//        // Add the new row before the add field button.
-//        Log.d(">>>>>>>>>>", String.valueOf(parent_linear_layout.getChildCount()));
-//        parent_linear_layout.addView(rowView, parent_linear_layout.getChildCount() - 1);
-//    }
-
     public void onDelete(View v) {
         parent_linear_layout.removeView((View) v.getParent());
     }

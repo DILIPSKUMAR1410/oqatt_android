@@ -34,7 +34,7 @@
         app:number_of_tabs="three"
         app:starting_position="two"
         app:tab_color="@color/colorPrimary"
-        app:text_one="Vote"
-        app:text_three="Results"
+        app:text_one="Answer"
+        app:text_three="Response"
         app:text_two="Ask" />
 </RelativeLayout>

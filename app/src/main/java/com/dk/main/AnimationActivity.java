@@ -18,7 +18,7 @@ public class AnimationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         setContentView(R.layout.activity_anim);
-        final LottieAnimationView animationView = (LottieAnimationView)findViewById(R.id.anwser_animation);
+        final LottieAnimationView animationView = (LottieAnimationView)findViewById(R.id.animation);
         int type = getIntent().getIntExtra("type", 0);
         if (type == 1)
         {        animationView.setAnimation("bolt.json");
