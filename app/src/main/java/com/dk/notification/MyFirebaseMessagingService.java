@@ -4,6 +4,7 @@ package com.dk.notification;
  * Created by dk on 20/11/17.
  */
 
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,6 +17,7 @@ import android.util.Log;
 import com.dk.App;
 import com.dk.graph.ApiCalls;
 import com.dk.main.MainActivity;
+import com.dk.main.R;
 import com.dk.models.Poll;
 import com.dk.models.Poll_;
 import com.dk.models.User;
@@ -80,6 +82,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
                 pollBoxBox.put(incomingPoll);
                 EventBus.getDefault().post(new UpdatePoll("You got new poll "));
+                sendNotification("New question asked to you");
 
             }
             if (type == 1) {
@@ -90,6 +93,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 outgoingPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
                 pollBoxBox.put(outgoingPoll);
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
+                sendNotification("Checkout ! Someone anwsered your question");
 
             }
             if (type == 2) {
@@ -109,6 +113,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         }
                     }
                 }
+                sendNotification(contact +" added you in his network");
+
 
             }
             if (type == 3) {
@@ -119,6 +125,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     user.setKnows_me(true);
                     userBox.put(user);
                 }
+                sendNotification(contact+" accepted your request");
             }
 
             if (type == 4) {
@@ -134,6 +141,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
                 pollBoxBox.put(incomingOpenPoll);
                 EventBus.getDefault().post(new UpdatePoll("You got new open poll "));
+                sendNotification("New question asked to you");
 
             }
 
@@ -149,7 +157,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getTitle());
         }
 
         // Also if you intend on generating your own notifications as a result of a received FCM
@@ -181,24 +189,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
-
-        String channelId = "New Poll";
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setContentTitle("FCM Message")
-                        .setContentText(messageBody)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
-
-        NotificationManager notificationManager =
+        Log.d(TAG,messageBody);
+        NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("default",
+                    "oqatt",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("oqatt_updates");
+            assert mNotificationManager != null;
+            mNotificationManager.createNotificationChannel(channel);
+        }
+        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
+                .setSmallIcon(R.mipmap.oqatt_logo) // notification icon
+                .setContentTitle(messageBody) // title for notification
+                .setSound(defaultSoundUri)  // sound notification
+                .setAutoCancel(true); // clear notification after click
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pi);
+        assert mNotificationManager != null;
+        mNotificationManager.notify(0, mBuilder.build());
     }
 }

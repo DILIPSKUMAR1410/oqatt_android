@@ -27,7 +27,7 @@ import io.objectbox.Box;
 
 
 public class OutgoingPollFragment extends Fragment {
-
+    private static final String TAG = ">>>>>>outbox";
     View rootView;
     OpFoldingCellListAdapter adapter;
     ListView theListView;
@@ -84,7 +84,7 @@ public class OutgoingPollFragment extends Fragment {
     // This method will be called when a RefreshEvent is posted (in the UI thread for Toast)
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatePoll(UpdatePoll event) {
-        Log.d(">>>>>>>>upvote.", event.message);
+        Log.d(TAG, event.message);
         adapter.clear();
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).build().find();
