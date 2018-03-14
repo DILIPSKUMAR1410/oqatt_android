@@ -37,6 +37,8 @@ import java.util.List;
 
 import io.objectbox.Box;
 
+import static android.app.NotificationManager.IMPORTANCE_HIGH;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
@@ -197,6 +199,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     "oqatt",
                     NotificationManager.IMPORTANCE_DEFAULT);
             channel.setDescription("oqatt_updates");
+            channel.setImportance(IMPORTANCE_HIGH);
             assert mNotificationManager != null;
             mNotificationManager.createNotificationChannel(channel);
         }
@@ -206,6 +209,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentTitle(messageBody) // title for notification
                 .setSound(defaultSoundUri)  // sound notification
                 .setAutoCancel(true); // clear notification after click
+
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pi);
