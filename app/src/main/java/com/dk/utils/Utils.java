@@ -7,6 +7,7 @@ import com.dk.SelectFriendsActivity;
 import com.dk.auth.IntiActivity;
 import com.dk.auth.PhoneAuthActivity;
 import com.dk.main.AnimationActivity;
+import com.dk.main.FriendListActivity;
 import com.dk.main.MainActivity;
 
 /**
@@ -40,6 +41,11 @@ public class Utils {
 
     public static void redirectToSelectFriends(Activity activity) {
         Intent intent = new Intent(activity, SelectFriendsActivity.class);
+        activity.startActivity(intent);
+    }
+
+    public static void redirectToFriendList(Activity activity) {
+        Intent intent = new Intent(activity, FriendListActivity.class);
         activity.startActivity(intent);
     }
 }

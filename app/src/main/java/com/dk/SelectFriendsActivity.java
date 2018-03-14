@@ -46,6 +46,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
     Boolean isNotMentioned;
     int total_other;
     LottieAnimationView animationView;
+    ArrayAdapter<String> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
             Query<User> query = userBox.query().order(User_.name).equal(User_.knows_me, true).build();
             friends_list_name= query.property(User_.name).findStrings();
             friends_list_contact= query.property(User_.contact).findStrings();
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>
+            adapter = new ArrayAdapter<String>
                     (this,
                             android.R.layout.simple_list_item_multiple_choice,
                             android.R.id.text1, friends_list_name );
@@ -174,14 +175,11 @@ public class SelectFriendsActivity extends AppCompatActivity {
     public void OnAddParticipants(AddParticipants event) {
         ArrayList<String> participants = new ArrayList<String>();
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 2000ms
-                animationView.cancelAnimation();
-                animationView.setVisibility(View.GONE);
-            }
-        }, 3000);
+        handler.postDelayed(() -> {
+            //Do something after 2000ms
+            animationView.setVisibility(View.GONE);
+            animationView.cancelAnimation();
+        }, 2000);
         if (event.mutual != null) {
             for (int i=0;i<event.mutual.length();i++){
                 try {
@@ -202,7 +200,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
             mutual_friends_name.add(u.name);
             mutual_friends_contact.add(u.getContact());
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>
+        adapter = new ArrayAdapter<String>
                 (this,
                         android.R.layout.simple_list_item_multiple_choice,
                         android.R.id.text1,mutual_friends_name);

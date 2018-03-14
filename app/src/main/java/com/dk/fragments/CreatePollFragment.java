@@ -76,7 +76,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 SharedPreferences prefs = getActivity().getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
                 String token_bal = prefs.getString("token_bal", null);
                 if (token_bal == null || Integer.parseInt(token_bal) < 3) {
-                    Toast.makeText(getActivity(), "Not enough gems!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(), "Not enough bolts!", Toast.LENGTH_LONG).show();
                     return;
                 }
 

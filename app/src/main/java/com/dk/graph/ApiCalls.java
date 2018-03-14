@@ -15,6 +15,7 @@ import com.dk.queue.AddParticipants;
 import com.dk.queue.Intialization;
 import com.dk.queue.RemovePoll;
 import com.dk.queue.TokenBalance;
+import com.dk.queue.UpdateFriendList;
 import com.dk.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -154,8 +155,6 @@ public class ApiCalls {
         jsonObject.put("trigger", trigger);
         jsonObject.put("contact_list", new JSONArray(contacts));
 
-        Log.d(TAG, String.valueOf(jsonObject));
-
         Rx2AndroidNetworking.post(url + "user/sync_contacts")
                 .addJSONObjectBody(jsonObject) // posting json
                 .setPriority(Priority.IMMEDIATE)
@@ -168,6 +167,9 @@ public class ApiCalls {
                     public void onComplete() {
                         if (trigger == 0 || trigger == 4){
                             EventBus.getDefault().post(new Intialization("Intialization Completed!"));
+                        }
+                        else if (trigger == 2 || trigger == 3){
+                            EventBus.getDefault().post(new UpdateFriendList("Refresh Completed!"));
                         }
                     }
 
@@ -210,7 +212,6 @@ public class ApiCalls {
                                 Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
                                 for (int i = 0; i < Users.length(); i++) {
                                     String resp = (String) Users.get(i);
-                                    Log.d(TAG, resp);
                                     user = userBox.find(User_.contact, resp).get(0);
                                     user.setKnows_me(true);
                                     users.add(user);

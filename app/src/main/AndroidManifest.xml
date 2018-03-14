@@ -58,7 +58,8 @@
             </intent-filter>
         </service>
 
-        <activity android:name="com.dk.SelectFriendsActivity"></activity>
+        <activity android:name="com.dk.SelectFriendsActivity" />
+        <activity android:name=".FriendListActivity"></activity>
     </application>
 
 </manifest>
