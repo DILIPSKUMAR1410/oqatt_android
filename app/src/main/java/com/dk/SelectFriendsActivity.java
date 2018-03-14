@@ -33,15 +33,15 @@ import io.objectbox.Box;
 import io.objectbox.query.Query;
 
 public class SelectFriendsActivity extends AppCompatActivity {
-    ListView listview ;
+    public Menu menu;
+    ListView listview;
     String[] friends_list_name;
     String[] friends_list_contact;
     Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-    SparseBooleanArray sparseBooleanArray ;
+    SparseBooleanArray sparseBooleanArray;
     ArrayList<String> selected_friends = new ArrayList<>();
     Poll poll;
     String hex;
-    public Menu menu;
     Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
     Boolean isNotMentioned;
     int total_other;
@@ -56,22 +56,21 @@ public class SelectFriendsActivity extends AppCompatActivity {
         poll = (Poll) getIntent().getSerializableExtra("poll");
         hex = getIntent().getStringExtra("hex");
         isNotMentioned = poll.subject.isNull();
-        animationView = (LottieAnimationView)findViewById(R.id.populate_wait_animation);
+        animationView = (LottieAnimationView) findViewById(R.id.populate_wait_animation);
         animationView.setAnimation("populate_wait.json");
 
-        if (isNotMentioned){
+        if (isNotMentioned) {
             getSupportActionBar().setTitle("Select friends");
             Query<User> query = userBox.query().order(User_.name).equal(User_.knows_me, true).build();
-            friends_list_name= query.property(User_.name).findStrings();
-            friends_list_contact= query.property(User_.contact).findStrings();
+            friends_list_name = query.property(User_.name).findStrings();
+            friends_list_contact = query.property(User_.contact).findStrings();
             adapter = new ArrayAdapter<String>
                     (this,
                             android.R.layout.simple_list_item_multiple_choice,
-                            android.R.id.text1, friends_list_name );
+                            android.R.id.text1, friends_list_name);
             listview.setAdapter(adapter);
 
-        }
-        else {
+        } else {
             getSupportActionBar().setTitle("Select mutual friends");
             animationView.setVisibility(View.VISIBLE);
             animationView.playAnimation();
@@ -104,53 +103,48 @@ public class SelectFriendsActivity extends AppCompatActivity {
             case R.id.done_icon:
                 selected_friends.clear();
                 sparseBooleanArray = listview.getCheckedItemPositions();
-                int i = 0 ;
+                int i = 0;
 
                 while (i < sparseBooleanArray.size()) {
 
                     if (sparseBooleanArray.valueAt(i)) {
-                        selected_friends.add(friends_list_contact [ sparseBooleanArray.keyAt(i) ]);
+                        selected_friends.add(friends_list_contact[sparseBooleanArray.keyAt(i)]);
                     }
 
-                    i++ ;
+                    i++;
                 }
 
 
-
-                if (!isNotMentioned){
+                if (!isNotMentioned) {
                     int ticked = 0;
-                    if (selected_friends.contains("others")){
+                    if (selected_friends.contains("others")) {
                         ticked += total_other;
                     }
                     ticked += selected_friends.size();
-                    if (ticked < 5){
+                    if (ticked < 5) {
                         Toast.makeText(SelectFriendsActivity.this, "Select atleast 5 friends !", Toast.LENGTH_LONG).show();
 
-                    }
-                    else {
+                    } else {
                         try {
-                            ApiCalls.publishMentionedPoll(SelectFriendsActivity.this, pollBox.put(poll), hex,selected_friends);
-                            Utils.redirectToAnim(SelectFriendsActivity.this,0);
+                            ApiCalls.publishMentionedPoll(SelectFriendsActivity.this, pollBox.put(poll), hex, selected_friends);
+                            Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                         } catch (JSONException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
 
-                }
-                else {
-                    if (selected_friends.size() < 5){
+                } else {
+                    if (selected_friends.size() < 5) {
                         Toast.makeText(SelectFriendsActivity.this, "Select atleast 5 friends !", Toast.LENGTH_LONG).show();
-                    }
-                    else {
+                    } else {
                         try {
-                            ApiCalls.publishOpenPoll(SelectFriendsActivity.this, pollBox.put(poll), hex,selected_friends);
-                            Utils.redirectToAnim(SelectFriendsActivity.this,0);
+                            ApiCalls.publishOpenPoll(SelectFriendsActivity.this, pollBox.put(poll), hex, selected_friends);
+                            Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                         } catch (JSONException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                 }
-
 
 
             default:
@@ -181,7 +175,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
             animationView.cancelAnimation();
         }, 2000);
         if (event.mutual != null) {
-            for (int i=0;i<event.mutual.length();i++){
+            for (int i = 0; i < event.mutual.length(); i++) {
                 try {
                     participants.add(event.mutual.getString(i));
                 } catch (JSONException e) {
@@ -196,17 +190,17 @@ public class SelectFriendsActivity extends AppCompatActivity {
         ArrayList<String> mutual_friends_name = new ArrayList<String>();
         ArrayList<String> mutual_friends_contact = new ArrayList<String>();
 
-        for (User u :mutual_friends_query) {
+        for (User u : mutual_friends_query) {
             mutual_friends_name.add(u.name);
             mutual_friends_contact.add(u.getContact());
         }
         adapter = new ArrayAdapter<String>
                 (this,
                         android.R.layout.simple_list_item_multiple_choice,
-                        android.R.id.text1,mutual_friends_name);
-        if (event.unknown > 0 )
-        {   total_other = event.unknown;
-            adapter.add("Want to send this poll to "+total_other+" other friends of "+ poll.subject.getTarget().name +" ?");
+                        android.R.id.text1, mutual_friends_name);
+        if (event.unknown > 0) {
+            total_other = event.unknown;
+            adapter.add("Want to send this poll to " + total_other + " other friends of " + poll.subject.getTarget().name + " ?");
             mutual_friends_contact.add("others");
         }
         friends_list_contact = mutual_friends_contact.toArray(new String[0]);

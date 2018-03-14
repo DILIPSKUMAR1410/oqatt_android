@@ -92,7 +92,7 @@ public class IncomingPollFragment extends Fragment {
         adapterDataSetChange();
     }
 
-    public void adapterDataSetChange(){
+    public void adapterDataSetChange() {
         adapter.clear();
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         List<Poll> incomingPolls = pollBoxBox.query().equal(Poll_.type, 1).build().find();

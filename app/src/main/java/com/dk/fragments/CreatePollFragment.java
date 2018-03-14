@@ -69,7 +69,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (String.valueOf(commentField.getText()).trim().length() < 1){
+                if (String.valueOf(commentField.getText()).trim().length() < 1) {
                     Toast.makeText(getActivity(), "Please ask question!", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -106,12 +106,11 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 MessageDigest digest = null;
                 String uid = prefs.getString("uid", null);
                 String poll_pkg;
-                if (mentions.getInsertedMentions().size() == 1)
-                {   Mention mention = (Mention) mentions.getInsertedMentions().get(0);
+                if (mentions.getInsertedMentions().size() == 1) {
+                    Mention mention = (Mention) mentions.getInsertedMentions().get(0);
                     poll.subject.setTarget(mention.getMentionUser());
                     poll_pkg = poll.getQuestion() + poll.subject.getTarget().getContact() + poll.getOptionString() + uid;
-                }
-                else {
+                } else {
                     poll_pkg = poll.getQuestion() + poll.getOptionString() + uid;
                 }
 
@@ -129,16 +128,15 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
 
 
                 Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
-                intent.putExtra("hex",hex);
-                intent.putExtra("poll",poll);
+                intent.putExtra("hex", hex);
+                intent.putExtra("poll", poll);
 
 //
-                if (mentions.getInsertedMentions().size() < 1){
+                if (mentions.getInsertedMentions().size() < 1) {
 
                     startActivity(intent);
 
-                }
-                    else {
+                } else {
                     startActivity(intent);
                 }
 
@@ -189,7 +187,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                  */
                 if (user != null) {
                     final Mention mention = new Mention();
-                    mention.setMentionName("<"+user.name+">");
+                    mention.setMentionName("<" + user.name + ">");
                     mention.setMentionUser(user);
                     mentions.insertMention(mention);
                 }

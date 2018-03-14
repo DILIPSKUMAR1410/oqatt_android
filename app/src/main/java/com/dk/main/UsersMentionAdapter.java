@@ -76,7 +76,7 @@ public class UsersMentionAdapter extends RecyclerArrayAdapter<User, UsersMention
         final User mentionsUser = getItem(position);
 
         if (mentionsUser != null && StringUtils.isNotBlank(mentionsUser.name)) {
-            holder.name.setText(mentionsUser.name+" "+mentionsUser.getContact(),TextView.BufferType.SPANNABLE);
+            holder.name.setText(mentionsUser.name + " " + mentionsUser.getContact(), TextView.BufferType.SPANNABLE);
             highlightSearchQueryInUserName(holder.name.getText());
             if (StringUtils.isNotBlank(mentionsUser.getAvatar())) {
                 holder.imageView.setVisibility(View.VISIBLE);

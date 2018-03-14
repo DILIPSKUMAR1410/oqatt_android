@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity"
     android:layout_width="2dp"
-    android:layout_height="2dp">
+    android:layout_height="2dp"
+    tools:context=".MainActivity">
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/star_icon"
-        android:icon="@drawable/bolt"
         android:checkable="false"
+        android:icon="@drawable/bolt"
         android:title="@string/star_count"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
     <item
         android:id="@+id/star_value"
         android:checkable="false"
@@ -21,14 +21,14 @@
         android:id="@+id/refresh"
         android:icon="@drawable/friends"
         android:title="@string/refresh"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
     <!--<item-->
-        <!--android:id="@+id/refresh"-->
-        <!--android:title="@string/refresh" />-->
+    <!--android:id="@+id/refresh"-->
+    <!--android:title="@string/refresh" />-->
     <!--<item-->
-        <!--android:id="@+id/profile"-->
-        <!--android:title="@string/profile" />-->
+    <!--android:id="@+id/profile"-->
+    <!--android:title="@string/profile" />-->
     <!--<item-->
-        <!--android:id="@+id/help"-->
-        <!--android:title="@string/help" />-->
+    <!--android:id="@+id/help"-->
+    <!--android:title="@string/help" />-->
 </menu>

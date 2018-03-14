@@ -36,10 +36,9 @@ import io.objectbox.query.Query;
 
 public class FriendListActivity extends AppCompatActivity {
     private static final String TAG = ">>>>>>FriendList";
-
-    ListView listview ;
-    String[] friends_list_name;
     public Menu menu;
+    ListView listview;
+    String[] friends_list_name;
     LottieAnimationView animationView;
     ArrayAdapter<String> adapter;
     ArrayList<String> lst;
@@ -54,9 +53,9 @@ public class FriendListActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Friends");
         listview = findViewById(R.id.listView);
         Query<User> query = userBox.query().order(User_.name).equal(User_.knows_me, true).build();
-        animationView = (LottieAnimationView)findViewById(R.id.empty_animation);
-        friends_list_name= query.property(User_.name).findStrings();
-        if (friends_list_name.length < 1){
+        animationView = (LottieAnimationView) findViewById(R.id.empty_animation);
+        friends_list_name = query.property(User_.name).findStrings();
+        if (friends_list_name.length < 1) {
             animationView.setAnimation("empty.json");
             animationView.setVisibility(View.VISIBLE);
             animationView.playAnimation();
@@ -112,7 +111,7 @@ public class FriendListActivity extends AppCompatActivity {
                 next = itr.next();
                 for (PhoneNumber p : next.getPhoneNumbers()) {
                     String phone = String.valueOf(p.getNormalizedNumber());
-                    if (phone.length()<10)
+                    if (phone.length() < 10)
                         continue;
                     if (!phone.startsWith("+91"))
                         phone = "+91" + phone.substring(phone.length() - 10);
@@ -167,14 +166,13 @@ public class FriendListActivity extends AppCompatActivity {
         }, 2000);
 
         Query<User> query = userBox.query().order(User_.name).equal(User_.knows_me, true).build();
-        friends_list_name= query.property(User_.name).findStrings();
-        if (friends_list_name.length < 1){
-            animationView = (LottieAnimationView)findViewById(R.id.empty_animation);
+        friends_list_name = query.property(User_.name).findStrings();
+        if (friends_list_name.length < 1) {
+            animationView = (LottieAnimationView) findViewById(R.id.empty_animation);
             animationView.setAnimation("empty.json");
             animationView.setVisibility(View.VISIBLE);
             animationView.playAnimation();
-        }
-        else {
+        } else {
             adapter.clear();
             lst = new ArrayList<>(Arrays.asList(friends_list_name));
             adapter.addAll(lst);

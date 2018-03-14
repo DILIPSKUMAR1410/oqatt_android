@@ -97,8 +97,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             @Override
             public void onClick(View v) {
                 // toggle clicked op_cell state
-                if (viewHolder.radioGroup.getCheckedRadioButtonId() == -1)
-                {
+                if (viewHolder.radioGroup.getCheckedRadioButtonId() == -1) {
                     // no radio buttons are checked
                     return;
                 }
@@ -114,7 +113,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 // register in adapter that state for selected op_cell is toggled
                 registerToggle(position);
 
-                Utils.redirectToAnim((Activity) getContext(),1);
+                Utils.redirectToAnim((Activity) getContext(), 1);
             }
         });
         return cell;

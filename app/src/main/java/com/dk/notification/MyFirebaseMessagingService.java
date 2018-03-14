@@ -113,7 +113,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         }
                     }
                 }
-                sendNotification(contact +" added you in his network");
+                sendNotification(contact + " added you in his network");
 
 
             }
@@ -125,7 +125,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     user.setKnows_me(true);
                     userBox.put(user);
                 }
-                sendNotification(contact+" accepted your request");
+                sendNotification(contact + " accepted your request");
             }
 
             if (type == 4) {
@@ -189,7 +189,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
-        Log.d(TAG,messageBody);
+        Log.d(TAG, messageBody);
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -200,7 +200,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             assert mNotificationManager != null;
             mNotificationManager.createNotificationChannel(channel);
         }
-        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "default")
                 .setSmallIcon(R.mipmap.oqatt_logo) // notification icon
                 .setContentTitle(messageBody) // title for notification

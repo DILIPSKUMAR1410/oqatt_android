@@ -107,20 +107,18 @@ public class ApiCalls {
                         try {
                             editor.putString("uid", response.getString("User"));
                             editor.apply();
-                            if (response.has("token_bal")){
+                            if (response.has("token_bal")) {
                                 editor.putString("token_bal", response.getString("token_bal"));
                                 EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
-                            }
-                            else {
+                            } else {
                                 editor.putString("token_bal", null);
                                 EventBus.getDefault().post(new TokenBalance("0"));
                             }
                             editor.apply();
                             ArrayList<String> contacts = new ArrayList<String>();
-                            if (response.getBoolean("is_new_user")){
+                            if (response.getBoolean("is_new_user")) {
                                 ApiCalls.syncContacts(context, 0, contacts);
-                            }
-                            else {
+                            } else {
                                 ApiCalls.syncContacts(context, 4, contacts);
                             }
 
@@ -165,10 +163,9 @@ public class ApiCalls {
                 .subscribe(new Observer<JSONObject>() {
                     @Override
                     public void onComplete() {
-                        if (trigger == 0 || trigger == 4){
+                        if (trigger == 0 || trigger == 4) {
                             EventBus.getDefault().post(new Intialization("Intialization Completed!"));
-                        }
-                        else if (trigger == 2 || trigger == 3){
+                        } else if (trigger == 2 || trigger == 3) {
                             EventBus.getDefault().post(new UpdateFriendList("Refresh Completed!"));
                         }
                     }
@@ -228,7 +225,7 @@ public class ApiCalls {
 
     }
 
-    public static void publishMentionedPoll(final Context context, long poll_id, String hex,List<String> selected_friends) throws JSONException, InterruptedException {
+    public static void publishMentionedPoll(final Context context, long poll_id, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
 
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         Poll poll = pollBoxBox.get(poll_id);
@@ -285,11 +282,10 @@ public class ApiCalls {
                         // do anything with response
                         try {
                             SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
-                            if (response.has("token_bal")){
+                            if (response.has("token_bal")) {
                                 editor.putString("token_bal", response.getString("token_bal"));
                                 EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
-                            }
-                            else {
+                            } else {
                                 editor.putString("token_bal", null);
                                 EventBus.getDefault().post(new TokenBalance("0"));
                             }
@@ -304,7 +300,7 @@ public class ApiCalls {
 
     }
 
-    public static void publishOpenPoll(final Context context, long poll_id, String hex,List<String> selected_friends) throws JSONException, InterruptedException {
+    public static void publishOpenPoll(final Context context, long poll_id, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         Poll poll = pollBoxBox.get(poll_id);
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
@@ -359,11 +355,10 @@ public class ApiCalls {
                         // do anything with response
                         try {
                             SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
-                            if (response.has("token_bal")){
+                            if (response.has("token_bal")) {
                                 editor.putString("token_bal", response.getString("token_bal"));
                                 EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
-                            }
-                            else {
+                            } else {
                                 editor.putString("token_bal", null);
                                 EventBus.getDefault().post(new TokenBalance("0"));
                             }
@@ -434,11 +429,10 @@ public class ApiCalls {
                         // do anything with response
                         try {
                             SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
-                            if (response.has("token_bal")){
+                            if (response.has("token_bal")) {
                                 editor.putString("token_bal", response.getString("token_bal"));
                                 EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
-                            }
-                            else {
+                            } else {
                                 editor.putString("token_bal", null);
                                 EventBus.getDefault().post(new TokenBalance("0"));
                             }
@@ -448,7 +442,6 @@ public class ApiCalls {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
 
 
                     }
@@ -505,11 +498,10 @@ public class ApiCalls {
                         // do anything with response
                         try {
                             SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
-                            if (response.has("token_bal")){
+                            if (response.has("token_bal")) {
                                 editor.putString("token_bal", response.getString("token_bal"));
                                 EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
-                            }
-                            else {
+                            } else {
                                 editor.putString("token_bal", null);
                                 EventBus.getDefault().post(new TokenBalance("0"));
                             }
@@ -527,7 +519,7 @@ public class ApiCalls {
     }
 
 
-    public static void updateFCMID(final Context context,String fcm_id) throws JSONException, InterruptedException {
+    public static void updateFCMID(final Context context, String fcm_id) throws JSONException, InterruptedException {
 
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
@@ -586,7 +578,7 @@ public class ApiCalls {
     }
 
 
-    public static void getFriendsConnections(final Context context,String sub_contact) throws JSONException, InterruptedException {
+    public static void getFriendsConnections(final Context context, String sub_contact) throws JSONException, InterruptedException {
 
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
@@ -635,7 +627,7 @@ public class ApiCalls {
                     public void onNext(JSONObject response) {
                         // do anything with response
                         try {
-                            EventBus.getDefault().post(new AddParticipants(response.getJSONArray("mutual"),response.getInt("unknown")));
+                            EventBus.getDefault().post(new AddParticipants(response.getJSONArray("mutual"), response.getInt("unknown")));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

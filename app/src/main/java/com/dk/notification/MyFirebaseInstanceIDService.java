@@ -47,7 +47,7 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
         try {
-            ApiCalls.updateFCMID(getApplicationContext(),token);
+            ApiCalls.updateFCMID(getApplicationContext(), token);
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

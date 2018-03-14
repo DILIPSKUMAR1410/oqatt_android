@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.dk.SelectFriendsActivity"
     android:layout_width="2dp"
-    android:layout_height="2dp">
+    android:layout_height="2dp"
+    tools:context="com.dk.SelectFriendsActivity">
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/done_icon"
-        android:icon="@drawable/share"
         android:checkable="false"
+        android:icon="@drawable/share"
         android:title="@string/done"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

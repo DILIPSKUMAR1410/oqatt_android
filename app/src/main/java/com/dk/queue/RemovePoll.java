@@ -8,7 +8,7 @@ import com.dk.models.Poll;
 
 public class RemovePoll {
 
-    public  Poll poll;
+    public Poll poll;
 
     public RemovePoll(Poll poll) {
         this.poll = poll;

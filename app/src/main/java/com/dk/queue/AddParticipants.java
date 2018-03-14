@@ -10,6 +10,7 @@ public class AddParticipants {
 
     public final JSONArray mutual;
     public final int unknown;
+
     public AddParticipants(JSONArray mutual, int unknown) {
 
         this.mutual = mutual;
