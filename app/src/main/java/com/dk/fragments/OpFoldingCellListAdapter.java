@@ -52,7 +52,9 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
 //            viewHolder.contentLayout = op_cell.findViewById(R.id.contentLayout);
             cell.setTag(viewHolder);
 
+            assert poll != null;
             ArrayList<String> options = poll.getOptionsList();
+
             for (int i = 0; i < options.size(); i++) {
                 String TextID = "op" + i;
                 String CardID = "cop" + i;

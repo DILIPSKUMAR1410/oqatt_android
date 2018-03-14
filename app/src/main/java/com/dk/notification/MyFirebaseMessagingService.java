@@ -77,7 +77,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 incomingPoll.setQuestion(question);
                 incomingPoll.setType(1);
                 incomingPoll.setPollHash(remoteMessage.getData().get("poll_hash"));
-                String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split(",");
+                String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split("|");
                 for (String option : options) {
                     incomingPoll.insertOption(option);
                 }
@@ -136,7 +136,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 incomingOpenPoll.setQuestion(question);
                 incomingOpenPoll.setType(1);
                 incomingOpenPoll.setPollHash(remoteMessage.getData().get("poll_hash"));
-                String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split(",");
+                String[] options = remoteMessage.getData().get("options").replace("[", "").replace("]", "").split("|");
                 for (String option : options) {
                     incomingOpenPoll.insertOption(option);
                 }

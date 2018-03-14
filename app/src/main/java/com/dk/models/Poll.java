@@ -34,13 +34,13 @@ public class Poll implements Serializable {
 
     public void insertOption(String s) {
         if (this.optionString == null)
-            this.optionString = s + ",";
+            this.optionString = s + "|";
         else
-            this.optionString += s + ",";
+            this.optionString += s + "|";
     }
 
     public ArrayList<String> getOptionsList() {
-        return new ArrayList<String>(Arrays.asList(optionString.split(",")));
+        return new ArrayList<String>(Arrays.asList(optionString.split("|")));
 
     }
 
