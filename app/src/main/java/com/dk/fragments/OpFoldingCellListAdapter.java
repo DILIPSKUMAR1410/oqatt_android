@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dk.main.R;
@@ -118,6 +117,5 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
     private static class ViewHolder {
         TextView question;
         Button fold;
-        LinearLayout contentLayout;
     }
 }
