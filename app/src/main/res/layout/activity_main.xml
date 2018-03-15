@@ -4,24 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/Blurred"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="56dp" />
-    </RelativeLayout>
-
-    <ProgressBar
-        android:id="@+id/LoadingInBlurred"
-        android:layout_width="@dimen/fab_size_mini"
-        android:layout_height="@dimen/fab_size_mini"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
 
     <eu.long1.spacetablayout.SpaceTabLayout
         android:id="@+id/spaceTabLayout"
