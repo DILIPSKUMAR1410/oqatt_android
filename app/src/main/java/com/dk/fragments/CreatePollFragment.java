@@ -83,14 +83,20 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                 Poll poll = new Poll();
 
                 poll.setQuestion(String.valueOf(commentField.getText()));
+
+                int no_of_options = 0;
                 for (int i = 0; i < 4; i++) {
                     String EdittextID = "op" + i;
                     int EdittextresID = getResources().getIdentifier(EdittextID, "id", getContext().getPackageName());
                     EditText option = parent_linear_layout.findViewById(EdittextresID);
                     String option_string = option.getText().toString();
-                    poll.insertOption(option_string);
+                    if (!option_string.trim().isEmpty()) {
+                        no_of_options += 1;
+                        poll.insertOption(option_string);
+                    }
                 }
-                if (poll.getOptionsList().size() < 2) {
+
+                if (no_of_options < 2 || poll.getOptionsList()== null || poll.getOptionsList().size() < 2) {
                     Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
                     return;
                 }

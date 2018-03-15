@@ -56,6 +56,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             viewHolder.fold = cell.findViewById(R.id.button2);
             viewHolder.radioGroup = cell.findViewById(R.id.rg);
             viewHolder.vote = cell.findViewById(R.id.vote_button);
+            assert poll != null;
             ArrayList<String> options = poll.getOptionsList();
             for (int i = 0; i < options.size(); i++) {
                 String RadioButtonID = "op" + i;
