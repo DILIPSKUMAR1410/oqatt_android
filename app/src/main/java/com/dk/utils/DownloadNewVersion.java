@@ -71,7 +71,7 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
     protected Boolean doInBackground(String... arg0) {
         Boolean flag = false;
         try {
-            URL url = new URL("https://s3-ap-southeast-1.amazonaws.com/oqatt/oqatt-v."+version+".apk");
+            URL url = new URL("https://s3-ap-southeast-1.amazonaws.com/oqatt/oqatt.apk");
             HttpURLConnection c = (HttpURLConnection) url.openConnection();
             c.setRequestMethod("GET");
             c.setDoOutput(false);
@@ -79,7 +79,7 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
             String PATH = Environment.getExternalStorageDirectory()+"/Download/";
             File file = new File(PATH);
             file.mkdirs();
-            File outputFile = new File(file,"oqatt-v."+version+".apk");
+            File outputFile = new File(file,"oqatt.apk");
             if(outputFile.exists()){
                 outputFile.delete();
             }
@@ -122,7 +122,7 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
 
     private void OpenNewVersion(String location) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(location + "oqatt-v."+version+".apk")),
+        intent.setDataAndType(Uri.fromFile(new File(location + "oqatt.apk")),
                 "application/vnd.android.package-archive");
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
