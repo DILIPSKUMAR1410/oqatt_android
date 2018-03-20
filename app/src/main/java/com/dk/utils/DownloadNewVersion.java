@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -121,10 +122,18 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
     }
 
     private void OpenNewVersion(String location) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(location + "oqatt.apk")),
-                "application/vnd.android.package-archive");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        File file = new File(location + "oqatt.apk");
+        Intent install = new Intent(Intent.ACTION_VIEW);
+
+        Uri apkURI = FileProvider.getUriForFile(
+                context,
+                context.getApplicationContext()
+                        .getPackageName() + ".provider", file);
+
+        install.setDataAndType(apkURI, "application/vnd.android.package-archive");
+
+        install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        context.startActivity(install);
     }
 }

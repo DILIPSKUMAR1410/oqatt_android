@@ -511,9 +511,10 @@ public class ApiCalls {
                             editor.apply();
                             if (response.has("app_version")) {
                                 PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
-                                String version = pInfo.versionName;
-                                if (response.getDouble("app_version") > Double.parseDouble(version)){
-                                    EventBus.getDefault().post(new AppUpdateVersion(response.getDouble("app_version")));
+                                int version = pInfo.versionCode;
+                                Log.d(">>>>>", String.valueOf(version));
+                                if (response.getInt("app_version") > version){
+                                    EventBus.getDefault().post(new AppUpdateVersion(response.getInt("app_version")));
 
                                 }
                             }

@@ -6,9 +6,9 @@ package com.dk.queue;
 
 public class AppUpdateVersion {
 
-    public final double version;
+    public final int version;
 
-    public AppUpdateVersion(double version) {
+    public AppUpdateVersion(int version) {
         this.version = version;
     }
 }
