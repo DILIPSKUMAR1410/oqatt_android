@@ -1,9 +1,11 @@
 package com.dk.main;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -14,7 +16,9 @@ import com.dk.fragments.CreatePollFragment;
 import com.dk.fragments.IncomingPollFragment;
 import com.dk.fragments.OutgoingPollFragment;
 import com.dk.graph.ApiCalls;
+import com.dk.queue.AppUpdateVersion;
 import com.dk.queue.TokenBalance;
+import com.dk.utils.DownloadNewVersion;
 import com.dk.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -123,4 +127,27 @@ public class MainActivity extends AppCompatActivity {
         menu.getItem(1).setTitle(event.message);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnAppUpdateVersion(AppUpdateVersion event) {
+        Log.d(">>>>>", String.valueOf(event.version));
+        AlertDialog.Builder builder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+        } else {
+            builder = new AlertDialog.Builder(this);
+        }
+        builder.setTitle("Update to new version")
+                .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    // continue with delete
+                    DownloadNewVersion atualizaApp = new DownloadNewVersion();
+                    atualizaApp.setversion(String.valueOf(event.version));
+                    atualizaApp.setContext(MainActivity.this);
+                    atualizaApp.execute();
+                })
+                .setNegativeButton(android.R.string.no, (dialog, which) -> {
+                    // do nothing
+                })
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .show();
+    }
 }

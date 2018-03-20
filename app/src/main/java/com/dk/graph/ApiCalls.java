@@ -3,6 +3,8 @@ package com.dk.graph;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.androidnetworking.common.Priority;
@@ -12,6 +14,7 @@ import com.dk.models.Poll;
 import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.queue.AddParticipants;
+import com.dk.queue.AppUpdateVersion;
 import com.dk.queue.Intialization;
 import com.dk.queue.RemovePoll;
 import com.dk.queue.TokenBalance;
@@ -48,7 +51,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = "Api calls ----->";
-    private static String url = "http://api.oqatt.com/api/";
+    private static String url = "http://192.168.0.102:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -506,15 +509,24 @@ public class ApiCalls {
                                 EventBus.getDefault().post(new TokenBalance("0"));
                             }
                             editor.apply();
+                            if (response.has("app_version")) {
+                                PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+                                String version = pInfo.versionName;
+                                if (response.getDouble("app_version") > Double.parseDouble(version)){
+                                    EventBus.getDefault().post(new AppUpdateVersion(response.getDouble("app_version")));
 
+                                }
+                            }
 
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
+                            }
+                            catch (PackageManager.NameNotFoundException e1) {
+                            e1.printStackTrace();
+                            } catch (JSONException e1) {
+                            e1.printStackTrace();
+                            }
 
                     }
-                });
+                    });
 
     }
 

@@ -3,6 +3,7 @@ package com.dk;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -24,13 +25,12 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         Log.d(">>>>>>>>>>", "In splash");
         ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.READ_CONTACTS}, RequestPermissionCode);
-
+                Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestPermissionCode);
     }
 
 
     @Override
-    public void onRequestPermissionsResult(int RC, String per[], int[] PResult) {
+    public void onRequestPermissionsResult(int RC, @NonNull String per[], @NonNull int[] PResult) {
 
         switch (RC) {
 
