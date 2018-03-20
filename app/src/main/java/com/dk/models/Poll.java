@@ -22,6 +22,7 @@ public class Poll implements Serializable {
     private String resultString;
     private String pollHash;
     private long type;
+    private boolean archive;
 
 
     public String getQuestion() {
@@ -79,5 +80,13 @@ public class Poll implements Serializable {
 
     public void setResultString(String resultString) {
         this.resultString = resultString;
+    }
+
+    public boolean isArchive() {
+        return archive;
+    }
+
+    public void setArchive(boolean archive) {
+        this.archive = archive;
     }
 }

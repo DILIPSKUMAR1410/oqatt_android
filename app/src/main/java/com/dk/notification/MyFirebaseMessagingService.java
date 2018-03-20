@@ -93,9 +93,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.pollHash, remoteMessage.getData().get("poll_hash")).build().find();
                 Poll outgoingPoll = outgoingPolls.get(0);
                 outgoingPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
+                outgoingPoll.setArchive(false);
                 pollBoxBox.put(outgoingPoll);
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
-                sendNotification("Checkout ! Someone anwsered your question");
+                sendNotification("Someone anwsered your question");
 
             }
             if (type == 2) {

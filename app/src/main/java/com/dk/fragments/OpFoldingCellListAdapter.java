@@ -13,13 +13,19 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.dk.App;
 import com.dk.main.R;
 import com.dk.models.Poll;
+import com.dk.queue.UpdatePoll;
 import com.ramotion.foldingcell.FoldingCell;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import io.objectbox.Box;
 
 /**
  * Simple example of ListAdapter for using with Folding Cell
@@ -48,6 +54,7 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             // binding view parts to view holder
             viewHolder.question = cell.findViewById(R.id.question);
             viewHolder.fold = cell.findViewById(R.id.button2);
+            viewHolder.fold = cell.findViewById(R.id.archive);
 //            viewHolder.contentLayout = op_cell.findViewById(R.id.contentLayout);
             cell.setTag(viewHolder);
 
@@ -92,6 +99,20 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 registerToggle(position);
             }
         });
+        viewHolder.archive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // toggle clicked op_cell state
+                Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                poll.setArchive(true);
+                pollBoxBox.put(poll);
+                // toggle clicked op_cell state
+                EventBus.getDefault().post(new UpdatePoll("Poll got archived"));
+                finalCell.toggle(false);
+                // register in adapter that state for selected op_cell is toggled
+                registerToggle(position);
+            }
+        });
 
         return cell;
     }
@@ -117,5 +138,6 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
     private static class ViewHolder {
         TextView question;
         Button fold;
+        Button archive;
     }
 }
