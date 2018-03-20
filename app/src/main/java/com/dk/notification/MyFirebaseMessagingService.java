@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -26,6 +27,7 @@ import com.dk.queue.UpdatePoll;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -41,6 +43,7 @@ import static android.app.NotificationManager.IMPORTANCE_HIGH;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
+    private FirebaseAnalytics mFirebaseAnalytics;
     private static final String TAG = "MyFirebaseMsgService";
 
     /**
@@ -68,6 +71,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             int type = Integer.parseInt(remoteMessage.getData().get("type"));
+            Bundle bundle = new Bundle();
+            ;
             if (type == 0) {
                 Poll incomingPoll = new Poll();
                 String sub_contact = remoteMessage.getData().get("sub_contact");
@@ -85,6 +90,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 pollBoxBox.put(incomingPoll);
                 EventBus.getDefault().post(new UpdatePoll("You got new poll "));
                 sendNotification("New question asked to you");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Q-rcv");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Question received");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
 
             }
             if (type == 1) {
@@ -97,6 +105,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 pollBoxBox.put(outgoingPoll);
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
                 sendNotification("Someone anwsered your question");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "A-rcv");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Answer received");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
 
             }
             if (type == 2) {
@@ -117,7 +128,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     }
                 }
                 sendNotification(contact + " added you in his network");
-
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "F-added");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Friend request");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
 
             }
             if (type == 3) {
@@ -129,6 +142,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     userBox.put(user);
                 }
                 sendNotification(contact + " accepted your request");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "FR-accept");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Friend request accept");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
             }
 
             if (type == 4) {
@@ -145,7 +161,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 pollBoxBox.put(incomingOpenPoll);
                 EventBus.getDefault().post(new UpdatePoll("You got new open poll "));
                 sendNotification("New question asked to you");
-
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "OQ-rcv");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "open question received");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
             }
 
 //            if (/* Check if data needs to be processed by long running job */ false) {
@@ -155,6 +173,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                // Handle message within 10 seconds
 //                handleNow();
 //            }
+
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         }
 

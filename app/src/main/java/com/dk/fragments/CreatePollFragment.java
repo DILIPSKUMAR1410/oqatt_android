@@ -89,8 +89,12 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
                     String EdittextID = "op" + i;
                     int EdittextresID = getResources().getIdentifier(EdittextID, "id", getContext().getPackageName());
                     EditText option = parent_linear_layout.findViewById(EdittextresID);
-                    String option_string = option.getText().toString();
-                    if (!option_string.trim().isEmpty()) {
+                    String option_string = option.getText().toString().trim();
+                    if (poll.getOptionsList()!= null && poll.getOptionsList().contains(option_string)) {
+                        Toast.makeText(getActivity(), "Please don't repeat the option!", Toast.LENGTH_LONG).show();
+                        return;
+                    }
+                    if (!option_string.isEmpty()) {
                         no_of_options += 1;
                         poll.insertOption(option_string);
                     }

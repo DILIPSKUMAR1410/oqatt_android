@@ -1,7 +1,9 @@
 package com.dk;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
@@ -20,6 +22,7 @@ import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.queue.AddParticipants;
 import com.dk.utils.Utils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,10 +50,13 @@ public class SelectFriendsActivity extends AppCompatActivity {
     int total_other;
     LottieAnimationView animationView;
     ArrayAdapter<String> adapter;
+    AlertDialog.Builder builder;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_select_friends);
         listview = findViewById(R.id.listView);
         poll = (Poll) getIntent().getSerializableExtra("poll");
@@ -84,7 +90,6 @@ public class SelectFriendsActivity extends AppCompatActivity {
 
         }
 
-
     }
 
     @Override
@@ -101,6 +106,11 @@ public class SelectFriendsActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.done_icon:
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Q-ask");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Question asked");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "event");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 selected_friends.clear();
                 sparseBooleanArray = listview.getCheckedItemPositions();
                 int i = 0;
@@ -205,6 +215,23 @@ public class SelectFriendsActivity extends AppCompatActivity {
         }
         friends_list_contact = mutual_friends_contact.toArray(new String[0]);
         listview.setAdapter(adapter);
+        listview.setOnItemClickListener((parent, view, position, id) -> {
+            if (friends_list_contact.length == position+1){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
+                } else {
+                    builder = new AlertDialog.Builder(this);
+                }
+                builder.setTitle("Carefully select this group")
+                        .setMessage("We know you respect "+poll.subject.getTarget().name+", please don't select this group if you are asking a personal question.")
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                            // continue with delete
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+
+            }
+        });
     }
 
 }
