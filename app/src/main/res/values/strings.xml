@@ -90,4 +90,8 @@
     <string name="title_activity_animation">AnimationActivity</string>
     <string name="friends_count">0</string>
     <string name="done">done</string>
+    <string name="archive">Archive</string>
+    <string name="close">Close</string>
+    <string name="none">None</string>
+    <string name="answer">Answer</string>
 </resources>

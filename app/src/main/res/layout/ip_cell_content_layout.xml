@@ -57,7 +57,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_weight="5"
                 android:background="@android:color/transparent"
-                android:text="None"
+                android:text="@string/none"
                 android:visibility="invisible" />
         </RadioGroup>
     </LinearLayout>
@@ -72,13 +72,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Answer" />
+            android:text="@string/answer" />
 
         <Button
             android:id="@+id/button2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Close" />
+            android:text="@string/close" />
     </LinearLayout>
 </LinearLayout>

@@ -54,7 +54,7 @@ public class OpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             // binding view parts to view holder
             viewHolder.question = cell.findViewById(R.id.question);
             viewHolder.fold = cell.findViewById(R.id.button2);
-            viewHolder.fold = cell.findViewById(R.id.archive);
+            viewHolder.archive = cell.findViewById(R.id.archive);
 //            viewHolder.contentLayout = op_cell.findViewById(R.id.contentLayout);
             cell.setTag(viewHolder);
 
