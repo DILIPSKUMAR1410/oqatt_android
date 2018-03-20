@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.support.v4.content.FileProvider;
 import android.util.Log;
@@ -123,17 +124,24 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
 
     private void OpenNewVersion(String location) {
         File file = new File(location + "oqatt.apk");
-        Intent install = new Intent(Intent.ACTION_VIEW);
+        Uri apkURI;
 
-        Uri apkURI = FileProvider.getUriForFile(
-                context,
-                context.getApplicationContext()
-                        .getPackageName() + ".provider", file);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            apkURI = FileProvider.getUriForFile(
+                    context,
+                    context.getApplicationContext()
+                            .getPackageName() + ".provider", file);
 
-        install.setDataAndType(apkURI, "application/vnd.android.package-archive");
-
-        install.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        context.startActivity(install);
+            Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+            intent.setData(apkURI);
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            context.startActivity(intent);
+        } else {
+            apkURI = Uri.fromFile(file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
     }
 }
