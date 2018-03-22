@@ -53,7 +53,7 @@ public class FriendListActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Friends");
         listview = findViewById(R.id.listView);
         Query<User> query = userBox.query().order(User_.name).equal(User_.knows_me, true).build();
-        animationView = (LottieAnimationView) findViewById(R.id.empty_animation);
+        animationView = findViewById(R.id.empty_animation);
         friends_list_name = query.property(User_.name).findStrings();
         if (friends_list_name.length < 1) {
             animationView.setAnimation("empty.json");
@@ -96,8 +96,17 @@ public class FriendListActivity extends AppCompatActivity {
         try {
             Log.d(TAG, "Refresh is started");
             Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
-            String[] objbox_user_list = userBox.query().build().property(User_.contact).distinct().findStrings();
-            List<String> objbox_user_contact_list = Arrays.asList(objbox_user_list);
+            Log.d(TAG, String.valueOf(userBox.query().build().count()));
+            List<User> users_contacts = userBox.query().order(User_.contact).build().find();
+//                    property(User_.contact).distinct().findStrings();
+            List<String> objbox_user_contact_list = new ArrayList<>();
+            String temp_contact_repeat = "";
+            for (User u:users_contacts) {
+                if (!temp_contact_repeat.equalsIgnoreCase(u.getContact()))
+                    objbox_user_contact_list.add(u.getContact());
+                temp_contact_repeat = u.getContact();
+            }
+
             Contacts.initialize(this);
             com.github.tamir7.contacts.Query q = Contacts.getQuery();
             q.hasPhoneNumber();
@@ -130,8 +139,16 @@ public class FriendListActivity extends AppCompatActivity {
             }
             userBox.put(users);
             if (fresh_contacts_list.isEmpty()) {
-                String[] x = userBox.query().equal(User_.knows_me, false).build().property(User_.contact).distinct().findStrings();
-                List<String> objbox_user_unidi_contact_list = Arrays.asList(x);
+                List<String> objbox_user_unidi_contact_list = new ArrayList<>();
+                List<User> x = userBox.query().equal(User_.knows_me, false).build().find();
+                String temp2_contact_repeat = "";
+                for (User u:x) {
+                    if (!temp2_contact_repeat.equalsIgnoreCase(u.getContact()))
+                        objbox_user_unidi_contact_list.add(u.getContact());
+                    temp2_contact_repeat = u.getContact();
+                }
+//                        .property(User_.contact).distinct().findStrings();
+//                List<String> objbox_user_unidi_contact_list = Arrays.asList(x);
                 ApiCalls.syncContacts(this, 2, (objbox_user_unidi_contact_list));
             } else {
                 ApiCalls.syncContacts(this, 3, fresh_contacts_list);

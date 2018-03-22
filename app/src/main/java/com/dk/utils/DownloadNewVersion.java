@@ -12,6 +12,8 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.dk.main.BuildConfig;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -127,10 +129,7 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
         Uri apkURI;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            apkURI = FileProvider.getUriForFile(
-                    context,
-                    context.getApplicationContext()
-                            .getPackageName() + ".provider", file);
+            apkURI = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
 
             Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
             intent.setData(apkURI);
