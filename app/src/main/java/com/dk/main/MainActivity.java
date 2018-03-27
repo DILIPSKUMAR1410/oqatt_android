@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import com.dk.fragments.CreatePollFragment;
 import com.dk.fragments.IncomingPollFragment;
 import com.dk.fragments.OutgoingPollFragment;
+import com.dk.fragments.ThreadFragment;
 import com.dk.graph.ApiCalls;
 import com.dk.queue.AppUpdateVersion;
 import com.dk.queue.TokenBalance;
@@ -50,10 +51,12 @@ public class MainActivity extends AppCompatActivity {
         final CreatePollFragment Cfragment = new CreatePollFragment();
         IncomingPollFragment Ifragment = new IncomingPollFragment();
         OutgoingPollFragment Ofragment = new OutgoingPollFragment();
+        ThreadFragment Tfragment = new ThreadFragment();
 
         fragmentList.add(Ifragment);
         fragmentList.add(Cfragment);
         fragmentList.add(Ofragment);
+        fragmentList.add(Tfragment);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.spaceTabLayout);

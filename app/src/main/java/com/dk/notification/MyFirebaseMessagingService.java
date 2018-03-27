@@ -166,6 +166,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "open question received");
                 bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
             }
+            if (type == 5) {
+                Poll incomingThread = new Poll();
+                String sub_contact = remoteMessage.getData().get("sub_contact");
+                Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
+                incomingThread.subject.setTarget(userBox.query().equal(User_.contact, sub_contact).build().findFirst());
+                String question = remoteMessage.getData().get("question").replaceAll("<.*>", incomingThread.subject.getTarget().name);
+                incomingThread.setQuestion(question);
+                incomingThread.setType(1);
+                incomingThread.setThread(true);
+                incomingThread.setPollHash(remoteMessage.getData().get("thread_hash"));
+                Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                pollBox.put(incomingThread);
+                EventBus.getDefault().post(new UpdatePoll("You got a thread invitation "));
+                sendNotification("You got a thread invitation");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "T-rcv");
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "thread invitation received");
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
+            }
 
 //            if (/* Check if data needs to be processed by long running job */ false) {
 //                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.

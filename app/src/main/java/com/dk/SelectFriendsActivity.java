@@ -2,9 +2,9 @@ package com.dk;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,6 +18,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.dk.graph.ApiCalls;
 import com.dk.main.R;
 import com.dk.models.Poll;
+import com.dk.models.Thread;
 import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.queue.AddParticipants;
@@ -44,14 +45,19 @@ public class SelectFriendsActivity extends AppCompatActivity {
     SparseBooleanArray sparseBooleanArray;
     ArrayList<String> selected_friends = new ArrayList<>();
     Poll poll;
+    Thread thread;
     String hex;
     Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+    Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
     Boolean isNotMentioned;
     int total_other;
+    User subject;
     LottieAnimationView animationView;
     ArrayAdapter<String> adapter;
     AlertDialog.Builder builder;
     private FirebaseAnalytics mFirebaseAnalytics;
+    boolean isPoll;
+    int MIN_GROUP_SIZE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +65,21 @@ public class SelectFriendsActivity extends AppCompatActivity {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_select_friends);
         listview = findViewById(R.id.listView);
-        poll = (Poll) getIntent().getSerializableExtra("poll");
+        isPoll = getIntent().getBooleanExtra("isPoll", true);
+        if (isPoll) {
+            Log.d(">>>>>>>>>>>>", "In List");
+
+            poll = (Poll) getIntent().getSerializableExtra("poll");
+            isNotMentioned = poll.subject.isNull();
+            subject = poll.subject.getTarget();
+        }
+        else {
+            thread = (Thread) getIntent().getSerializableExtra("thread");
+            isNotMentioned = thread.subject.isNull();
+            subject = thread.subject.getTarget();
+        }
+
         hex = getIntent().getStringExtra("hex");
-        isNotMentioned = poll.subject.isNull();
         animationView = (LottieAnimationView) findViewById(R.id.populate_wait_animation);
         animationView.setAnimation("populate_wait.json");
 
@@ -81,7 +99,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
             animationView.setVisibility(View.VISIBLE);
             animationView.playAnimation();
             try {
-                ApiCalls.getFriendsConnections(SelectFriendsActivity.this, poll.subject.getTarget().getContact());
+                ApiCalls.getFriendsConnections(SelectFriendsActivity.this, subject.getContact());
             } catch (JSONException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {
@@ -131,25 +149,37 @@ public class SelectFriendsActivity extends AppCompatActivity {
                         ticked += total_other;
                     }
                     ticked += selected_friends.size();
-                    if (ticked < 5) {
-                        Toast.makeText(SelectFriendsActivity.this, "Select atleast 5 friends !", Toast.LENGTH_LONG).show();
+                    if (ticked < MIN_GROUP_SIZE) {
+                        Toast.makeText(SelectFriendsActivity.this, "Select atleast "+MIN_GROUP_SIZE+" friends !", Toast.LENGTH_LONG).show();
 
                     } else {
                         try {
-                            ApiCalls.publishMentionedPoll(SelectFriendsActivity.this, pollBox.put(poll), hex, selected_friends);
+                            if (isPoll)
+                            { ApiCalls.publishMentionedPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
                             Utils.redirectToAnim(SelectFriendsActivity.this, 0);
+                            }
+                            else {
+                                ApiCalls.publishMentionedThread(SelectFriendsActivity.this, thread, hex, selected_friends);
+                                Utils.redirectToAnim(SelectFriendsActivity.this, 0);
+                            }
                         } catch (JSONException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
 
                 } else {
-                    if (selected_friends.size() < 5) {
-                        Toast.makeText(SelectFriendsActivity.this, "Select atleast 5 friends !", Toast.LENGTH_LONG).show();
+                    if (selected_friends.size() < MIN_GROUP_SIZE) {
+                        Toast.makeText(SelectFriendsActivity.this, "Select atleast "+MIN_GROUP_SIZE+" friends !", Toast.LENGTH_LONG).show();
                     } else {
                         try {
-                            ApiCalls.publishOpenPoll(SelectFriendsActivity.this, pollBox.put(poll), hex, selected_friends);
-                            Utils.redirectToAnim(SelectFriendsActivity.this, 0);
+                            if (isPoll) {
+                                ApiCalls.publishOpenPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
+                                Utils.redirectToAnim(SelectFriendsActivity.this, 0);
+                            }
+                            else {
+                                ApiCalls.publishOpenThread(SelectFriendsActivity.this, thread, hex, selected_friends);
+                                Utils.redirectToAnim(SelectFriendsActivity.this, 0);
+                            }
                         } catch (JSONException | InterruptedException e) {
                             e.printStackTrace();
                         }
@@ -178,12 +208,6 @@ public class SelectFriendsActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnAddParticipants(AddParticipants event) {
         ArrayList<String> participants = new ArrayList<String>();
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            //Do something after 2000ms
-            animationView.setVisibility(View.GONE);
-            animationView.cancelAnimation();
-        }, 2000);
         if (event.mutual != null) {
             for (int i = 0; i < event.mutual.length(); i++) {
                 try {
@@ -210,7 +234,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
                         android.R.id.text1, mutual_friends_name);
         if (event.unknown > 0) {
             total_other = event.unknown;
-            adapter.add("Want to send this poll to " + total_other + " other friends of " + poll.subject.getTarget().name + " ?");
+            adapter.add("Want to send to " + total_other + " other friends of " + subject.name + " ?");
             mutual_friends_contact.add("others");
         }
         friends_list_contact = mutual_friends_contact.toArray(new String[0]);
@@ -223,7 +247,7 @@ public class SelectFriendsActivity extends AppCompatActivity {
                     builder = new AlertDialog.Builder(this);
                 }
                 builder.setTitle("Carefully select this group")
-                        .setMessage("We know you respect "+poll.subject.getTarget().name+", please don't select this group if you are asking a personal question.")
+                        .setMessage("We know you respect "+subject.name+", please don't select this group if you are asking a personal question.")
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             // continue with delete
                         })
@@ -232,6 +256,8 @@ public class SelectFriendsActivity extends AppCompatActivity {
 
             }
         });
+            animationView.setVisibility(View.GONE);
+            animationView.cancelAnimation();
     }
 
 }

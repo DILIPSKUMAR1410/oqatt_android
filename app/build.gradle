@@ -1,13 +1,14 @@
+//noinspection OldTargetApi
 apply plugin: 'com.android.application'
 apply plugin: 'io.objectbox'
 apply plugin: 'io.fabric'
 android {
     compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         applicationId "com.dk"
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         versionCode 3
         versionName '0.03'
@@ -37,7 +38,7 @@ android {
         compile 'com.android.support:recyclerview-v7:26.1.0'
         compile 'com.amitshekhar.android:android-networking:1.0.0'
         compile 'io.objectbox:objectbox-android:1.4.1'
-        compile 'com.google.firebase:firebase-auth:11.8.0'
+        compile 'com.google.firebase:firebase-auth:12.0.0'
         compile 'com.amitshekhar.android:rx2-android-networking:1.0.0'
         testCompile 'junit:junit:4.12'
         compile 'io.reactivex.rxjava2:rxjava:2.1.4'
@@ -51,14 +52,15 @@ android {
         compile 'org.apache.commons:commons-lang3:3.4'
         compile 'com.squareup.picasso:picasso:2.5.2'
         compile 'com.airbnb.android:lottie:2.2.5'
-        compile 'com.google.firebase:firebase-messaging:11.8.0'
+        compile 'com.google.firebase:firebase-messaging:12.0.0'
         compile 'com.firebase:firebase-jobdispatcher:0.6.0'
         annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
         annotationProcessor 'io.objectbox:objectbox-processor:1.4.1'
         compile('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
             transitive = true
         }
-        compile 'com.google.firebase:firebase-core:11.8.0'
+        compile 'com.google.firebase:firebase-core:12.0.0'
+        compile 'com.github.stfalcon:chatkit:0.2.2'
     }
 
 
@@ -84,7 +86,7 @@ android {
         }
         signingConfigs {
             release {
-                storeFile file("/Users/dk/apk-key")
+                storeFile file("/Users/dk/AndroidStudioProjects/apk-key")
                 storePassword "osmentos"
                 keyAlias "key0"
                 keyPassword "osmentos"
@@ -104,4 +106,5 @@ android {
     apply plugin: 'com.google.gms.google-services'
 }
 dependencies {
+    implementation 'com.android.support:support-v4:26.1.0'
 }

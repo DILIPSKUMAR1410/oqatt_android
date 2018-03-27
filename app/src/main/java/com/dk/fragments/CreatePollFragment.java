@@ -6,11 +6,13 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -21,7 +23,9 @@ import com.dk.main.R;
 import com.dk.main.RecyclerItemClickListener;
 import com.dk.main.UsersMentionAdapter;
 import com.dk.models.Mention;
+import com.dk.models.Message;
 import com.dk.models.Poll;
+import com.dk.models.Thread;
 import com.dk.models.User;
 import com.dk.models.User_;
 import com.percolate.caffeine.ViewUtils;
@@ -51,6 +55,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
     View rootView;
     Context context;
     FloatingActionButton publishButton;
+    CheckBox checkbox;
     Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
 
     @Override
@@ -65,93 +70,38 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         setupMentionsList();
         parent_linear_layout = rootView.findViewById(R.id.parent_linear_layout);
         publishButton = rootView.findViewById(R.id.publish_button);
-
-        publishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (String.valueOf(commentField.getText()).trim().length() < 1) {
-                    Toast.makeText(getActivity(), "Please ask question!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-                SharedPreferences prefs = getActivity().getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
-                String token_bal = prefs.getString("token_bal", null);
-                if (token_bal == null || Integer.parseInt(token_bal) < 3) {
-                    Toast.makeText(getActivity(), "Not enough bolts!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                Poll poll = new Poll();
-
-                poll.setQuestion(String.valueOf(commentField.getText()));
-
-                int no_of_options = 0;
-                for (int i = 0; i < 4; i++) {
-                    String EdittextID = "op" + i;
-                    int EdittextresID = getResources().getIdentifier(EdittextID, "id", getContext().getPackageName());
-                    EditText option = parent_linear_layout.findViewById(EdittextresID);
-                    String option_string = option.getText().toString().trim();
-                    if (poll.getOptionsList()!= null && poll.getOptionsList().contains(option_string)) {
-                        Toast.makeText(getActivity(), "Please don't repeat the option!", Toast.LENGTH_LONG).show();
-                        return;
-                    }
-                    if (!option_string.isEmpty()) {
-                        no_of_options += 1;
-                        poll.insertOption(option_string);
-                    }
-                }
-
-                if (no_of_options < 2 || poll.getOptionsList()== null || poll.getOptionsList().size() < 2) {
-                    Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (mentions.getInsertedMentions().size() > 1) {
-                    Toast.makeText(getActivity(), "Mention only one !", Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                poll.setType(0);
-                poll.setResultString("0,0,0,0");
-                Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-                MessageDigest digest = null;
-                String uid = prefs.getString("uid", null);
-                String poll_pkg;
-                if (mentions.getInsertedMentions().size() == 1) {
-                    Mention mention = (Mention) mentions.getInsertedMentions().get(0);
-                    poll.subject.setTarget(mention.getMentionUser());
-                    poll_pkg = poll.getQuestion() + poll.subject.getTarget().getContact() + poll.getOptionString() + uid;
-                } else {
-                    poll_pkg = poll.getQuestion() + poll.getOptionString() + uid;
-                }
+        checkbox = rootView.findViewById(R.id.checkbox);
+        CardView optionHolder0 = parent_linear_layout.findViewById(R.id.cop0);
+        CardView optionHolder1 = parent_linear_layout.findViewById(R.id.cop1);
+        CardView optionHolder2 = parent_linear_layout.findViewById(R.id.cop2);
+        CardView optionHolder3 = parent_linear_layout.findViewById(R.id.cop3);
 
 
-                String hex = "";
-                try {
-                    digest = MessageDigest.getInstance("SHA-256");
-                    byte[] hash = digest.digest(poll_pkg.getBytes(Charset.forName("UTF-8")));
-                    hex = String.format("%064x", new BigInteger(1, hash));
-                    poll.setPollHash(hex);
 
-                } catch (NoSuchAlgorithmException e) {
-                    e.printStackTrace();
-                }
+        checkbox.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (b)
+            {
 
-
-                Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
-                intent.putExtra("hex", hex);
-                intent.putExtra("poll", poll);
-
-//
-                if (mentions.getInsertedMentions().size() < 1) {
-
-                    startActivity(intent);
-
-                } else {
-                    startActivity(intent);
-                }
-
-
+                optionHolder0.setVisibility(View.VISIBLE);
+                optionHolder1.setVisibility(View.VISIBLE);
+                optionHolder2.setVisibility(View.VISIBLE);
+                optionHolder3.setVisibility(View.VISIBLE);
             }
+            else {
+                optionHolder0.setVisibility(View.GONE);
+                optionHolder1.setVisibility(View.GONE);
+                optionHolder2.setVisibility(View.GONE);
+                optionHolder3.setVisibility(View.GONE);
+            }
+        });
+
+
+
+        publishButton.setOnClickListener(v -> {
+            if (checkbox.isChecked())
+                createPoll();
+            else
+                createThread();
         });
 
         // Inflate the layout for this fragment
@@ -186,24 +136,21 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         mentionsList.setAdapter(usersMentionAdapter);
 
         // set on item click listener
-        mentionsList.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), new RecyclerItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(final View view, final int position) {
-                final User user = usersMentionAdapter.getItem(position);
-                /*
-                 * We are creating a mentions object which implements the
-                 * <code>Mentionable</code> interface this allows the library to set the offset
-                 * and length of the mention.
-                 */
-                if (user != null) {
-                    final Mention mention = new Mention();
-                    mention.setMentionName("<" + user.name + ">");
-                    mention.setMentionUser(user);
-                    mentions.insertMention(mention);
-                }
-                parent_linear_layout.setVisibility(View.VISIBLE);
-
+        mentionsList.addOnItemTouchListener(new RecyclerItemClickListener(getActivity(), (view, position) -> {
+            final User user = usersMentionAdapter.getItem(position);
+            /*
+             * We are creating a mentions object which implements the
+             * <code>Mentionable</code> interface this allows the library to set the offset
+             * and length of the mention.
+             */
+            if (user != null) {
+                final Mention mention = new Mention();
+                mention.setMentionName("<" + user.name + ">");
+                mention.setMentionUser(user);
+                mentions.insertMention(mention);
             }
+            parent_linear_layout.setVisibility(View.VISIBLE);
+
         }));
     }
 
@@ -272,4 +219,132 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         }
     }
 
+
+    private void createPoll(){
+        if (String.valueOf(commentField.getText()).trim().length() < 1) {
+            Toast.makeText(getActivity(), "Please ask question!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        SharedPreferences prefs = getActivity().getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String token_bal = prefs.getString("token_bal", null);
+        if (token_bal == null || Integer.parseInt(token_bal) < 3) {
+            Toast.makeText(getActivity(), "Not enough bolts!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Poll poll = new Poll();
+
+        poll.setQuestion(String.valueOf(commentField.getText()));
+
+        int no_of_options = 0;
+        for (int i = 0; i < 4; i++) {
+            String EdittextID = "op" + i;
+            int EdittextresID = getResources().getIdentifier(EdittextID, "id", getContext().getPackageName());
+            EditText option = parent_linear_layout.findViewById(EdittextresID);
+            String option_string = option.getText().toString().trim();
+            if (poll.getOptionsList()!= null && poll.getOptionsList().contains(option_string)) {
+                Toast.makeText(getActivity(), "Please don't repeat the option!", Toast.LENGTH_LONG).show();
+                return;
+            }
+            if (!option_string.isEmpty()) {
+                no_of_options += 1;
+                poll.insertOption(option_string);
+            }
+        }
+
+        if (no_of_options < 2 || poll.getOptionsList()== null || poll.getOptionsList().size() < 2) {
+            Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (mentions.getInsertedMentions().size() > 1) {
+            Toast.makeText(getActivity(), "Mention only one !", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        poll.setType(0);
+        poll.setResultString("0,0,0,0");
+        MessageDigest digest = null;
+        String uid = prefs.getString("uid", null);
+        String poll_pkg;
+        if (mentions.getInsertedMentions().size() == 1) {
+            Mention mention = (Mention) mentions.getInsertedMentions().get(0);
+            poll.subject.setTarget(mention.getMentionUser());
+            poll_pkg = poll.getQuestion() + poll.subject.getTarget().getContact() + poll.getOptionString() + uid;
+        } else {
+            poll_pkg = poll.getQuestion() + poll.getOptionString() + uid;
+        }
+
+
+        String hex = "";
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(poll_pkg.getBytes(Charset.forName("UTF-8")));
+            hex = String.format("%064x", new BigInteger(1, hash));
+            poll.setPollHash(hex);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
+        Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
+        intent.putExtra("hex", hex);
+        intent.putExtra("poll", poll);
+        intent.putExtra("isPoll", true);
+
+        startActivity(intent);
+
+    }
+
+    private void createThread(){
+        if (String.valueOf(commentField.getText()).trim().length() < 1) {
+            Toast.makeText(getActivity(), "Please ask question!", Toast.LENGTH_LONG).show();
+            return;
+        }
+        SharedPreferences prefs = getActivity().getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String token_bal = prefs.getString("token_bal", null);
+        if (token_bal == null || Integer.parseInt(token_bal) < 3) {
+            Toast.makeText(getActivity(), "Not enough bolts!", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Thread thread = new Thread(String.valueOf(commentField.getText()),new Message("Yay! you created a thread!"));
+
+
+        if (mentions.getInsertedMentions().size() > 1) {
+            Toast.makeText(getActivity(), "Mention only one !", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        MessageDigest digest = null;
+        String uid = prefs.getString("uid", null);
+        String thread_pkg;
+        if (mentions.getInsertedMentions().size() == 1) {
+            Mention mention = (Mention) mentions.getInsertedMentions().get(0);
+            thread.subject.setTarget(mention.getMentionUser());
+            thread_pkg = thread.getDialogName() + thread.subject.getTarget().getContact() + uid;
+        } else {
+            thread_pkg = thread.getDialogName()+ uid;
+        }
+
+
+        String hex = "";
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(thread_pkg.getBytes(Charset.forName("UTF-8")));
+            hex = String.format("%064x", new BigInteger(1, hash));
+            thread.setThreadHash(hex);
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+
+        Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
+        intent.putExtra("hex", hex);
+        intent.putExtra("thread", thread);
+        intent.putExtra("isPoll", false);
+        startActivity(intent);
+    }
 }

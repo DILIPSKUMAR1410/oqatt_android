@@ -23,6 +23,7 @@ public class Poll implements Serializable {
     private String pollHash;
     private long type;
     private boolean archive;
+    private boolean isThread;
 
 
     public String getQuestion() {
@@ -88,5 +89,13 @@ public class Poll implements Serializable {
 
     public void setArchive(boolean archive) {
         this.archive = archive;
+    }
+
+    public boolean isThread() {
+        return isThread;
+    }
+
+    public void setThread(boolean thread) {
+        isThread = thread;
     }
 }

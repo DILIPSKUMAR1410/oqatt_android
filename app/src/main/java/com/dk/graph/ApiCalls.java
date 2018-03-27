@@ -11,6 +11,7 @@ import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.dk.App;
 import com.dk.models.Poll;
+import com.dk.models.Thread;
 import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.queue.AddParticipants;
@@ -19,6 +20,7 @@ import com.dk.queue.Intialization;
 import com.dk.queue.RemovePoll;
 import com.dk.queue.TokenBalance;
 import com.dk.queue.UpdateFriendList;
+import com.dk.queue.UpdateThread;
 import com.dk.utils.Utils;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,7 +53,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = "Api calls ----->";
-    private static String url = "http://api.oqatt.com/api/";
+    private static String url = "http://192.168.0.101:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -228,10 +230,8 @@ public class ApiCalls {
 
     }
 
-    public static void publishMentionedPoll(final Context context, long poll_id, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
+    public static void publishMentionedPoll(final Context context, Poll poll, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
 
-        Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-        Poll poll = pollBoxBox.get(poll_id);
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
         JSONObject jsonObject = new JSONObject();
@@ -297,15 +297,14 @@ public class ApiCalls {
                             e.printStackTrace();
                         }
 
-
+                        Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                        pollBox.put(poll);
                     }
                 });
 
     }
 
-    public static void publishOpenPoll(final Context context, long poll_id, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
-        Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-        Poll poll = pollBoxBox.get(poll_id);
+    public static void publishOpenPoll(final Context context, Poll poll, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
         JSONObject jsonObject = new JSONObject();
@@ -370,7 +369,8 @@ public class ApiCalls {
                             e.printStackTrace();
                         }
 
-
+                        Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                        pollBox.put(poll);
                     }
                 });
 
@@ -644,6 +644,152 @@ public class ApiCalls {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                    }
+                });
+
+    }
+    public static void publishMentionedThread(final Context context, Thread thread, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("question", thread.getDialogName());
+        jsonObject.put("thread_hash", hex);
+        jsonObject.put("sub_contact", thread.subject.getTarget().getContact());
+        jsonObject.put("selected_friends", new JSONArray(selected_friends));
+        Rx2AndroidNetworking.post(url + "user/{uid}/thread/publish")
+                .addPathParameter("uid", uid)
+                .addJSONObjectBody(jsonObject) // posting json
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+                        try {
+                            SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
+                            if (response.has("token_bal")) {
+                                editor.putString("token_bal", response.getString("token_bal"));
+                                EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
+                            } else {
+                                editor.putString("token_bal", null);
+                                EventBus.getDefault().post(new TokenBalance("0"));
+                            }
+                            editor.apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                        threadBox.put(thread);
+
+                        Log.d(TAG, String.valueOf(thread.getLastMessage().getCreatedAt()));
+                        EventBus.getDefault().post(new UpdateThread("Thread created",thread));
+
+
+                    }
+                });
+
+    }
+    public static void publishOpenThread(final Context context, Thread thread, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("question", thread.getDialogName());
+        jsonObject.put("thread_hash", hex);
+        jsonObject.put("selected_friends", new JSONArray(selected_friends));
+        Rx2AndroidNetworking.post(url + "user/{uid}/thread/publish/open")
+                .addPathParameter("uid", uid)
+                .addJSONObjectBody(jsonObject) // posting json
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+                        try {
+                            SharedPreferences.Editor editor = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE).edit();
+                            if (response.has("token_bal")) {
+                                editor.putString("token_bal", response.getString("token_bal"));
+                                EventBus.getDefault().post(new TokenBalance(response.getString("token_bal")));
+                            } else {
+                                editor.putString("token_bal", null);
+                                EventBus.getDefault().post(new TokenBalance("0"));
+                            }
+                            editor.apply();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                        Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                        threadBox.put(thread);
+                        EventBus.getDefault().post(new UpdateThread("Thread created",thread));
                     }
                 });
 

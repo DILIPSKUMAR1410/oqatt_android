@@ -6,6 +6,7 @@ package com.dk.fragments;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,17 +16,25 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.dk.App;
 import com.dk.graph.ApiCalls;
 import com.dk.main.R;
+import com.dk.models.Message;
 import com.dk.models.Poll;
+import com.dk.models.Thread;
+import com.dk.queue.RemovePoll;
+import com.dk.queue.UpdateThread;
 import com.dk.utils.Utils;
 import com.ramotion.foldingcell.FoldingCell;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
+import io.objectbox.Box;
 
 /**
  * Simple example of ListAdapter for using with Folding Cell
@@ -55,22 +64,30 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             viewHolder.question = cell.findViewById(R.id.question);
             viewHolder.fold = cell.findViewById(R.id.button2);
             viewHolder.radioGroup = cell.findViewById(R.id.rg);
-            viewHolder.vote = cell.findViewById(R.id.vote_button);
-            assert poll != null;
-            ArrayList<String> options = poll.getOptionsList();
-            for (int i = 0; i < options.size(); i++) {
-                String RadioButtonID = "op" + i;
-//                String CardID = "cop" + i;
-                int RadioButtonresID = getContext().getResources().getIdentifier(RadioButtonID, "id", getContext().getPackageName());
-//                int cardresID = getContext().getResources().getIdentifier(CardID, "id", getContext().getPackageName());
-                RadioButton radioButton = cell.findViewById(RadioButtonresID);
-//                CardView card = cell.findViewById(cardresID);
-//                card.setVisibility(View.VISIBLE);
-                radioButton.setText(options.get(i));
-                radioButton.setVisibility(View.VISIBLE);
+            viewHolder.action_button = cell.findViewById(R.id.action_button);
+            viewHolder.thread_invite = cell.findViewById(R.id.thread_invite);
+
+            if (poll.isThread())
+            {
+                viewHolder.thread_invite.setVisibility(View.VISIBLE);
+                viewHolder.action_button.setText("Join");
             }
-
-
+            else {
+                viewHolder.radioGroup.setVisibility(View.VISIBLE);
+                viewHolder.action_button.setText("Anwser");
+                ArrayList<String> options = poll.getOptionsList();
+                for (int i = 0; i < options.size(); i++) {
+                    String RadioButtonID = "op" + i;
+                    //                String CardID = "cop" + i;
+                    int RadioButtonresID = getContext().getResources().getIdentifier(RadioButtonID, "id", getContext().getPackageName());
+                    //                int cardresID = getContext().getResources().getIdentifier(CardID, "id", getContext().getPackageName());
+                    RadioButton radioButton = cell.findViewById(RadioButtonresID);
+                    //                CardView card = cell.findViewById(cardresID);
+                    //                card.setVisibility(View.VISIBLE);
+                    radioButton.setText(options.get(i));
+                    radioButton.setVisibility(View.VISIBLE);
+                }
+            }
             cell.setTag(viewHolder);
         } else {
             // for existing op_cell set valid valid state(without animation)
@@ -93,10 +110,31 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 registerToggle(position);
             }
         });
+        viewHolder.action_button.setOnClickListener(v -> {
+            Log.d(">>>>>>>", "Join button");
+            if (poll.isThread())
+            {
+                finalCell.toggle(false);
+                Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
 
-        viewHolder.vote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+                Thread thread = new Thread(poll.getQuestion(),new Message("You accepted the invite"));
+                thread.setThreadHash(poll.getPollHash());
+
+                if (!poll.subject.isNull())
+                {
+                    thread.subject.setTarget(poll.subject.getTarget());
+                    thread.setNameMentioned(true);
+                }
+
+                threadBox.put(thread);
+                pollBox.remove(poll);
+                EventBus.getDefault().post(new RemovePoll(poll));
+                EventBus.getDefault().post(new UpdateThread("Gottcha! subscribed to topic",thread));
+
+                registerToggle(position);
+            }
+            else {
                 // toggle clicked op_cell state
                 if (viewHolder.radioGroup.getCheckedRadioButtonId() == -1) {
                     // no radio buttons are checked
@@ -140,8 +178,9 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
     // View lookup cache
     private static class ViewHolder {
         TextView question;
+        TextView thread_invite;
         Button fold;
         RadioGroup radioGroup;
-        Button vote;
+        Button action_button;
     }
 }

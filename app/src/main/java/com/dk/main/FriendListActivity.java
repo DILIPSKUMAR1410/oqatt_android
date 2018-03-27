@@ -1,7 +1,6 @@
 package com.dk.main;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -175,12 +174,6 @@ public class FriendListActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnUpdateFriendList(UpdateFriendList event) {
         Log.d(TAG, event.message);
-        Handler handler = new Handler();
-        handler.postDelayed(() -> {
-            //Do something after 2000ms
-            animationView.setVisibility(View.GONE);
-            animationView.cancelAnimation();
-        }, 2000);
 
         Query<User> query = userBox.query().order(User_.name).equal(User_.knows_me, true).build();
         friends_list_name = query.property(User_.name).findStrings();
@@ -194,11 +187,8 @@ public class FriendListActivity extends AppCompatActivity {
             lst = new ArrayList<>(Arrays.asList(friends_list_name));
             adapter.addAll(lst);
             adapter.notifyDataSetChanged();
-            handler.postDelayed(() -> {
-                //Do something after 2000ms
-                animationView.setVisibility(View.GONE);
-                animationView.cancelAnimation();
-            }, 2000);
         }
+        animationView.setVisibility(View.GONE);
+        animationView.cancelAnimation();
     }
 }
