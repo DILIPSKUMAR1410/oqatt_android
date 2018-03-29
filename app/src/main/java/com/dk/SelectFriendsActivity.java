@@ -70,7 +70,9 @@ public class SelectFriendsActivity extends AppCompatActivity {
             isNotMentioned = poll.subject.isNull();
             subject = poll.subject.getTarget();
         } else {
-            thread = (Thread) getIntent().getSerializableExtra("thread");
+            long threadId = getIntent().getLongExtra("threadId", -1);
+            thread = threadBox.get(threadId);
+            threadBox.remove(threadId);
             isNotMentioned = thread.subject.isNull();
             subject = thread.subject.getTarget();
         }

@@ -64,16 +64,17 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
 
     @Override
     public void onDialogClick(Thread thread) {
-        Log.e(">>>>>>>>>>.", "Room opening");
-        Intent intent = new Intent(getActivity(), DefaultMessagesActivity.class);
-        intent.putExtra("threadID", thread.getT_id());
-        startActivity(intent);
-
+        Log.e(">>>>>>>>>>.", "Check poll or thread");
+        if (thread.getOptionString() ==null) {
+            Intent intent = new Intent(getActivity(), DefaultMessagesActivity.class);
+            intent.putExtra("threadID", thread.getT_id());
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onDialogLongClick(Thread thread) {
-        Log.e(">>>>>>>>>>.", "Room opening");
+        Log.e(">>>>>>>>>>.", "Menu options");
 
     }
 

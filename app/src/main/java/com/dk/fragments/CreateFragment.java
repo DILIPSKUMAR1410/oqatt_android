@@ -54,6 +54,7 @@ public class CreateFragment extends Fragment implements QueryListener, Suggestio
     public UsersMentionAdapter usersMentionAdapter;
     public LinearLayout parent_linear_layout;
     View rootView;
+    Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
     Context context;
     FloatingActionButton publishButton;
     CheckBox checkbox;
@@ -339,10 +340,10 @@ public class CreateFragment extends Fragment implements QueryListener, Suggestio
             e.printStackTrace();
         }
 
-
+        threadBox.put(thread);
         Intent intent = new Intent(getActivity(), SelectFriendsActivity.class);
         intent.putExtra("hex", hex);
-        intent.putExtra("thread", thread);
+        intent.putExtra("threadId", thread.getT_id());
         intent.putExtra("isPoll", false);
         startActivity(intent);
     }

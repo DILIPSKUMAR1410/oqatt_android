@@ -184,7 +184,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                 Thread thread = threadBox.query().equal(Thread_.threadHash, remoteMessage.getData().get("thread_hash")).build().findFirst();
                 assert thread != null;
-                Message message = new Message(remoteMessage.getData().get("thread_hash"), remoteMessage.getData().get("passkey"));
+                Message message = new Message(remoteMessage.getData().get("message"), remoteMessage.getData().get("passkey"));
                 thread.setLastMessage(message);
                 threadBox.put(thread);
                 EventBus.getDefault().post(new MessageList(message));

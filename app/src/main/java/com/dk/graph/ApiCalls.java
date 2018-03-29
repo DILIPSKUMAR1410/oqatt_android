@@ -52,7 +52,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class ApiCalls {
 
     private static final String TAG = "Api calls ----->";
-    private static String url = "http://192.168.0.101:8000/api/";
+    private static String url = "http://192.168.0.102:8000/api/";
 
     public static void createUser(final Context context) {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -812,7 +812,7 @@ public class ApiCalls {
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("thread_hash", thread.getThreadHash());
         jsonObject.put("passkey", thread.getPasskey());
-        jsonObject.put("message", message);
+        jsonObject.put("message", message.getText());
         Rx2AndroidNetworking.post(url + "user/{uid}/thread/message/send")
                 .addPathParameter("uid", uid)
                 .addJSONObjectBody(jsonObject) // posting json
