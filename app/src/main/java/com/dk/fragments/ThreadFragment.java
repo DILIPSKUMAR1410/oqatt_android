@@ -37,6 +37,8 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
     View rootView;
     DialogsListAdapter threadsListAdapter;
     private ArrayList<Thread> threads = new ArrayList<>();
+    Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +54,7 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
         threads = (ArrayList<Thread>) threadBox.query().build().find();
 
         threadsListAdapter.addItems(threads);
-
+        threadsListAdapter.sortByLastMessageDate();
         threadsListView.setAdapter(threadsListAdapter);
         threadsListAdapter.setOnDialogClickListener(this);
         threadsListAdapter.setOnDialogLongClickListener(this);
@@ -67,6 +69,8 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
         Log.e(">>>>>>>>>>.", "Check poll or thread");
         if (thread.getOptionString() ==null) {
             thread.setUnreadCount(0);
+            threadBox.put(thread);
+            threadsListAdapter.updateItemById(thread);
             Intent intent = new Intent(getActivity(), DefaultMessagesActivity.class);
             intent.putExtra("threadID", thread.getT_id());
             startActivity(intent);
@@ -93,9 +97,10 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateThread(UpdateThread event) {
-        if (event.type == 0)
+        if (event.type == 0) {
             threadsListAdapter.addItem(event.thread);
-        threadsListAdapter.notifyDataSetChanged();
+        }
+        threadsListAdapter.updateItemById(event.thread);
     }
 
 }

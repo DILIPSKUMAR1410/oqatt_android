@@ -27,6 +27,7 @@ import com.dk.models.User;
 import com.dk.models.User_;
 import com.dk.queue.MessageList;
 import com.dk.queue.UpdatePoll;
+import com.dk.queue.UpdateThread;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
@@ -189,6 +190,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 thread.setUnreadCount(thread.getUnreadCount()+1);
                 threadBox.put(thread);
                 EventBus.getDefault().post(new MessageList(message));
+                EventBus.getDefault().post(new UpdateThread(1, thread));
                 sendNotification("Message received");
             }
 //            if (/* Check if data needs to be processed by long running job */ false) {
