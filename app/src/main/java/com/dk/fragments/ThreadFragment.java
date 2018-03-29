@@ -93,7 +93,8 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateThread(UpdateThread event) {
-        threadsListAdapter.addItem(event.thread);
+        if (event.type == 0)
+            threadsListAdapter.addItem(event.thread);
         threadsListAdapter.notifyDataSetChanged();
     }
 

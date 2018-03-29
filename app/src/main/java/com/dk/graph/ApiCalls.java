@@ -301,7 +301,7 @@ public class ApiCalls {
                         thread.setNameMentioned(true);
                         Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                         threadBox.put(thread);
-                        EventBus.getDefault().post(new UpdateThread("Poll created", thread));
+                        EventBus.getDefault().post(new UpdateThread(0, thread));
 
                     }
                 });
@@ -377,7 +377,7 @@ public class ApiCalls {
                         thread.setThreadHash(poll.getPollHash());
                         Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                         threadBox.put(thread);
-                        EventBus.getDefault().post(new UpdateThread("Open poll created", thread));
+                        EventBus.getDefault().post(new UpdateThread(0, thread));
 
                     }
                 });
@@ -725,7 +725,7 @@ public class ApiCalls {
                         threadBox.put(thread);
 
                         Log.d(TAG, String.valueOf(thread.getLastMessage().getCreatedAt()));
-                        EventBus.getDefault().post(new UpdateThread("Thread created", thread));
+                        EventBus.getDefault().post(new UpdateThread(0, thread));
 
 
                     }
@@ -800,7 +800,7 @@ public class ApiCalls {
 
                         Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                         threadBox.put(thread);
-                        EventBus.getDefault().post(new UpdateThread("Thread created", thread));
+                        EventBus.getDefault().post(new UpdateThread(0, thread));
                     }
                 });
 
@@ -860,6 +860,7 @@ public class ApiCalls {
                         thread.setLastMessage(message);
                         threadBox.put(thread);
                         EventBus.getDefault().post(new MessageList(message));
+                        EventBus.getDefault().post(new UpdateThread(1, thread));
                     }
                 });
 

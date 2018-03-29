@@ -129,7 +129,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 threadBox.put(thread);
                 pollBox.remove(poll);
                 EventBus.getDefault().post(new RemovePoll(poll));
-                EventBus.getDefault().post(new UpdateThread("Gotcha! subscribed to topic", thread));
+                EventBus.getDefault().post(new UpdateThread(0, thread));
 
                 registerToggle(position);
             } else {
