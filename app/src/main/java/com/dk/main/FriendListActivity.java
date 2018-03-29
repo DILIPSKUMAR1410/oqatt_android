@@ -100,7 +100,7 @@ public class FriendListActivity extends AppCompatActivity {
 //                    property(User_.contact).distinct().findStrings();
             List<String> objbox_user_contact_list = new ArrayList<>();
             String temp_contact_repeat = "";
-            for (User u:users_contacts) {
+            for (User u : users_contacts) {
                 if (!temp_contact_repeat.equalsIgnoreCase(u.getContact()))
                     objbox_user_contact_list.add(u.getContact());
                 temp_contact_repeat = u.getContact();
@@ -141,7 +141,7 @@ public class FriendListActivity extends AppCompatActivity {
                 List<String> objbox_user_unidi_contact_list = new ArrayList<>();
                 List<User> x = userBox.query().equal(User_.knows_me, false).build().find();
                 String temp2_contact_repeat = "";
-                for (User u:x) {
+                for (User u : x) {
                     if (!temp2_contact_repeat.equalsIgnoreCase(u.getContact()))
                         objbox_user_unidi_contact_list.add(u.getContact());
                     temp2_contact_repeat = u.getContact();
@@ -153,7 +153,7 @@ public class FriendListActivity extends AppCompatActivity {
                 ApiCalls.syncContacts(this, 3, fresh_contacts_list);
             }
 
-        } catch (InterruptedException | JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }

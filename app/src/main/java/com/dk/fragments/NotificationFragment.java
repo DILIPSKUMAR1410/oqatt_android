@@ -26,7 +26,7 @@ import java.util.List;
 import io.objectbox.Box;
 
 
-public class IncomingPollFragment extends Fragment {
+public class NotificationFragment extends Fragment {
     private static final String TAG = ">>>>>>inbox";
     View rootView;
     IpFoldingCellListAdapter adapter;

@@ -8,13 +8,13 @@ import com.dk.models.Thread;
 
 public class UpdateThread {
 
-        public final String message;
-        public final Thread thread;
+    public final String message;
+    public final Thread thread;
 
-        public UpdateThread(String message, Thread thread) {
+    public UpdateThread(String message, Thread thread) {
 
-            this.message = message;
-            this.thread = thread;
-        }
+        this.message = message;
+        this.thread = thread;
+    }
 
 }

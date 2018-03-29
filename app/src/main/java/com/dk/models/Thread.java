@@ -8,8 +8,10 @@ import com.stfalcon.chatkit.commons.models.IDialog;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ListIterator;
 
+import io.objectbox.annotation.Backlink;
 import io.objectbox.annotation.Entity;
 import io.objectbox.annotation.Id;
 import io.objectbox.relation.ToMany;
@@ -18,18 +20,14 @@ import io.objectbox.relation.ToOne;
 @Entity
 public class Thread implements Serializable, IDialog<Message> {
 
-    public ToOne<User> subject;
 
-    //    @Backlink
+    @Backlink
     public ToMany<Message> messages;
+    @Backlink
+    public ToMany<Anonymous> users;
 
-    public long getT_id() {
-        return t_id;
-    }
-
-    public void setT_id(long t_id) {
-        this.t_id = t_id;
-    }
+    public ToOne<User> subject;
+    public ToOne<Message> lastMessage;
 
     @Id
     private long t_id;
@@ -39,29 +37,37 @@ public class Thread implements Serializable, IDialog<Message> {
     private String dialogName;
 
     private boolean isNameMentioned;
-
-    public ToMany<Anonymous> users;
-
-    public ToOne<Message> lastMessage;
-
     private String threadHash;
-
+    private String passkey;
     private int unreadCount;
+    private String optionString;
+    private String resultString;
 
     public Thread() {
     }
 
-    public Thread(String name,Message message) {
+    // temp just for polls
+    public Thread(String name, Message message) {
+        this.dialogName = name;
+        this.lastMessage.setTarget(message);
+    }
+
+    //  just for threads
+    public Thread(String name, Message message, String passkey) {
 
         this.dialogName = name;
+        this.passkey = passkey;
 //        this.dialogPhoto = photo;
 //        this.users = users;
-        Anonymous anon = new Anonymous();
-        message.anon_user.setTarget(anon);
-//        Box<Message> messageBox = App.getInstance().getBoxStore().boxFor(Message.class);
-//        messageBox.put(message);
-//        this.lastMessageForCK = message;
-        this.lastMessage.setTarget(message);
+        this.setLastMessage(message);
+    }
+
+    public long getT_id() {
+        return t_id;
+    }
+
+    public void setT_id(long t_id) {
+        this.t_id = t_id;
     }
 
     @Override
@@ -83,7 +89,7 @@ public class Thread implements Serializable, IDialog<Message> {
     public ArrayList<Anonymous> getUsers() {
         ListIterator<Anonymous> itr = this.users.listIterator();
         ArrayList<Anonymous> users = new ArrayList<>();
-        while (itr.hasNext()){
+        while (itr.hasNext()) {
             users.add(itr.next());
         }
         return users;
@@ -96,6 +102,7 @@ public class Thread implements Serializable, IDialog<Message> {
 
     @Override
     public void setLastMessage(Message message) {
+        this.messages.add(message);
         this.lastMessage.setTarget(message);
 
     }
@@ -116,7 +123,7 @@ public class Thread implements Serializable, IDialog<Message> {
 
     public void setThreadHash(String threadHash) {
         this.threadHash = threadHash;
-        this.dialogPhoto = "https://api.adorable.io/avatars/285/"+threadHash;
+        this.dialogPhoto = "https://api.adorable.io/avatars/285/" + threadHash;
     }
 
     public boolean isNameMentioned() {
@@ -126,4 +133,42 @@ public class Thread implements Serializable, IDialog<Message> {
     public void setNameMentioned(boolean nameMentioned) {
         isNameMentioned = nameMentioned;
     }
+
+    public String getPasskey() {
+        return passkey;
+    }
+
+    public void setPasskey(String passkey) {
+        this.passkey = passkey;
+    }
+
+    public void insertOption(String s) {
+        if (this.optionString == null)
+            this.optionString = s + "~";
+        else
+            this.optionString += s + "~";
+    }
+
+    public ArrayList<String> getOptionsList() {
+        if (this.optionString != null)
+            return new ArrayList<String>(Arrays.asList(optionString.split("~")));
+        return null;
+    }
+
+    public String getOptionString() {
+        return this.optionString;
+    }
+
+    public void setOptionString(String optionString) {
+        this.optionString = optionString;
+    }
+
+    public String getResultString() {
+        return resultString;
+    }
+
+    public void setResultString(String resultString) {
+        this.resultString = resultString;
+    }
+
 }

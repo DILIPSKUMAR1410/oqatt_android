@@ -19,10 +19,13 @@ import com.dk.App;
 import com.dk.graph.ApiCalls;
 import com.dk.main.MainActivity;
 import com.dk.main.R;
+import com.dk.models.Message;
 import com.dk.models.Poll;
-import com.dk.models.Poll_;
+import com.dk.models.Thread;
+import com.dk.models.Thread_;
 import com.dk.models.User;
 import com.dk.models.User_;
+import com.dk.queue.MessageList;
 import com.dk.queue.UpdatePoll;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
@@ -35,7 +38,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import io.objectbox.Box;
 
@@ -43,8 +45,8 @@ import static android.app.NotificationManager.IMPORTANCE_HIGH;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private FirebaseAnalytics mFirebaseAnalytics;
     private static final String TAG = "MyFirebaseMsgService";
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     /**
      * Called when message is received.
@@ -67,7 +69,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // TODO(developer): Handle FCM messages here.
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
@@ -91,24 +92,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 pollBoxBox.put(incomingPoll);
                 EventBus.getDefault().post(new UpdatePoll("You got new poll "));
                 sendNotification("New question asked to you");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Q-rcv");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Question received");
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
 
             }
             if (type == 1) {
-                Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-
-                final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.pollHash, remoteMessage.getData().get("poll_hash")).build().find();
-                Poll outgoingPoll = outgoingPolls.get(0);
-                outgoingPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
-                outgoingPoll.setArchive(false);
-                pollBoxBox.put(outgoingPoll);
+                Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                Thread outgoingthreadCumPoll = threadBox.query().equal(Thread_.threadHash, remoteMessage.getData().get("poll_hash")).build().findFirst();
+                assert outgoingthreadCumPoll != null;
+                outgoingthreadCumPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
+                threadBox.put(outgoingthreadCumPoll);
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
                 sendNotification("Someone anwsered your question");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "A-rcv");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Answer received");
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
 
             }
             if (type == 2) {
@@ -123,15 +116,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             ApiCalls.syncContacts(this, 1, contacts);
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
                     }
                 }
                 sendNotification(contact + " added you in his network");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "F-added");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Friend request");
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
 
             }
             if (type == 3) {
@@ -143,9 +131,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     userBox.put(user);
                 }
                 sendNotification(contact + " accepted your request");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "FR-accept");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Friend request accept");
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
             }
 
             if (type == 4) {
@@ -162,9 +147,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 pollBoxBox.put(incomingOpenPoll);
                 EventBus.getDefault().post(new UpdatePoll("You got new open poll "));
                 sendNotification("New question asked to you");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "OQ-rcv");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "open question received");
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
             }
             if (type == 5) {
                 Poll incomingThread = new Poll();
@@ -174,17 +156,40 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String question = remoteMessage.getData().get("question").replaceAll("<.*>", incomingThread.subject.getTarget().name);
                 incomingThread.setQuestion(question);
                 incomingThread.setType(1);
+                incomingThread.setSender(remoteMessage.getData().get("passkey"));
                 incomingThread.setThread(true);
                 incomingThread.setPollHash(remoteMessage.getData().get("thread_hash"));
                 Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
                 pollBox.put(incomingThread);
-                EventBus.getDefault().post(new UpdatePoll("You got a thread invitation "));
-                sendNotification("You got a thread invitation");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "T-rcv");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "thread invitation received");
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "notification");
+                EventBus.getDefault().post(new UpdatePoll("You received a thread invitation "));
+                sendNotification("You received a thread invitation");
+
             }
 
+            if (type == 6) {
+                Poll incomingOpenThread = new Poll();
+                String question = remoteMessage.getData().get("question");
+                incomingOpenThread.setQuestion(question);
+                incomingOpenThread.setType(1);
+                incomingOpenThread.setThread(true);
+                incomingOpenThread.setSender(remoteMessage.getData().get("passkey"));
+                incomingOpenThread.setPollHash(remoteMessage.getData().get("thread_hash"));
+                Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
+                pollBox.put(incomingOpenThread);
+                EventBus.getDefault().post(new UpdatePoll("You received a thread invitation "));
+                sendNotification("You received a thread invitation");
+            }
+
+            if (type == 7) {
+                Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                Thread thread = threadBox.query().equal(Thread_.threadHash, remoteMessage.getData().get("thread_hash")).build().findFirst();
+                assert thread != null;
+                Message message = new Message(remoteMessage.getData().get("thread_hash"), remoteMessage.getData().get("passkey"));
+                thread.setLastMessage(message);
+                threadBox.put(thread);
+                EventBus.getDefault().post(new MessageList(message));
+                sendNotification("Message received");
+            }
 //            if (/* Check if data needs to be processed by long running job */ false) {
 //                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
 //                scheduleJob();
@@ -192,8 +197,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //                // Handle message within 10 seconds
 //                handleNow();
 //            }
-
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
         }
 

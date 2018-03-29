@@ -50,8 +50,6 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
             ApiCalls.updateFCMID(getApplicationContext(), token);
         } catch (JSONException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 }

@@ -1,15 +1,17 @@
 package com.dk.fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.dk.App;
 import com.dk.main.R;
-import com.dk.models.Anonymous;
+import com.dk.messages.DefaultMessagesActivity;
 import com.dk.models.Thread;
 import com.dk.queue.UpdateThread;
 import com.squareup.picasso.Picasso;
@@ -33,9 +35,9 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
 
     protected ImageLoader imageLoader;
     View rootView;
-    private ArrayList<Thread> threads = new ArrayList<>();
-    private ArrayList<Anonymous> participants = new ArrayList<>();
     DialogsListAdapter threadsListAdapter;
+    private ArrayList<Thread> threads = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -52,20 +54,29 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
         threadsListAdapter.addItems(threads);
 
         threadsListView.setAdapter(threadsListAdapter);
+        threadsListAdapter.setOnDialogClickListener(this);
+        threadsListAdapter.setOnDialogLongClickListener(this);
 
         // Inflate the layout for this fragment
         return rootView;
     }
 
+
     @Override
-    public void onDialogClick(Thread dialog) {
+    public void onDialogClick(Thread thread) {
+        Log.e(">>>>>>>>>>.", "Room opening");
+        Intent intent = new Intent(getActivity(), DefaultMessagesActivity.class);
+        intent.putExtra("threadID", thread.getT_id());
+        startActivity(intent);
 
     }
 
     @Override
-    public void onDialogLongClick(Thread dialog) {
+    public void onDialogLongClick(Thread thread) {
+        Log.e(">>>>>>>>>>.", "Room opening");
 
     }
+
     @Override
     public void onStart() {
         super.onStart();

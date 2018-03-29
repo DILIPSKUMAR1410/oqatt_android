@@ -25,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         Log.d(">>>>>>>>>>", "In splash");
         ActivityCompat.requestPermissions(this, new String[]{
-                Manifest.permission.READ_CONTACTS,Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestPermissionCode);
+                Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_EXTERNAL_STORAGE}, RequestPermissionCode);
     }
 
 

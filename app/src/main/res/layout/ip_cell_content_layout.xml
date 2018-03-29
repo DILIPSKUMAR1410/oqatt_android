@@ -10,17 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/thread_invite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="Would you like to join the thread ?"/>
+            android:text="Would you like to join the thread ?"
+            android:visibility="gone" />
+
         <RadioGroup
             android:id="@+id/rg"
             android:layout_width="match_parent"
-            android:visibility="gone"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <RadioButton
                 android:id="@+id/op0"

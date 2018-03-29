@@ -93,5 +93,9 @@
     <string name="archive">Archive</string>
     <string name="close">Close</string>
     <string name="none">None</string>
+    <string name="hint_enter_a_message">Type a message…</string>
+    <string name="action_delete">Delete</string>
+    <string name="action_copy">Copy</string>
+    <string name="copied_message">Message copied!</string>
     <string name="answer">Answer</string>
 </resources>

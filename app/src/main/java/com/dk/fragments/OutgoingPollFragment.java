@@ -44,7 +44,7 @@ public class OutgoingPollFragment extends Fragment {
         // prepare elements to display
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
 
-        final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).equal(Poll_.archive,false).build().find();
+        final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).equal(Poll_.archive, false).build().find();
         Collections.reverse(outgoingPolls);
 
         // create custom adapter that holds elements and their state (we need hold a id's of unfolded elements for reusable elements)
@@ -87,7 +87,7 @@ public class OutgoingPollFragment extends Fragment {
         Log.d(TAG, event.message);
         adapter.clear();
         Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-        final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).equal(Poll_.archive,false).build().find();
+        final List<Poll> outgoingPolls = pollBoxBox.query().equal(Poll_.type, 0).equal(Poll_.archive, false).build().find();
         Collections.reverse(outgoingPolls);
         adapter.addAll(outgoingPolls);
         adapter.notifyDataSetChanged();

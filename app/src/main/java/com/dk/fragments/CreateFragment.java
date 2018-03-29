@@ -41,13 +41,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import io.objectbox.Box;
 
 import static android.content.Context.MODE_PRIVATE;
 
 
-public class CreatePollFragment extends Fragment implements QueryListener, SuggestionsListener {
+public class CreateFragment extends Fragment implements QueryListener, SuggestionsListener {
     public EditText commentField;
     public Mentions mentions;
     public UsersMentionAdapter usersMentionAdapter;
@@ -77,24 +78,20 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
         CardView optionHolder3 = parent_linear_layout.findViewById(R.id.cop3);
 
 
-
         checkbox.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b)
-            {
+            if (b) {
 
                 optionHolder0.setVisibility(View.VISIBLE);
                 optionHolder1.setVisibility(View.VISIBLE);
                 optionHolder2.setVisibility(View.VISIBLE);
                 optionHolder3.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 optionHolder0.setVisibility(View.GONE);
                 optionHolder1.setVisibility(View.GONE);
                 optionHolder2.setVisibility(View.GONE);
                 optionHolder3.setVisibility(View.GONE);
             }
         });
-
 
 
         publishButton.setOnClickListener(v -> {
@@ -220,7 +217,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
     }
 
 
-    private void createPoll(){
+    private void createPoll() {
         if (String.valueOf(commentField.getText()).trim().length() < 1) {
             Toast.makeText(getActivity(), "Please ask question!", Toast.LENGTH_LONG).show();
             return;
@@ -242,7 +239,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
             int EdittextresID = getResources().getIdentifier(EdittextID, "id", getContext().getPackageName());
             EditText option = parent_linear_layout.findViewById(EdittextresID);
             String option_string = option.getText().toString().trim();
-            if (poll.getOptionsList()!= null && poll.getOptionsList().contains(option_string)) {
+            if (poll.getOptionsList() != null && poll.getOptionsList().contains(option_string)) {
                 Toast.makeText(getActivity(), "Please don't repeat the option!", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -252,7 +249,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
             }
         }
 
-        if (no_of_options < 2 || poll.getOptionsList()== null || poll.getOptionsList().size() < 2) {
+        if (no_of_options < 2 || poll.getOptionsList() == null || poll.getOptionsList().size() < 2) {
             Toast.makeText(getActivity(), "Add Option!", Toast.LENGTH_LONG).show();
             return;
         }
@@ -297,7 +294,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
 
     }
 
-    private void createThread(){
+    private void createThread() {
         if (String.valueOf(commentField.getText()).trim().length() < 1) {
             Toast.makeText(getActivity(), "Please ask question!", Toast.LENGTH_LONG).show();
             return;
@@ -309,7 +306,9 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
             return;
         }
 
-        Thread thread = new Thread(String.valueOf(commentField.getText()),new Message("Yay! you created a thread!"));
+        Thread thread = new Thread(String.valueOf(commentField.getText()),
+                new Message("Yay! you started a thread!", "0"),
+                String.valueOf(UUID.randomUUID()));
 
 
         if (mentions.getInsertedMentions().size() > 1) {
@@ -325,7 +324,7 @@ public class CreatePollFragment extends Fragment implements QueryListener, Sugge
             thread.subject.setTarget(mention.getMentionUser());
             thread_pkg = thread.getDialogName() + thread.subject.getTarget().getContact() + uid;
         } else {
-            thread_pkg = thread.getDialogName()+ uid;
+            thread_pkg = thread.getDialogName() + uid;
         }
 
 

@@ -33,6 +33,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import io.objectbox.Box;
 
@@ -67,12 +68,10 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
             viewHolder.action_button = cell.findViewById(R.id.action_button);
             viewHolder.thread_invite = cell.findViewById(R.id.thread_invite);
 
-            if (poll.isThread())
-            {
+            if (poll.isThread()) {
                 viewHolder.thread_invite.setVisibility(View.VISIBLE);
                 viewHolder.action_button.setText("Join");
-            }
-            else {
+            } else {
                 viewHolder.radioGroup.setVisibility(View.VISIBLE);
                 viewHolder.action_button.setText("Anwser");
                 ArrayList<String> options = poll.getOptionsList();
@@ -112,17 +111,17 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
         });
         viewHolder.action_button.setOnClickListener(v -> {
             Log.d(">>>>>>>", "Join button");
-            if (poll.isThread())
-            {
+            if (poll.isThread()) {
                 finalCell.toggle(false);
                 Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
                 Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
 
-                Thread thread = new Thread(poll.getQuestion(),new Message("You accepted the invite"));
+                Thread thread = new Thread(poll.getQuestion(),
+                        new Message("Hi!", poll.getSender()),
+                        String.valueOf(UUID.randomUUID()));
                 thread.setThreadHash(poll.getPollHash());
 
-                if (!poll.subject.isNull())
-                {
+                if (!poll.subject.isNull()) {
                     thread.subject.setTarget(poll.subject.getTarget());
                     thread.setNameMentioned(true);
                 }
@@ -130,11 +129,10 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 threadBox.put(thread);
                 pollBox.remove(poll);
                 EventBus.getDefault().post(new RemovePoll(poll));
-                EventBus.getDefault().post(new UpdateThread("Gottcha! subscribed to topic",thread));
+                EventBus.getDefault().post(new UpdateThread("Gotcha! subscribed to topic", thread));
 
                 registerToggle(position);
-            }
-            else {
+            } else {
                 // toggle clicked op_cell state
                 if (viewHolder.radioGroup.getCheckedRadioButtonId() == -1) {
                     // no radio buttons are checked
@@ -145,7 +143,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 int result = Integer.parseInt(s.substring(2));
                 try {
                     ApiCalls.votePoll(getContext(), poll.getId(), result);
-                } catch (JSONException | InterruptedException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
 

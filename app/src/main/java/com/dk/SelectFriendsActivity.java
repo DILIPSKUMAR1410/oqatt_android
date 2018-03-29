@@ -4,7 +4,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -55,9 +54,9 @@ public class SelectFriendsActivity extends AppCompatActivity {
     LottieAnimationView animationView;
     ArrayAdapter<String> adapter;
     AlertDialog.Builder builder;
-    private FirebaseAnalytics mFirebaseAnalytics;
     boolean isPoll;
     int MIN_GROUP_SIZE = 2;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,13 +66,10 @@ public class SelectFriendsActivity extends AppCompatActivity {
         listview = findViewById(R.id.listView);
         isPoll = getIntent().getBooleanExtra("isPoll", true);
         if (isPoll) {
-            Log.d(">>>>>>>>>>>>", "In List");
-
             poll = (Poll) getIntent().getSerializableExtra("poll");
             isNotMentioned = poll.subject.isNull();
             subject = poll.subject.getTarget();
-        }
-        else {
+        } else {
             thread = (Thread) getIntent().getSerializableExtra("thread");
             isNotMentioned = thread.subject.isNull();
             subject = thread.subject.getTarget();
@@ -101,8 +97,6 @@ public class SelectFriendsActivity extends AppCompatActivity {
             try {
                 ApiCalls.getFriendsConnections(SelectFriendsActivity.this, subject.getContact());
             } catch (JSONException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
@@ -150,37 +144,35 @@ public class SelectFriendsActivity extends AppCompatActivity {
                     }
                     ticked += selected_friends.size();
                     if (ticked < MIN_GROUP_SIZE) {
-                        Toast.makeText(SelectFriendsActivity.this, "Select atleast "+MIN_GROUP_SIZE+" friends !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SelectFriendsActivity.this, "Select atleast " + MIN_GROUP_SIZE + " friends !", Toast.LENGTH_LONG).show();
 
                     } else {
                         try {
-                            if (isPoll)
-                            { ApiCalls.publishMentionedPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
-                            Utils.redirectToAnim(SelectFriendsActivity.this, 0);
-                            }
-                            else {
+                            if (isPoll) {
+                                ApiCalls.publishMentionedPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
+                                Utils.redirectToAnim(SelectFriendsActivity.this, 0);
+                            } else {
                                 ApiCalls.publishMentionedThread(SelectFriendsActivity.this, thread, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             }
-                        } catch (JSONException | InterruptedException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
 
                 } else {
                     if (selected_friends.size() < MIN_GROUP_SIZE) {
-                        Toast.makeText(SelectFriendsActivity.this, "Select atleast "+MIN_GROUP_SIZE+" friends !", Toast.LENGTH_LONG).show();
+                        Toast.makeText(SelectFriendsActivity.this, "Select atleast " + MIN_GROUP_SIZE + " friends !", Toast.LENGTH_LONG).show();
                     } else {
                         try {
                             if (isPoll) {
                                 ApiCalls.publishOpenPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
-                            }
-                            else {
+                            } else {
                                 ApiCalls.publishOpenThread(SelectFriendsActivity.this, thread, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             }
-                        } catch (JSONException | InterruptedException e) {
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -240,14 +232,14 @@ public class SelectFriendsActivity extends AppCompatActivity {
         friends_list_contact = mutual_friends_contact.toArray(new String[0]);
         listview.setAdapter(adapter);
         listview.setOnItemClickListener((parent, view, position, id) -> {
-            if (friends_list_contact.length == position+1){
+            if (friends_list_contact.length == position + 1) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     builder = new AlertDialog.Builder(this, android.R.style.Theme_Material_Dialog_Alert);
                 } else {
                     builder = new AlertDialog.Builder(this);
                 }
                 builder.setTitle("Carefully select this group")
-                        .setMessage("We know you respect "+subject.name+", please don't select this group if you are asking a personal question.")
+                        .setMessage("We know you respect " + subject.name + ", please don't select this group if you are asking a personal question.")
                         .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                             // continue with delete
                         })
@@ -256,8 +248,8 @@ public class SelectFriendsActivity extends AppCompatActivity {
 
             }
         });
-            animationView.setVisibility(View.GONE);
-            animationView.cancelAnimation();
+        animationView.setVisibility(View.GONE);
+        animationView.cancelAnimation();
     }
 
 }

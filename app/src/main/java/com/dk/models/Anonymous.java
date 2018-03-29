@@ -13,20 +13,25 @@ import io.objectbox.relation.ToOne;
  */
 @Entity
 
-public class Anonymous implements IUser,Serializable {
+public class Anonymous implements IUser, Serializable {
 
-    public String name;
-
+    public ToOne<Thread> thread;
     @Id
     private long a_id;
 
-    private String avatar;
+    private String uid;
 
-    public String getId() {
-        return String.valueOf(a_id);
+    public Anonymous(ToOne<Thread> thread, String uid) {
+        this.thread = thread;
+        this.uid = uid;
     }
 
-    public ToOne<Thread> thread;
+    public Anonymous() {
+    }
+
+    public String getId() {
+        return uid;
+    }
 
     public long getA_id() {
         return a_id;
@@ -38,18 +43,18 @@ public class Anonymous implements IUser,Serializable {
 
     @Override
     public String getName() {
-        return "Anonymous";
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        return uid;
     }
 
     public String getAvatar() {
-        return this.avatar;
+        return "https://api.adorable.io/avatars/285/" + uid;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

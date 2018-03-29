@@ -12,9 +12,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.dk.fragments.CreatePollFragment;
-import com.dk.fragments.IncomingPollFragment;
-import com.dk.fragments.OutgoingPollFragment;
+import com.dk.fragments.CreateFragment;
+import com.dk.fragments.NotificationFragment;
 import com.dk.fragments.ThreadFragment;
 import com.dk.graph.ApiCalls;
 import com.dk.queue.AppUpdateVersion;
@@ -48,14 +47,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //add the fragments you want to display in a List
         List<Fragment> fragmentList = new ArrayList<>();
-        final CreatePollFragment Cfragment = new CreatePollFragment();
-        IncomingPollFragment Ifragment = new IncomingPollFragment();
-        OutgoingPollFragment Ofragment = new OutgoingPollFragment();
+        final CreateFragment Cfragment = new CreateFragment();
+        NotificationFragment Ifragment = new NotificationFragment();
+//        OutgoingPollFragment Ofragment = new OutgoingPollFragment();
         ThreadFragment Tfragment = new ThreadFragment();
 
         fragmentList.add(Ifragment);
         fragmentList.add(Cfragment);
-        fragmentList.add(Ofragment);
+//        fragmentList.add(Ofragment);
         fragmentList.add(Tfragment);
 
         ViewPager viewPager = findViewById(R.id.viewPager);
@@ -81,8 +80,6 @@ public class MainActivity extends AppCompatActivity {
         try {
             ApiCalls.getTokenBalance(this);
         } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
         return true;

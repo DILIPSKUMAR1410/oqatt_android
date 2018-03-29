@@ -10,6 +10,7 @@ import android.util.Log;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.dk.App;
+import com.dk.models.Message;
 import com.dk.models.Poll;
 import com.dk.models.Thread;
 import com.dk.models.User;
@@ -17,6 +18,7 @@ import com.dk.models.User_;
 import com.dk.queue.AddParticipants;
 import com.dk.queue.AppUpdateVersion;
 import com.dk.queue.Intialization;
+import com.dk.queue.MessageList;
 import com.dk.queue.RemovePoll;
 import com.dk.queue.TokenBalance;
 import com.dk.queue.UpdateFriendList;
@@ -42,9 +44,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import static android.content.Context.MODE_PRIVATE;
-
-//import com.dk.models.User_;
-
 
 /**
  * Created by dk on 27/09/17.
@@ -129,15 +128,12 @@ public class ApiCalls {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
                         }
-
                     }
                 });
     }
 
-    public static void syncContacts(final Context context, final int trigger, List<String> contacts) throws JSONException, InterruptedException {
+    public static void syncContacts(final Context context, final int trigger, List<String> contacts) throws JSONException {
 
         Box<User> userBox = App.getInstance().getBoxStore().boxFor(User.class);
         if (contacts.isEmpty() && trigger == 0) {
@@ -230,7 +226,7 @@ public class ApiCalls {
 
     }
 
-    public static void publishMentionedPoll(final Context context, Poll poll, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
+    public static void publishMentionedPoll(final Context context, Poll poll, String hex, List<String> selected_friends) throws JSONException {
 
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
@@ -297,14 +293,22 @@ public class ApiCalls {
                             e.printStackTrace();
                         }
 
-                        Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-                        pollBox.put(poll);
+                        Thread thread = new Thread(poll.getQuestion(), new Message("Poll sent to your friends", "0"));
+                        thread.setThreadHash(poll.getPollHash());
+                        thread.setResultString(poll.getResultString());
+                        thread.setOptionString(poll.getOptionString());
+                        thread.subject.setTarget(poll.subject.getTarget());
+                        thread.setNameMentioned(true);
+                        Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                        threadBox.put(thread);
+                        EventBus.getDefault().post(new UpdateThread("Poll created", thread));
+
                     }
                 });
 
     }
 
-    public static void publishOpenPoll(final Context context, Poll poll, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
+    public static void publishOpenPoll(final Context context, Poll poll, String hex, List<String> selected_friends) throws JSONException {
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
         JSONObject jsonObject = new JSONObject();
@@ -369,14 +373,18 @@ public class ApiCalls {
                             e.printStackTrace();
                         }
 
-                        Box<Poll> pollBox = App.getInstance().getBoxStore().boxFor(Poll.class);
-                        pollBox.put(poll);
+                        Thread thread = new Thread(poll.getQuestion(), new Message("Poll sent to your friends", "0"));
+                        thread.setThreadHash(poll.getPollHash());
+                        Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                        threadBox.put(thread);
+                        EventBus.getDefault().post(new UpdateThread("Open poll created", thread));
+
                     }
                 });
 
     }
 
-    public static void votePoll(final Context context, long poll_id, int option) throws JSONException, InterruptedException {
+    public static void votePoll(final Context context, long poll_id, int option) throws JSONException {
 
         final Box<Poll> pollBoxBox = App.getInstance().getBoxStore().boxFor(Poll.class);
         final Poll poll = pollBoxBox.get(poll_id);
@@ -453,7 +461,7 @@ public class ApiCalls {
     }
 
 
-    public static void getTokenBalance(final Context context) throws JSONException, InterruptedException {
+    public static void getTokenBalance(final Context context) throws JSONException {
 
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
@@ -513,26 +521,25 @@ public class ApiCalls {
                                 PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
                                 int version = pInfo.versionCode;
                                 Log.d(">>>>>", String.valueOf(version));
-                                if (response.getInt("app_version") > version){
+                                if (response.getInt("app_version") > version) {
                                     EventBus.getDefault().post(new AppUpdateVersion(response.getInt("app_version")));
 
                                 }
                             }
 
-                            }
-                            catch (PackageManager.NameNotFoundException e1) {
+                        } catch (PackageManager.NameNotFoundException e1) {
                             e1.printStackTrace();
-                            } catch (JSONException e1) {
+                        } catch (JSONException e1) {
                             e1.printStackTrace();
-                            }
+                        }
 
                     }
-                    });
+                });
 
     }
 
 
-    public static void updateFCMID(final Context context, String fcm_id) throws JSONException, InterruptedException {
+    public static void updateFCMID(final Context context, String fcm_id) throws JSONException {
 
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
@@ -591,7 +598,7 @@ public class ApiCalls {
     }
 
 
-    public static void getFriendsConnections(final Context context, String sub_contact) throws JSONException, InterruptedException {
+    public static void getFriendsConnections(final Context context, String sub_contact) throws JSONException {
 
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
@@ -648,12 +655,14 @@ public class ApiCalls {
                 });
 
     }
-    public static void publishMentionedThread(final Context context, Thread thread, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
+
+    public static void publishMentionedThread(final Context context, Thread thread, String hex, List<String> selected_friends) throws JSONException {
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("question", thread.getDialogName());
         jsonObject.put("thread_hash", hex);
+        jsonObject.put("passkey", thread.getPasskey());
         jsonObject.put("sub_contact", thread.subject.getTarget().getContact());
         jsonObject.put("selected_friends", new JSONArray(selected_friends));
         Rx2AndroidNetworking.post(url + "user/{uid}/thread/publish")
@@ -716,19 +725,21 @@ public class ApiCalls {
                         threadBox.put(thread);
 
                         Log.d(TAG, String.valueOf(thread.getLastMessage().getCreatedAt()));
-                        EventBus.getDefault().post(new UpdateThread("Thread created",thread));
+                        EventBus.getDefault().post(new UpdateThread("Thread created", thread));
 
 
                     }
                 });
 
     }
-    public static void publishOpenThread(final Context context, Thread thread, String hex, List<String> selected_friends) throws JSONException, InterruptedException {
+
+    public static void publishOpenThread(final Context context, Thread thread, String hex, List<String> selected_friends) throws JSONException {
         SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
         String uid = prefs.getString("uid", null);
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("question", thread.getDialogName());
         jsonObject.put("thread_hash", hex);
+        jsonObject.put("passkey", thread.getPasskey());
         jsonObject.put("selected_friends", new JSONArray(selected_friends));
         Rx2AndroidNetworking.post(url + "user/{uid}/thread/publish/open")
                 .addPathParameter("uid", uid)
@@ -789,7 +800,66 @@ public class ApiCalls {
 
                         Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                         threadBox.put(thread);
-                        EventBus.getDefault().post(new UpdateThread("Thread created",thread));
+                        EventBus.getDefault().post(new UpdateThread("Thread created", thread));
+                    }
+                });
+
+    }
+
+    public static void sendMessage(final Context context, Thread thread, Message message) throws JSONException {
+        SharedPreferences prefs = context.getSharedPreferences("my_oqatt_prefs", MODE_PRIVATE);
+        String uid = prefs.getString("uid", null);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("thread_hash", thread.getThreadHash());
+        jsonObject.put("passkey", thread.getPasskey());
+        jsonObject.put("message", message);
+        Rx2AndroidNetworking.post(url + "user/{uid}/thread/message/send")
+                .addPathParameter("uid", uid)
+                .addJSONObjectBody(jsonObject) // posting json
+                .setPriority(Priority.IMMEDIATE)
+                .build()
+                .getJSONObjectObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<JSONObject>() {
+                    @Override
+                    public void onComplete() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        if (e instanceof ANError) {
+                            ANError anError = (ANError) e;
+                            if (anError.getErrorCode() != 0) {
+                                // received ANError from server
+                                // error.getErrorCode() - the ANError code from server
+                                // error.getErrorBody() - the ANError body from server
+                                // error.getErrorDetail() - just a ANError detail
+                                Log.d(TAG, "onError errorCode : " + anError.getErrorCode());
+                                Log.d(TAG, "onError errorBody : " + anError.getErrorBody());
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            } else {
+                                // error.getErrorDetail() : connectionError, parseError, requestCancelledError
+                                Log.d(TAG, "onError errorDetail : " + anError.getErrorDetail());
+                            }
+                        } else {
+                            Log.d(TAG, "onError errorMessage : " + e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(JSONObject response) {
+                        // do anything with response
+                        Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                        thread.setLastMessage(message);
+                        threadBox.put(thread);
+                        EventBus.getDefault().post(new MessageList(message));
                     }
                 });
 

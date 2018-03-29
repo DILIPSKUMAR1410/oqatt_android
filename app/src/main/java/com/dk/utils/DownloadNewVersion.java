@@ -21,17 +21,18 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
+public class DownloadNewVersion extends AsyncTask<String, Integer, Boolean> {
     private static final String TAG = "DownloadNewVersion>>>";
     private ProgressDialog bar;
     @SuppressLint("StaticFieldLeak")
     private Context context;
-    public void setContext(Context context){
+    private String version;
+
+    public void setContext(Context context) {
         this.context = context;
     }
 
-    private String version;
-    public void setversion(String version){
+    public void setversion(String version) {
 
         this.version = version;
     }
@@ -46,31 +47,34 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
         bar.setCanceledOnTouchOutside(false);
         bar.show();
     }
+
     protected void onProgressUpdate(Integer... progress) {
         super.onProgressUpdate(progress);
         bar.setIndeterminate(false);
         bar.setMax(100);
         bar.setProgress(progress[0]);
         String msg = "";
-        if(progress[0]>99){
-            msg="Finishing... ";
-        }else {
-            msg="Downloading... "+progress[0]+"%";
+        if (progress[0] > 99) {
+            msg = "Finishing... ";
+        } else {
+            msg = "Downloading... " + progress[0] + "%";
         }
         bar.setMessage(msg);
     }
+
     @Override
     protected void onPostExecute(Boolean result) {
         super.onPostExecute(result);
         bar.dismiss();
-        if(result){
-            Toast.makeText(context,"Update Done",
+        if (result) {
+            Toast.makeText(context, "Update Done",
                     Toast.LENGTH_SHORT).show();
-        }else{
-            Toast.makeText(context,"Error: Try Again",
+        } else {
+            Toast.makeText(context, "Error: Try Again",
                     Toast.LENGTH_SHORT).show();
         }
     }
+
     @Override
     protected Boolean doInBackground(String... arg0) {
         Boolean flag = false;
@@ -80,11 +84,11 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
             c.setRequestMethod("GET");
             c.setDoOutput(false);
             c.connect();
-            String PATH = Environment.getExternalStorageDirectory()+"/Download/";
+            String PATH = Environment.getExternalStorageDirectory() + "/Download/";
             File file = new File(PATH);
             file.mkdirs();
-            File outputFile = new File(file,"oqatt.apk");
-            if(outputFile.exists()){
+            File outputFile = new File(file, "oqatt.apk");
+            if (outputFile.exists()) {
                 outputFile.delete();
             }
             FileOutputStream fos = new FileOutputStream(outputFile);
@@ -92,8 +96,7 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
             if (c.getResponseCode() == HttpURLConnection.HTTP_OK) {
                 is = c.getErrorStream();
                 is = c.getInputStream();
-            }
-            else {
+            } else {
                 Log.e(TAG, String.valueOf(c.getResponseCode()));
                 return false;
             }
@@ -101,10 +104,10 @@ public class DownloadNewVersion extends AsyncTask<String,Integer,Boolean> {
             byte[] buffer = new byte[1024];
             int len1 = 0;
             int per = 0;
-            int downloaded=0;
+            int downloaded = 0;
             while ((len1 = is.read(buffer)) != -1) {
                 fos.write(buffer, 0, len1);
-                downloaded +=len1;
+                downloaded += len1;
                 per = (int) (downloaded * 100 / total_size);
                 publishProgress(per);
             }

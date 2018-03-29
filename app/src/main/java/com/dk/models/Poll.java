@@ -24,6 +24,7 @@ public class Poll implements Serializable {
     private long type;
     private boolean archive;
     private boolean isThread;
+    private String sender;
 
 
     public String getQuestion() {
@@ -97,5 +98,13 @@ public class Poll implements Serializable {
 
     public void setThread(boolean thread) {
         isThread = thread;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
 }
