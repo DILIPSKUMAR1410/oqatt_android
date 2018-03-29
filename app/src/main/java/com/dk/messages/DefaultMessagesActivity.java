@@ -78,8 +78,10 @@ public class DefaultMessagesActivity extends DemoMessagesActivity
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageList(MessageList event) {
-        if (event.message.thread.getTargetId() == thread.getT_id())
+        if (event.message.thread.getTargetId() == thread.getT_id()) {
+            thread.setUnreadCount(0);
             super.messagesAdapter.addToStart(event.message, true);
+        }
     }
 
 }

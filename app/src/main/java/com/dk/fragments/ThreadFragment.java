@@ -66,6 +66,7 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
     public void onDialogClick(Thread thread) {
         Log.e(">>>>>>>>>>.", "Check poll or thread");
         if (thread.getOptionString() ==null) {
+            thread.setUnreadCount(0);
             Intent intent = new Intent(getActivity(), DefaultMessagesActivity.class);
             intent.putExtra("threadID", thread.getT_id());
             startActivity(intent);
