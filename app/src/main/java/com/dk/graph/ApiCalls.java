@@ -375,6 +375,8 @@ public class ApiCalls {
 
                         Thread thread = new Thread(poll.getQuestion(), new Message("Poll sent to your friends", "0"));
                         thread.setThreadHash(poll.getPollHash());
+                        thread.setResultString(poll.getResultString());
+                        thread.setOptionString(poll.getOptionString());
                         Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                         threadBox.put(thread);
                         EventBus.getDefault().post(new UpdateThread(0, thread));

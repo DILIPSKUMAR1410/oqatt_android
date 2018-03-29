@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="2dp"
     android:layout_height="2dp"
-    tools:context="com.dk.SelectFriendsActivity">
+    tools:context=".SelectFriendsActivity">
     <!-- "Mark Favorite", should appear as action button if possible -->
     <item
         android:id="@+id/refresh"

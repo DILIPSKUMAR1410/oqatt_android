@@ -39,9 +39,6 @@
             android:name=".AnimationActivity"
             android:noHistory="true"
             android:theme="@style/ThemeOverlay.MyNoTitleActivity" />
-        <!-- <activity -->
-        <!-- android:name="com.dk.tagging.ProfileActivity" -->
-        <!-- android:theme="@style/ThemeOverlay.MyNoTitleActivity" /> -->
         <service android:name="com.dk.notification.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -60,8 +57,9 @@
             </intent-filter>
         </service>
 
-        <activity android:name="com.dk.SelectFriendsActivity" />
+        <activity android:name=".SelectFriendsActivity" />
         <activity android:name=".FriendListActivity" />
+        <activity android:name=".PollResultActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -74,7 +72,7 @@
         </provider>
 
         <activity android:name="com.dk.messages.DefaultMessagesActivity" />
-        <activity android:name="com.dk.messages.DemoMessagesActivity" />
+
     </application>
 
 </manifest>

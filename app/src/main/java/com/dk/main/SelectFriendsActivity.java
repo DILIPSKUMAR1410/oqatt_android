@@ -1,4 +1,4 @@
-package com.dk;
+package com.dk.main;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -14,8 +14,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.dk.App;
 import com.dk.graph.ApiCalls;
-import com.dk.main.R;
 import com.dk.models.Poll;
 import com.dk.models.Thread;
 import com.dk.models.User;

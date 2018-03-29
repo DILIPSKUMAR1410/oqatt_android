@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.dk.App;
+import com.dk.main.PollResultActivity;
 import com.dk.main.R;
 import com.dk.messages.DefaultMessagesActivity;
 import com.dk.models.Thread;
@@ -72,6 +73,11 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
             threadBox.put(thread);
             threadsListAdapter.updateItemById(thread);
             Intent intent = new Intent(getActivity(), DefaultMessagesActivity.class);
+            intent.putExtra("threadID", thread.getT_id());
+            startActivity(intent);
+        }
+        else {
+            Intent intent = new Intent(getActivity(), PollResultActivity.class);
             intent.putExtra("threadID", thread.getT_id());
             startActivity(intent);
         }

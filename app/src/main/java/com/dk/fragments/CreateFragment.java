@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dk.App;
-import com.dk.SelectFriendsActivity;
+import com.dk.main.SelectFriendsActivity;
 import com.dk.main.R;
 import com.dk.main.RecyclerItemClickListener;
 import com.dk.main.UsersMentionAdapter;

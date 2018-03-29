@@ -3,7 +3,7 @@ package com.dk.utils;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.dk.SelectFriendsActivity;
+import com.dk.main.SelectFriendsActivity;
 import com.dk.auth.IntiActivity;
 import com.dk.auth.PhoneAuthActivity;
 import com.dk.main.AnimationActivity;
