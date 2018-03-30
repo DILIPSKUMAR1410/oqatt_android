@@ -99,6 +99,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                 Thread outgoingthreadCumPoll = threadBox.query().equal(Thread_.threadHash, remoteMessage.getData().get("poll_hash")).build().findFirst();
                 assert outgoingthreadCumPoll != null;
+                outgoingthreadCumPoll.setUnreadCount(outgoingthreadCumPoll.getUnreadCount()+1);
                 outgoingthreadCumPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
                 threadBox.put(outgoingthreadCumPoll);
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));

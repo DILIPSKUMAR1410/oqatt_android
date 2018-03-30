@@ -167,6 +167,15 @@ public class Thread implements Serializable, IDialog<Message> {
         return resultString;
     }
 
+    public int getResultCount() {
+        String[] results = resultString.split(",");
+        int count = 0;
+        for (String result:results) {
+            count += Integer.parseInt(result);
+        }
+        return count;
+    }
+
     public void setResultString(String resultString) {
         this.resultString = resultString;
     }

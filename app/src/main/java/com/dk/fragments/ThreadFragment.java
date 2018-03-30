@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.dk.App;
 import com.dk.main.PollResultActivity;
@@ -67,7 +68,6 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
 
     @Override
     public void onDialogClick(Thread thread) {
-        Log.e(">>>>>>>>>>.", "Check poll or thread");
         if (thread.getOptionString() ==null) {
             thread.setUnreadCount(0);
             threadBox.put(thread);
@@ -76,10 +76,16 @@ public class ThreadFragment extends Fragment implements DialogsListAdapter.OnDia
             intent.putExtra("threadID", thread.getT_id());
             startActivity(intent);
         }
-        else {
+        else if (thread.getResultCount() > 0){
+            thread.setUnreadCount(0);
+            threadBox.put(thread);
+            threadsListAdapter.updateItemById(thread);
             Intent intent = new Intent(getActivity(), PollResultActivity.class);
             intent.putExtra("threadID", thread.getT_id());
             startActivity(intent);
+        }
+        else {
+            Toast.makeText(getActivity(), "No one replied!", Toast.LENGTH_LONG).show();
         }
     }
 
