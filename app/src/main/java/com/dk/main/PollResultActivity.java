@@ -37,7 +37,9 @@ public class PollResultActivity extends AppCompatActivity {
         List<PieEntry> entries = new ArrayList<>();
         String[] results = thread.getResultString().split(",");
         for (String result : results) {
-            entries.add(new PieEntry(Float.parseFloat(result), ""));
+            float vote_count = Float.parseFloat(result);
+            if (vote_count > 0)
+                entries.add(new PieEntry( vote_count,""));
         }
         List<LegendEntry> legend_entries = new ArrayList<>();
         ArrayList<String> options = thread.getOptionsList();
@@ -58,8 +60,8 @@ public class PollResultActivity extends AppCompatActivity {
         legend.setWordWrapEnabled(true);
         PieDataSet set = new PieDataSet(entries, "");
         set.setColors(ColorTemplate.MATERIAL_COLORS);
-        set.setAutomaticallyDisableSliceSpacing(true);
         set.setValueFormatter(new MyValueFormatter());
+        set.setSliceSpace(7);
         PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.setTransparentCircleRadius(29);

@@ -50,7 +50,7 @@ public class Thread implements Serializable, IDialog<Message> {
     // temp just for polls
     public Thread(String name, Message message) {
         this.dialogName = name;
-        this.lastMessage.setTarget(message);
+        this.setLastMessage(message);
         this.vote_counts = 0;
     }
 
