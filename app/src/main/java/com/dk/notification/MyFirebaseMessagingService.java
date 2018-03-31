@@ -103,6 +103,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 outgoingthreadCumPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
                 threadBox.put(outgoingthreadCumPoll);
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
+                EventBus.getDefault().post(new UpdateThread(1, outgoingthreadCumPoll));
                 sendNotification("Someone anwsered your question");
 
             }
