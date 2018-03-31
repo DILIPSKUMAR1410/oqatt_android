@@ -1,7 +1,5 @@
 package com.dk.models;
 
-import android.util.Log;
-
 import com.dk.App;
 import com.stfalcon.chatkit.commons.models.IMessage;
 import com.stfalcon.chatkit.commons.models.MessageContentType;
@@ -45,7 +43,6 @@ public class Message implements IMessage, Serializable,
         Query<Anonymous> query = anon_userBox.query().equal(Anonymous_.uid, uid).build();
         long exist = query.count();
         Anonymous new_anon = null;
-        Log.d(">>>>>>>Contruct by", String.valueOf(exist));
 
         if (exist > 0)
             this.anon_user.setTarget(query.findFirst());

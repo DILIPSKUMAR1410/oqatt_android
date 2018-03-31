@@ -724,6 +724,7 @@ public class ApiCalls {
                             e.printStackTrace();
                         }
                         Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                        thread.messages.add(thread.lastMessage.getTarget());
                         threadBox.put(thread);
 
                         Log.d(TAG, String.valueOf(thread.getLastMessage().getCreatedAt()));
@@ -801,6 +802,7 @@ public class ApiCalls {
                         }
 
                         Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
+                        thread.messages.add(thread.lastMessage.getTarget());
                         threadBox.put(thread);
                         EventBus.getDefault().post(new UpdateThread(0, thread));
                     }
