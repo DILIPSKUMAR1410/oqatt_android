@@ -9,12 +9,12 @@
     <EditText
         android:id="@+id/comment_field"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_weight="1.0"
         android:background="@android:color/transparent"
-        android:hint="Remember to be nice while asking question!"
+        android:hint="@string/start_a_thread"
         android:lineSpacingMultiplier="1.2"
         android:maxLength="153"
         android:maxLines="4"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:saveEnabled="false"
-        android:text="Want to move fast!"
+        android:text="@string/convert_to_poll"
         tools:layout_marginLeft="20dp" />
 
     <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"

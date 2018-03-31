@@ -42,6 +42,7 @@ public class Thread implements Serializable, IDialog<Message> {
     private int unreadCount;
     private String optionString;
     private String resultString;
+    private int vote_counts;
 
     public Thread() {
     }
@@ -50,11 +51,11 @@ public class Thread implements Serializable, IDialog<Message> {
     public Thread(String name, Message message) {
         this.dialogName = name;
         this.lastMessage.setTarget(message);
+        this.vote_counts = 0;
     }
 
     //  just for threads
     public Thread(String name, Message message, String passkey) {
-
         this.dialogName = name;
         this.passkey = passkey;
 //        this.dialogPhoto = photo;
@@ -78,6 +79,11 @@ public class Thread implements Serializable, IDialog<Message> {
     @Override
     public String getDialogPhoto() {
         return dialogPhoto;
+    }
+
+    public void setDialogPhoto(String dialogPhoto) {
+        this.dialogPhoto = "https://api.adorable.io/avatars/285/" + dialogPhoto;
+        ;
     }
 
     @Override
@@ -115,7 +121,6 @@ public class Thread implements Serializable, IDialog<Message> {
     public void setUnreadCount(int unreadCount) {
         this.unreadCount = unreadCount;
     }
-
 
     public String getThreadHash() {
         return threadHash;
@@ -167,17 +172,24 @@ public class Thread implements Serializable, IDialog<Message> {
         return resultString;
     }
 
+    public void setResultString(String resultString) {
+        this.resultString = resultString;
+    }
+
     public int getResultCount() {
         String[] results = resultString.split(",");
         int count = 0;
-        for (String result:results) {
+        for (String result : results) {
             count += Integer.parseInt(result);
         }
         return count;
     }
 
-    public void setResultString(String resultString) {
-        this.resultString = resultString;
+    public int getVote_counts() {
+        return vote_counts;
     }
 
+    public void increamentVote_counts() {
+        this.vote_counts++;
+    }
 }

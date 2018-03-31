@@ -117,7 +117,7 @@ public class IpFoldingCellListAdapter extends ArrayAdapter<Poll> {
                 Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
 
                 Thread thread = new Thread(poll.getQuestion(),
-                        new Message("Hi!", poll.getSender()),
+                        new Message(poll.getQuestion(), poll.getSender()),
                         String.valueOf(UUID.randomUUID()));
                 thread.setThreadHash(poll.getPollHash());
 

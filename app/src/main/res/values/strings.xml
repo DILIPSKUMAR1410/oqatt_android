@@ -98,4 +98,6 @@
     <string name="action_copy">Copy</string>
     <string name="copied_message">Message copied!</string>
     <string name="answer">Answer</string>
+    <string name="convert_to_poll">Convert to poll</string>
+    <string name="start_a_thread">Write a topic to start the thread !</string>
 </resources>

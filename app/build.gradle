@@ -10,8 +10,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        versionCode 3
-        versionName '0.03'
+        versionCode 7
+        versionName '0.07'
     }
     buildTypes {
         release {

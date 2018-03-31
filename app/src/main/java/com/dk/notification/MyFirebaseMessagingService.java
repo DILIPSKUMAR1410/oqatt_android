@@ -99,7 +99,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                 Thread outgoingthreadCumPoll = threadBox.query().equal(Thread_.threadHash, remoteMessage.getData().get("poll_hash")).build().findFirst();
                 assert outgoingthreadCumPoll != null;
-                outgoingthreadCumPoll.setUnreadCount(outgoingthreadCumPoll.getUnreadCount()+1);
+                outgoingthreadCumPoll.setUnreadCount(outgoingthreadCumPoll.getUnreadCount() + 1);
+                outgoingthreadCumPoll.increamentVote_counts();
                 outgoingthreadCumPoll.setResultString(remoteMessage.getData().get("option_count").replace("[", "").replace("]", ""));
                 threadBox.put(outgoingthreadCumPoll);
                 EventBus.getDefault().post(new UpdatePoll("Got an upvote"));
@@ -187,9 +188,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 Box<Thread> threadBox = App.getInstance().getBoxStore().boxFor(Thread.class);
                 Thread thread = threadBox.query().equal(Thread_.threadHash, remoteMessage.getData().get("thread_hash")).build().findFirst();
                 assert thread != null;
-                Message message = new Message(remoteMessage.getData().get("message"), remoteMessage.getData().get("passkey"));
+                Message message = new Message(remoteMessage.getData().get("message"), remoteMessage.getData().get("passkey") + thread.getPasskey());
+                thread.setDialogPhoto(remoteMessage.getData().get("passkey") + thread.getPasskey());
                 thread.setLastMessage(message);
-                thread.setUnreadCount(thread.getUnreadCount()+1);
+                thread.setUnreadCount(thread.getUnreadCount() + 1);
                 threadBox.put(thread);
                 EventBus.getDefault().post(new MessageList(message));
                 EventBus.getDefault().post(new UpdateThread(1, thread));

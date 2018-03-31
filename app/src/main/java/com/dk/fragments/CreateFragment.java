@@ -18,9 +18,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.dk.App;
-import com.dk.main.SelectFriendsActivity;
 import com.dk.main.R;
 import com.dk.main.RecyclerItemClickListener;
+import com.dk.main.SelectFriendsActivity;
 import com.dk.main.UsersMentionAdapter;
 import com.dk.models.Mention;
 import com.dk.models.Message;
@@ -306,10 +306,9 @@ public class CreateFragment extends Fragment implements QueryListener, Suggestio
             Toast.makeText(getActivity(), "Not enough bolts!", Toast.LENGTH_LONG).show();
             return;
         }
-
-        Thread thread = new Thread(String.valueOf(commentField.getText()),
-                new Message("Yay! you started a thread!", "0"),
-                String.valueOf(UUID.randomUUID()));
+        String topic = String.valueOf(commentField.getText());
+        Thread thread = new Thread(topic,
+                new Message(topic, "0"), String.valueOf(UUID.randomUUID()));
 
 
         if (mentions.getInsertedMentions().size() > 1) {

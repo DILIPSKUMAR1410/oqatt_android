@@ -35,13 +35,13 @@ public class PollResultActivity extends AppCompatActivity {
         textView.setText(thread.getDialogName());
         List<PieEntry> entries = new ArrayList<>();
         String[] results = thread.getResultString().split(",");
-        for (String result:results) {
+        for (String result : results) {
             entries.add(new PieEntry(Float.parseFloat(result), ""));
         }
         List<LegendEntry> legend_entries = new ArrayList<>();
         ArrayList<String> options = thread.getOptionsList();
         int i = 0;
-        for (String option:options) {
+        for (String option : options) {
             LegendEntry l = new LegendEntry();
             l.label = option;
             l.formColor = ColorTemplate.MATERIAL_COLORS[i];
@@ -53,15 +53,17 @@ public class PollResultActivity extends AppCompatActivity {
         legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         legend.setDirection(LEFT_TO_RIGHT);
         legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-        legend.setTextSize(15);
+        legend.setTextSize(11);
         legend.setWordWrapEnabled(true);
         PieDataSet set = new PieDataSet(entries, "");
         PieData data = new PieData(set);
         set.setColors(ColorTemplate.MATERIAL_COLORS);
         pieChart.setData(data);
-        pieChart.setCenterTextSize(0);
-        pieChart.setUsePercentValues(true);
-        pieChart.setEntryLabelTextSize(0);
+        pieChart.setTransparentCircleRadius(29);
+        pieChart.setHoleRadius(23);
+//        pieChart.setUsePercentValues(true);
+        pieChart.setCenterText(thread.getVote_counts() + " Replies");
+//        pieChart.setEntryLabelColor(ColorTemplate.PASTEL_COLORS[0]);
         pieChart.invalidate(); // refresh
     }
 }

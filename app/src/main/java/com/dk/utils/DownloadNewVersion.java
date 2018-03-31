@@ -12,6 +12,7 @@ import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.dk.App;
 import com.dk.main.BuildConfig;
 
 import java.io.File;
@@ -20,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import io.objectbox.BoxStore;
 
 public class DownloadNewVersion extends AsyncTask<String, Integer, Boolean> {
     private static final String TAG = "DownloadNewVersion>>>";
@@ -131,18 +134,24 @@ public class DownloadNewVersion extends AsyncTask<String, Integer, Boolean> {
         File file = new File(location + "oqatt.apk");
         Uri apkURI;
 
+        BoxStore boxStore = App.getInstance().getBoxStore();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             apkURI = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
 
             Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
             intent.setData(apkURI);
             intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            boxStore.close();
+            boxStore.deleteAllFiles();
             context.startActivity(intent);
         } else {
             apkURI = Uri.fromFile(file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(apkURI, "application/vnd.android.package-archive");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            boxStore.close();
+            boxStore.deleteAllFiles();
             context.startActivity(intent);
         }
     }

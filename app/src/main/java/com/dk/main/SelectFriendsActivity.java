@@ -57,11 +57,14 @@ public class SelectFriendsActivity extends AppCompatActivity {
     boolean isPoll;
     int MIN_GROUP_SIZE = 2;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        bundle = new Bundle();
+
         setContentView(R.layout.activity_select_friends);
         listview = findViewById(R.id.listView);
         isPoll = getIntent().getBooleanExtra("isPoll", true);
@@ -120,11 +123,6 @@ public class SelectFriendsActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.done_icon:
-                Bundle bundle = new Bundle();
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "Q-ask");
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "Question asked");
-                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "event");
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                 selected_friends.clear();
                 sparseBooleanArray = listview.getCheckedItemPositions();
                 int i = 0;
@@ -139,6 +137,8 @@ public class SelectFriendsActivity extends AppCompatActivity {
                 }
 
 
+                String item_id = null;
+                String item_name = null;
                 if (!isNotMentioned) {
                     int ticked = 0;
                     if (selected_friends.contains("others")) {
@@ -151,9 +151,13 @@ public class SelectFriendsActivity extends AppCompatActivity {
                     } else {
                         try {
                             if (isPoll) {
+                                item_id = "name_mentioned_poll";
+                                item_name = "name_mentioned_poll";
                                 ApiCalls.publishMentionedPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             } else {
+                                item_id = "name_mentioned_thread";
+                                item_name = "name_mentioned_thread";
                                 ApiCalls.publishMentionedThread(SelectFriendsActivity.this, thread, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             }
@@ -168,9 +172,13 @@ public class SelectFriendsActivity extends AppCompatActivity {
                     } else {
                         try {
                             if (isPoll) {
+                                item_id = "open_poll";
+                                item_name = "open_poll";
                                 ApiCalls.publishOpenPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             } else {
+                                item_id = "open_thread";
+                                item_name = "open_thread";
                                 ApiCalls.publishOpenThread(SelectFriendsActivity.this, thread, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             }
@@ -179,7 +187,10 @@ public class SelectFriendsActivity extends AppCompatActivity {
                         }
                     }
                 }
-
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, item_id);
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, item_name);
+                bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "event");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.BEGIN_CHECKOUT, bundle);
 
             default:
                 return super.onOptionsItemSelected(item);
