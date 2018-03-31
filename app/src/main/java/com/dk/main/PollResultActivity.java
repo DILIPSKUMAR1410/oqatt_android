@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.dk.App;
 import com.dk.models.Thread;
+import com.dk.utils.MyValueFormatter;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LegendEntry;
@@ -56,14 +57,14 @@ public class PollResultActivity extends AppCompatActivity {
         legend.setTextSize(11);
         legend.setWordWrapEnabled(true);
         PieDataSet set = new PieDataSet(entries, "");
-        PieData data = new PieData(set);
         set.setColors(ColorTemplate.MATERIAL_COLORS);
+        set.setAutomaticallyDisableSliceSpacing(true);
+        set.setValueFormatter(new MyValueFormatter());
+        PieData data = new PieData(set);
         pieChart.setData(data);
         pieChart.setTransparentCircleRadius(29);
         pieChart.setHoleRadius(23);
-//        pieChart.setUsePercentValues(true);
         pieChart.setCenterText(thread.getVote_counts() + " Replies");
-//        pieChart.setEntryLabelColor(ColorTemplate.PASTEL_COLORS[0]);
         pieChart.invalidate(); // refresh
     }
 }
