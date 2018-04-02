@@ -172,13 +172,13 @@ public class SelectFriendsActivity extends AppCompatActivity {
                     } else {
                         try {
                             if (isPoll) {
-                                item_id = "open_poll";
-                                item_name = "open_poll";
+                                item_id = "group_poll";
+                                item_name = "group_poll";
                                 ApiCalls.publishOpenPoll(SelectFriendsActivity.this, poll, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             } else {
-                                item_id = "open_thread";
-                                item_name = "open_thread";
+                                item_id = "group_thread";
+                                item_name = "group_thread";
                                 ApiCalls.publishOpenThread(SelectFriendsActivity.this, thread, hex, selected_friends);
                                 Utils.redirectToAnim(SelectFriendsActivity.this, 0);
                             }

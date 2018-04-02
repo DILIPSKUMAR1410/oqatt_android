@@ -15,14 +15,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:button_color="@color/colorAccent"
-        app:icon_one="@drawable/notification"
-        app:icon_three="@drawable/response"
-        app:icon_two="@drawable/ask"
+        app:icon_one="@drawable/ask"
+        app:icon_three="@drawable/notification"
+        app:icon_two="@drawable/topic"
         app:layout_behavior="eu.long1.spacetablayout.SpaceTabLayoutBehavior"
         app:number_of_tabs="three"
         app:starting_position="two"
         app:tab_color="@color/colorPrimary"
-        app:text_one="Notification"
-        app:text_three="Topic"
-        app:text_two="Ask" />
+        app:text_one="Ask"
+        app:text_two="Topic"
+        app:text_three="Notification"/>
 </RelativeLayout>

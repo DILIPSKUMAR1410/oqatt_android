@@ -31,7 +31,6 @@ import com.dk.queue.UpdateThread;
 import com.firebase.jobdispatcher.FirebaseJobDispatcher;
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -47,8 +46,6 @@ import static android.app.NotificationManager.IMPORTANCE_HIGH;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
-    private FirebaseAnalytics mFirebaseAnalytics;
-
     /**
      * Called when message is received.
      *

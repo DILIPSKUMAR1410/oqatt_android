@@ -48,14 +48,13 @@ public class MainActivity extends AppCompatActivity {
         //add the fragments you want to display in a List
         List<Fragment> fragmentList = new ArrayList<>();
         final CreateFragment Cfragment = new CreateFragment();
-        NotificationFragment Ifragment = new NotificationFragment();
-//        OutgoingPollFragment Ofragment = new OutgoingPollFragment();
+        NotificationFragment Nfragment = new NotificationFragment();
         ThreadFragment Tfragment = new ThreadFragment();
 
-        fragmentList.add(Ifragment);
         fragmentList.add(Cfragment);
-//        fragmentList.add(Ofragment);
         fragmentList.add(Tfragment);
+        fragmentList.add(Nfragment);
+
 
         ViewPager viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.spaceTabLayout);

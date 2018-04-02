@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.androidnetworking.common.Priority;
@@ -24,6 +25,7 @@ import com.dk.queue.TokenBalance;
 import com.dk.queue.UpdateFriendList;
 import com.dk.queue.UpdateThread;
 import com.dk.utils.Utils;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
@@ -828,7 +830,12 @@ public class ApiCalls {
                 .subscribe(new Observer<JSONObject>() {
                     @Override
                     public void onComplete() {
-
+                        FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(context);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "message_sent");
+                        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "message_sent");
+                        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "event");
+                        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SHARE, bundle);
                     }
 
                     @Override
